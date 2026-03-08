@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EvoPyramid OS — Архитектурная карта v0.3</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 13px; background: #f0f2f8; color: #1a1a2e; }
+
+  /* ── Layout ── */
+  .page { max-width: 1440px; margin: 0 auto; padding: 36px 28px; }
+
+  /* ── Cover ── */
+  .cover { text-align: center; padding: 32px 0 24px; }
+  .cover h1 { font-size: 38px; font-weight: 900; color: #1a1a2e; letter-spacing: -0.5px; }
+  .cover .sub { font-size: 20px; color: #0f3460; margin-top: 4px; font-weight: 400; }
+  .cover .meta { font-size: 12px; color: #999; margin-top: 8px; }
+  .formula-box {
+    background: #1a1a2e; color: #f0f4ff; border-radius: 10px;
+    padding: 20px 28px; margin: 24px auto; max-width: 900px;
+    font-size: 14px; line-height: 1.8; font-style: italic;
+  }
+  .formula-box strong { color: #f5a623; font-style: normal; }
+
+  /* ── TOC ── */
+  .toc { background: #fff; border: 1px solid #dde; border-radius: 8px; padding: 18px 24px; margin-bottom: 32px; }
+  .toc h3 { font-size: 14px; color: #1a1a2e; margin-bottom: 10px; font-weight: 700; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 24px; }
+  .toc a { color: #0f3460; text-decoration: none; font-size: 12px; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* ── HR ── */
+  hr { border: none; border-top: 2px solid #dde3f0; margin: 30px 0; }
+
+  /* ── Headings ── */
+  h2.sec {
+    font-size: 20px; font-weight: 700; color: #fff; margin: 28px 0 12px;
+    padding: 10px 16px; border-radius: 6px; background: #1a1a2e;
+  }
+  h2.sec.alpha { background: #0f3460; }
+  h2.sec.beta  { background: #0f3460; }
+  h2.sec.gamma { background: #533483; }
+  h2.sec.pear  { background: #b5002a; }
+  h2.sec.stack { background: #1b5e20; }
+  h2.sec.road  { background: #4a148c; }
+  h3.subsec { font-size: 15px; font-weight: 700; color: #0f3460; margin: 16px 0 8px; padding-left: 8px; border-left: 3px solid #0f3460; }
+  h3.subsec.gamma { color: #533483; border-left-color: #533483; }
+  h3.subsec.red   { color: #b5002a; border-left-color: #b5002a; }
+  h3.subsec.green { color: #1b5e20; border-left-color: #1b5e20; }
+
+  /* ── Notes ── */
+  .note { font-size: 13px; color: #333; margin-bottom: 12px; line-height: 1.6; }
+  .note strong { color: #b5002a; }
+  .note code   { background: #eef; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #333; }
+
+  /* ── Tables ── */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
+  th { background: #1a1a2e; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; white-space: nowrap; }
+  th.alpha-hdr { background: #0f3460; }
+  th.beta-hdr  { background: #0f3460; }
+  th.gamma-hdr { background: #533483; }
+  th.stack-hdr { background: #1b5e20; }
+  th.road-hdr  { background: #4a148c; }
+  td { padding: 7px 10px; border: 1px solid #dde; vertical-align: top; line-height: 1.5; }
+  tr:nth-child(even) td { background: #f8f9fd; }
+  tr:nth-child(odd)  td { background: #fff; }
+  td code { font-family: 'Courier New', monospace; font-size: 11px; background: #f0f2f8; padding: 1px 4px; border-radius: 3px; }
+
+  /* ── Status cells ── */
+  .exists  { background: #d4edda !important; color: #155724; font-weight: 700; }
+  .partial { background: #fff3cd !important; color: #856404; font-weight: 700; }
+  .planned { background: #f8d7da !important; color: #721c24; font-weight: 700; }
+  .blocked { background: #e9ecef !important; color: #495057; font-weight: 700; }
+
+  /* ── Tags ── */
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; white-space: nowrap; margin: 1px; }
+  .tag-alpha   { background: #d9e8ff; color: #0f3460; }
+  .tag-beta    { background: #d9f0ff; color: #0a2a5e; }
+  .tag-gamma   { background: #edd9ff; color: #3a0075; }
+  .tag-pear    { background: #ffe0e6; color: #8b0018; }
+  .tag-z       { background: #1a1a2e; color: #fff; }
+  .tag-exists  { background: #d4edda; color: #155724; }
+  .tag-partial { background: #fff3cd; color: #856404; }
+  .tag-planned { background: #f8d7da; color: #721c24; }
+  .tag-sector  { background: #f0e0ff; color: #4a0090; }
+  .tag-stack   { background: #e8f5e9; color: #1b5e20; }
+  .tag-block   { background: #e9ecef; color: #495057; }
+
+  /* ── Card grids ── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .card { background: #fff; border: 1px solid #dde; border-radius: 7px; padding: 14px 16px; }
+  .card.alpha-card { border-left: 4px solid #0f3460; }
+  .card.beta-card  { border-left: 4px solid #1565c0; }
+  .card.gamma-card { border-left: 4px solid #533483; }
+  .card.pear-card  { border-left: 4px solid #b5002a; }
+  .card.stack-card { border-left: 4px solid #1b5e20; }
+  .card.warn-card  { border-left: 4px solid #f5a623; background: #fffde7; }
+  .card h4 { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+  .card h4 small { font-weight: 400; color: #888; font-size: 11px; }
+  .card p  { font-size: 12px; color: #444; line-height: 1.55; margin-bottom: 6px; }
+  .card ul { padding-left: 15px; color: #444; line-height: 1.7; font-size: 12px; }
+  .card code { font-family: 'Courier New', monospace; font-size: 11px; background: #f0f2f8; padding: 1px 4px; border-radius: 3px; }
+
+  /* ── Phase blocks ── */
+  .phases { display: flex; gap: 0; margin-bottom: 20px; }
+  .phase { flex: 1; padding: 14px 12px; border-right: 2px solid #fff; }
+  .phase:last-child { border-right: none; }
+  .phase h4 { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .phase ul { padding-left: 14px; color: rgba(255,255,255,0.88); font-size: 11px; line-height: 1.6; }
+  .ph-a { background: #1a1a2e; border-radius: 7px 0 0 7px; }
+  .ph-b { background: #0f3460; }
+  .ph-c { background: #1565c0; }
+  .ph-d { background: #533483; }
+  .ph-e { background: #4a148c; border-radius: 0 7px 7px 0; }
+
+  /* ── Node schema ── */
+  .node-schema { background: #1a1a2e; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; color: #e8f0fe; }
+  .node-schema h4 { color: #f5a623; font-size: 14px; margin-bottom: 12px; }
+  .node-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px 20px; }
+  .nf { font-size: 12px; }
+  .nf code { color: #a8d8ff; font-family: 'Courier New', monospace; }
+  .nf span { color: #ccc; font-size: 11px; }
+
+  /* ── Three-layer truth ── */
+  .truth-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .truth-cell { border-radius: 8px; padding: 18px 20px; }
+  .truth-cell h4 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .truth-cell p  { font-size: 12px; line-height: 1.6; opacity: 0.9; }
+  .truth-cell ul { font-size: 12px; line-height: 1.7; padding-left: 16px; opacity: 0.9; }
+  .t-physical { background: #263238; color: #eceff1; }
+  .t-app      { background: #0f3460; color: #e3f2fd; }
+  .t-pyramid  { background: #4a148c; color: #f3e5f5; }
+
+  /* ── Legend row ── */
+  .legend-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+  .leg-box { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; color: #aaa; font-size: 11px; padding: 16px 0 8px; }
+
+  @media print { body { background: white; } .page { padding: 16px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════ COVER ═══════════ -->
+<div class="cover">
+  <h1>EvoPyramid OS</h1>
+  <div class="sub">Полная архитектурная карта проекта</div>
+  <div class="meta">Части 1–4 · На основе EvoGenesis-Digital_Soul_initiative + EvoPyramid_OS archives · v0.3</div>
+
+  <div class="formula-box">
+    <strong>EvoPyramid OS</strong> — это локальная архитектурная desktop-среда, визуализированная как <strong>пирамида Z17</strong>,
+    внутри которой проект, агенты, память, решения и внешние AI-сервисы организуются как единое пространство.
+    Новые решения проходят через циклы EvoGenesis, закрепляются через <strong>runtime/canon коэволюцию</strong>
+    и постепенно формируют устойчивый внутренний канон системы.<br><br>
+    <strong>Локальная директория</strong> — физическое основание.&nbsp;&nbsp;
+    <strong>Приложение</strong> — среда доступа.&nbsp;&nbsp;
+    <strong>Пирамида</strong> — источник архитектурной истины, валидности и канона.
+  </div>
+</div>
+
+<!-- ═══════════ LEGEND ═══════════ -->
+<div class="legend-row">
+  <span style="font-weight:700;color:#555">Статус:</span>
+  <div class="legend-item"><div class="leg-box" style="background:#d4edda"></div> EXISTS</div>
+  <div class="legend-item"><div class="leg-box" style="background:#fff3cd"></div> PARTIAL</div>
+  <div class="legend-item"><div class="leg-box" style="background:#f8d7da"></div> PLANNED</div>
+  <div class="legend-item"><div class="leg-box" style="background:#e9ecef"></div> NOT NOW</div>
+  <span style="font-weight:700;color:#555;margin-left:12px">Слои:</span>
+  <span class="tag tag-alpha">α Canon</span>
+  <span class="tag tag-beta">β Runtime</span>
+  <span class="tag tag-gamma">γ Reflective</span>
+  <span class="tag tag-pear">PEAR</span>
+  <span class="tag tag-z">Z17</span>
+  <span class="tag tag-stack">Stack</span>
+</div>
+
+<!-- ═══════════ TOC ═══════════ -->
+<div class="toc">
+  <h3>Содержание</h3>
+  <div class="toc-grid">
+    <a href="#s1">1. Z17 структурная вертикаль</a>
+    <a href="#s2">2. α / β / γ → маппинг на Z17</a>
+    <a href="#s3">3. PEAR Cycle</a>
+    <a href="#s4">4. Coevolution Loop</a>
+    <a href="#s5">5. Агентная среда</a>
+    <a href="#s6">6. Сравнение с EVO_ARCH_MAP</a>
+    <a href="#s7">7. Первая среда обитания</a>
+    <a href="#s8">8. Pyramid Core Model</a>
+    <a href="#s9">9. Три уровня истины системы</a>
+    <a href="#s10">10. Практический стек</a>
+    <a href="#s11">11. Каркас надёжности</a>
+    <a href="#s12">12. Интеграционные источники</a>
+    <a href="#s13">13. Дорожная карта</a>
+    <a href="#s14">14. Что НЕ делаем</a>
+    <a href="#s15">15. Открытые вопросы</a>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════ S1: Z17 ═══════════ -->
+<h2 class="sec" id="s1">1. Z17 — структурная вертикаль <span style="font-size:14px;font-weight:400;opacity:0.7">Части 1–2</span></h2>
+<p class="note">Нечётные слои — <strong>structural</strong>. Чётные — transitional. Центр: (9,9). Радиус R = (17–z)//2. Три модуля уже размещены в <code>canon_builder</code>. Пирамида является не схемой, а <strong>основной формой среды</strong>.</p>
+
+<table>
+  <tr>
+    <th>Z</th><th>Тип</th><th>Сектор/Coord</th><th>Модуль</th><th>Capability</th><th>Описание</th><th>Статус</th><th>Источник</th>
+  </tr>
+  <tr><td><strong>Z17</strong></td><td>structural</td><td><span class="tag tag-z">SPINE</span> (9,9,17)</td><td><code>apex_core</code></td><td><code>module_registry:v1</code></td><td>Вершина канона. Реестр модулей.</td><td class="exists">EXISTS</td><td><code>input/apex_core/manifest.json</code></td></tr>
+  <tr><td><strong>Z16</strong></td><td>transitional</td><td><span class="tag tag-z">SPINE</span> (9,9,16)</td><td><code>spine_router</code></td><td>routing</td><td>Маршрутизация Z17→Z15</td><td class="exists">EXISTS</td><td><code>input/spine_router/manifest.json</code></td></tr>
+  <tr><td><strong>Z15</strong></td><td>structural</td><td><span class="tag tag-sector">PURPLE</span> (8,9,15)</td><td><code>atlas_generator</code></td><td><code>atlas:generate:v1</code></td><td>Генератор атласа модулей</td><td class="exists">EXISTS</td><td><code>input/atlas_generator/manifest.json</code></td></tr>
+  <tr><td><strong>Z13–Z11</strong></td><td>structural</td><td>—</td><td>—</td><td><span class="tag tag-alpha">α modules</span></td><td>Зона α: каноны, память, intent, правила</td><td class="partial">PARTIAL</td><td><code>α_Pyramid_Core/B_Structure/B1_MemoryCore/</code></td></tr>
+  <tr><td><strong>Z9–Z7</strong></td><td>structural</td><td>—</td><td>—</td><td><span class="tag tag-beta">β modules</span></td><td>Зона β: агенты, engine, оркестрация</td><td class="partial">PARTIAL</td><td><code>β_Pyramid_Functional/A_Agents/, B_Engine/</code></td></tr>
+  <tr><td><strong>Z5–Z3</strong></td><td>structural</td><td>—</td><td>—</td><td><span class="tag tag-gamma">γ modules</span></td><td>Зона γ: heartbeat, sync, observer, логи</td><td class="partial">PARTIAL</td><td><code>γ_Pyramid_Reflective/A_Observation/</code></td></tr>
+  <tr><td><strong>Z1</strong></td><td>transitional</td><td>—</td><td>—</td><td>—</td><td>Входной слой. Сырые импульсы.</td><td class="planned">PLANNED</td><td>—</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══════════ S2: αβγ ═══════════ -->
+<h2 class="sec alpha" id="s2">2. α / β / γ — типология слоёв и маппинг на Z17 <span style="font-size:14px;font-weight:400;opacity:0.7">Части 1–2</span></h2>
+<table>
+  <tr>
+    <th class="alpha-hdr">Слой</th><th class="alpha-hdr">Z-диапазон</th><th class="alpha-hdr">Тип</th><th class="alpha-hdr">Роль</th><th class="alpha-hdr">Ключевые артефакты (EvoGenesis)</th><th class="alpha-hdr">Артефакты (EvoPyramid)</th>
+  </tr>
+  <tr>
+    <td><span class="tag tag-alpha">α_Pyramid_Core</span></td>
+    <td><strong>Z15 → Z11</strong></td><td>Canon / Принципы</td><td>Инварианты, память, intent, правила</td>
+    <td><code>EVO_ARCH_MAP.yaml</code><br><code>protocol_manifest.yaml</code><br><code>hybrid_agi/memory.py</code><br><code>α_Pyramid_Core/B_Structure/B1_MemoryCore/</code><br><code>α_Pyramid_Core/D_Metalogic/D2_IntentSystem</code></td>
+    <td><code>canon_builder/</code><br><code>canon_builder/models.py</code><br><code>canon_builder/validators/</code><br><code>input/*/manifest.json</code></td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-beta">β_Pyramid_Functional</span></td>
+    <td><strong>Z9 → Z5</strong></td><td>Runtime / Функции</td><td>Агенты, оркестрация, сессии, provider routing</td>
+    <td><code>orchestrator.py</code><br><code>provider_matrix.py</code><br><code>nexus_bridge.py</code><br><code>api/api_gateway.py</code><br><code>β_Pyramid_Functional/A_Agents/</code><br><code>β_Pyramid_Functional/B_Engine/</code><br><code>β_Pyramid_Functional/D_Interface/evo_api.py</code></td>
+    <td>Z9–Z5: свободные слоты<br>Broker / Adapter modules<br>Agent role manifests</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-gamma">γ_Pyramid_Reflective</span></td>
+    <td><strong>Z3 → Z1</strong></td><td>Reflection / Коррекция</td><td>Heartbeat, auto_merge, sync, логи наблюдения</td>
+    <td><code>tri_heartbeat.py</code><br><code>heartbeat_sync.py</code><br><code>auto_merge.py</code><br><code>inter_arch_sync.py</code><br><code>joint_sync.py</code><br><code>γ_Pyramid_Reflective/A_Observation/A1_Logs/</code></td>
+    <td>Z3–Z1: свободные слоты<br>Observer module<br>Sync ledger module</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- ═══════════ S3: PEAR ═══════════ -->
+<h2 class="sec pear" id="s3">3. PEAR Cycle — цикл обработки импульса <span style="font-size:14px;font-weight:400;opacity:0.7">Части 1–2</span></h2>
+<p class="note">6 фаз. Агенты именованы в коде: <strong>Trailblazer, Provocateur, Soul, Prometheus.</strong> Reality Anchor bind_points → <code>β_Pyramid_Functional/A_Agents/*</code>.</p>
+<table>
+  <tr><th>#</th><th>Фаза</th><th>Описание</th><th>Артефакт (EvoGenesis)</th><th>Z-позиция</th></tr>
+  <tr>
+    <td><span class="tag tag-pear">1</span></td><td><strong>PEAR Seed</strong></td>
+    <td>Входной импульс / trigger. Принимает задачу, запрос, артефакт.</td>
+    <td><code>init_peer_demon.json</code><br><code>pear_cycle.py → build_context()</code><br><code>offline_pear_seed · intent_manifest.json</code></td>
+    <td><span class="tag tag-alpha">α Z13</span> <code>D_Metalogic/D2_IntentSystem</code></td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-pear">2</span></td><td><strong>Reality Anchor</strong></td>
+    <td>Якорение в реальном контексте. Привязка к timestamp, event_id, source. <code>coherence_floor: 0.85</code></td>
+    <td><code>reality_anchor.py</code><br><code>reality_anchor.yaml</code><br><code>anchor_state.json</code></td>
+    <td><span class="tag tag-beta">β Z9</span> bind → <code>A_Agents/*</code></td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-pear">3</span></td><td><strong>4 Containers</strong></td>
+    <td>Параллельная обработка. <strong>Trailblazer / Provocateur / Soul / Prometheus.</strong><br>Кандидаты: Ollama, GPT, Copilot, Gemini.</td>
+    <td><code>pear_cycle.py → agents=[...]</code><br><code>hybrid_container_manager.py</code><br><code>A_Agents/A3_Containers/</code></td>
+    <td><span class="tag tag-beta">β Z9</span> <code>A3_Containers</code></td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-pear">4</span></td><td><strong>Chaos</strong></td>
+    <td>Столкновение и синтез результатов контейнеров.</td>
+    <td><code>offline_chaos_engine.py</code><br><code>B_Engine/B2_ChaosBus/</code></td>
+    <td><span class="tag tag-beta">β Z7</span> <code>B2_ChaosBus</code></td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-pear">5</span></td><td><strong>Observer</strong></td>
+    <td>Наблюдение, coherence check. <code>entropy_delta, coherence_alignment</code>.</td>
+    <td><code>pear_cycle.py → feedback_target='OBSERVER'</code><br><code>B_Engine/B4_ObserverCore/</code></td>
+    <td><span class="tag tag-beta">β Z5</span> + γ-ledger <code>pear_report.md</code></td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-pear">6</span></td><td><strong>Memory Return</strong></td>
+    <td>Возврат в устойчивую форму. Materialise report → γ.</td>
+    <td><code>pear_cycle.py → materialise_report()</code><br><code>γ_Pyramid_Reflective/.../pear_report.md</code></td>
+    <td><span class="tag tag-gamma">γ Z3</span> → canon pipeline</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- ═══════════ S4: COEVO ═══════════ -->
+<h2 class="sec gamma" id="s4">4. Coevolution Loop — Runtime ↔ Canon <span style="font-size:14px;font-weight:400;opacity:0.7">Части 1–2</span></h2>
+<p class="note"><code>auto_merge.py</code>: trigger <code>on_conflict_or_interval</code> / 30m. <code>min_coherence: 0.87</code>. Конфликт β vs γ → <strong>приоритет γ (reflective lineage overrides engine variance).</strong></p>
+<table>
+  <tr><th>Компонент</th><th>Триггер / Правило</th><th>Артефакт (EvoGenesis)</th><th>Назначение</th></tr>
+  <tr>
+    <td><strong>Auto-Merge Engine</strong></td>
+    <td><code>on_conflict_or_interval</code> / 30m<br>min_coherence: 0.87 · resolver: Codex<br>Links: α↔β, β↔γ, γ↔α</td>
+    <td><code>auto_merge.py</code><br><code>auto_merge_payload.json</code></td>
+    <td>Главный механизм coevolution loop. Поднимает устойчивые решения из runtime в canon.</td>
+  </tr>
+  <tr>
+    <td><strong>Inter-Arch Sync</strong></td>
+    <td>manual / перед joint cycles</td>
+    <td><code>inter_arch_sync.py</code><br><code>INTER_ARCH_ALIGNMENT.md</code><br><code>γ/.../inter_arch_alignment_status.json</code></td>
+    <td>Синхронизация EvoGenesis ↔ EvoPyramid-AI.</td>
+  </tr>
+  <tr>
+    <td><strong>Joint Sync Ritual</strong></td>
+    <td>pull_request / manual<br><code>joint_sync.yml</code></td>
+    <td><code>joint_sync.py · run_joint_sync.py</code><br><code>EVO_SYNC_MANIFEST.yaml</code><br><code>γ/.../bridge_sync_report.md</code></td>
+    <td>Связывает PEAR ↔ heartbeat в один ритуал. Публикует γ-ledger snapshots.</td>
+  </tr>
+  <tr>
+    <td><strong>Tri-Heartbeat</strong></td>
+    <td>continuous / tri-phase pulse</td>
+    <td><code>tri_heartbeat.py · heartbeat_sync.py</code><br><code>γ/.../tri_heartbeat.log</code></td>
+    <td>Постоянный пульс γ-слоя. Метрики: <code>entropy_delta, coherence_index</code>.</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- ═══════════ S5: AGENTS ═══════════ -->
+<h2 class="sec beta" id="s5">5. Агентная среда — роли и провайдеры <span style="font-size:14px;font-weight:400;opacity:0.7">Части 2–3</span></h2>
+<p class="note">Агенты — не API-вызовы, а <strong>функциональные роли среды</strong> с позицией в пирамиде. Каждое сообщение между агентами несёт: task_context, origin, target, role, artifact_type, status, confidence, pyramid_position, runtime/canon flag.</p>
+
+<div class="grid4">
+  <div class="card pear-card">
+    <h4>Trailblazer <small>Container #1</small></h4>
+    <p><span class="tag tag-beta">β Z9</span> <code>A3_Containers</code></p>
+    <p>Разведчик направлений</p>
+    <p><strong>Provider-кандидат:</strong> Ollama Local / GPT</p>
+  </div>
+  <div class="card pear-card">
+    <h4>Provocateur <small>Container #2</small></h4>
+    <p><span class="tag tag-beta">β Z9</span> <code>A3_Containers</code></p>
+    <p>Критик и оппонент</p>
+    <p><strong>Provider-кандидат:</strong> GPT / Gemini</p>
+  </div>
+  <div class="card pear-card">
+    <h4>Soul <small>Container #3</small></h4>
+    <p><span class="tag tag-beta">β Z9</span> <code>A3_Containers</code></p>
+    <p>Смысловое ядро</p>
+    <p><strong>Provider-кандидат:</strong> Ollama / local model</p>
+  </div>
+  <div class="card pear-card">
+    <h4>Prometheus <small>Container #4</small></h4>
+    <p><span class="tag tag-beta">β Z9</span> <code>A3_Containers</code></p>
+    <p>Синтезатор</p>
+    <p><strong>Provider-кандидат:</strong> Gemini / Copilot</p>
+  </div>
+</div>
+
+<table>
+  <tr><th>Роль среды</th><th>Provider-основа</th><th>Слот в пирамиде</th><th>Функция</th><th>Ключевой артефакт</th></tr>
+  <tr>
+    <td><strong>Local Core Agent</strong></td><td>Ollama Local</td><td><span class="tag tag-beta">β Z7</span></td>
+    <td>Локальный fallback · приватная обработка · offline-устойчивость · базовые summaries</td>
+    <td><code>nexus_bridge.py → local_fallback</code></td>
+  </tr>
+  <tr>
+    <td><strong>User Mediation Agent</strong></td><td>GPT</td><td><span class="tag tag-beta">β Z7</span></td>
+    <td>Общение с пользователем · координация запросов · внутренний протокол агентов</td>
+    <td><code>orchestrator.py · provider_matrix.py</code></td>
+  </tr>
+  <tr>
+    <td><strong>Code / Repo Agent</strong></td><td>Copilot / GitHub</td><td><span class="tag tag-beta">β Z7</span></td>
+    <td>Код · репозитории · review/patch flow · dev-среда</td>
+    <td><code>api/pyramid_routers/beta_router.py</code></td>
+  </tr>
+  <tr>
+    <td><strong>Research / Analysis Agent</strong></td><td>Gemini</td><td><span class="tag tag-beta">β Z7</span></td>
+    <td>Исследование · анализ · web-oriented reasoning · внешняя аналитика</td>
+    <td><code>hybrid_llm_wrapper.py</code></td>
+  </tr>
+  <tr>
+    <td><strong>API Gateway</strong></td><td>FastAPI</td><td><span class="tag tag-beta">β Z7</span> D_Interface</td>
+    <td>Роутеры α/β/γ · точка входа внешних провайдеров</td>
+    <td><code>api/api_gateway.py · api/pyramid_routers/</code></td>
+  </tr>
+  <tr>
+    <td><strong>NexusBridge</strong></td><td>internal</td><td><span class="tag tag-beta">β Z7–Z5</span> NEXUS</td>
+    <td>Маршрутизация между провайдерами · graceful fallback Gemini→GPT→stub</td>
+    <td><code>nexus_bridge.py · hybrid_llm_wrapper.py</code></td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- ═══════════ S6: COMPARE ═══════════ -->
+<h2 class="sec" id="s6">6. Сравнение с оригинальным EVO_ARCH_MAP.yaml <span style="font-size:14px;font-weight:400;opacity:0.7">Части 1–2</span></h2>
+<p class="note">Каждый модуль из оригинальной карты получает Z-позицию и сектор в системе координат <code>canon_builder</code>. <strong>Это точка схождения двух архивов.</strong></p>
+<table>
+  <tr><th>Модуль (EVO_ARCH_MAP)</th><th>Tier</th><th>Parent (original)</th><th>Соответствие в EvoPyramid OS</th><th>Z / Сектор</th></tr>
+  <tr><td><code>hybrid_agi_memory_primitives</code></td><td>Structural</td><td><code>α_.../B1_MemoryCore</code></td><td>α-слой → canon memory capsule</td><td><span class="tag tag-z">Z13</span> <span class="tag tag-sector">PURPLE/GOLD</span></td></tr>
+  <tr><td><code>hybrid_agi_container_manager</code></td><td>Cognitive</td><td><code>β_.../A3_Containers</code></td><td>β-слой → 4 Containers в PEAR</td><td><span class="tag tag-z">Z9</span> <span class="tag tag-sector">GREEN</span></td></tr>
+  <tr><td><code>hybrid_agi_orchestrator</code></td><td>Syntonic</td><td><code>GLOBAL_NEXUS</code></td><td>β/NEXUS → Orchestration layer</td><td><span class="tag tag-z">Z7</span> <span class="tag tag-sector">SPINE</span></td></tr>
+  <tr><td><code>api_gateway</code></td><td>Cognitive</td><td><code>GLOBAL_NEXUS/api/</code></td><td>β D_Interface → API surface</td><td><span class="tag tag-z">Z7</span> <span class="tag tag-sector">RED egress</span></td></tr>
+  <tr><td><code>evopyramid_offline_pear_seed</code></td><td>Structural</td><td><code>α_.../D2_IntentSystem</code></td><td>α-слой → PEAR Seed / Intent</td><td><span class="tag tag-z">Z13</span> <span class="tag tag-sector">SPINE</span></td></tr>
+  <tr><td><code>evopyramid_offline_chaos_engine</code></td><td>Cognitive</td><td><code>β_.../B2_ChaosBus</code></td><td>β-слой → Chaos Container</td><td><span class="tag tag-z">Z7</span> <span class="tag tag-sector">GREEN</span></td></tr>
+  <tr><td><code>evopyramid_offline_observer_loop</code></td><td>Syntonic</td><td><code>β_.../B4_ObserverCore</code></td><td>β→γ граница → Observer / validation</td><td><span class="tag tag-z">Z5</span> <span class="tag tag-sector">PURPLE</span></td></tr>
+  <tr><td><code>joint_sync_ritual</code></td><td>Syntonic</td><td><code>GLOBAL_NEXUS</code></td><td>γ-слой → Coevolution (PEAR↔heartbeat)</td><td><span class="tag tag-z">Z3</span> <span class="tag tag-sector">GOLD</span></td></tr>
+  <tr><td><code>ancient_architecture_archive</code></td><td>Structural</td><td><code>γ_.../E1_PipelineSync</code></td><td>γ-слой → Archive / legacy assimilation</td><td><span class="tag tag-z">Z1</span> <span class="tag tag-sector">GOLD</span></td></tr>
+  <tr><td><code>inter_arch_alignment_ritual</code></td><td>Syntonic</td><td><code>GLOBAL_NEXUS</code></td><td>γ → межсистемное согласование</td><td><span class="tag tag-z">Z3</span> <span class="tag tag-sector">GOLD</span></td></tr>
+  <tr><td><code>termux_stack</code></td><td>Structural</td><td><code>GLOBAL_NEXUS/termux/</code></td><td>β → мобильный deployment layer</td><td><span class="tag tag-z">Z7</span> <span class="tag tag-sector">RED</span></td></tr>
+  <tr><td><code>evo_hive_union_hq</code></td><td>Syntonic</td><td><code>GLOBAL_NEXUS/evo-hive/</code></td><td>γ/NEXUS → EvoHive коллективный слой</td><td><span class="tag tag-z">Z3</span> <span class="tag tag-sector">GOLD</span></td></tr>
+</table>
+
+<hr>
+
+<!-- ═══════════ S7: FIRST HABITAT ═══════════ -->
+<h2 class="sec stack" id="s7">7. Первая среда обитания системы <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 3</span></h2>
+<p class="note">Среда — не «оболочка над папками», а <strong>контейнер всей архитектурной среды</strong>. Пользователь и агенты работают внутри одной замкнутой среды. Файловая система — технический фундамент, но не пользовательская форма.</p>
+
+<div class="grid3">
+  <div class="card stack-card">
+    <h4>1. Local App Shell</h4>
+    <p>Контейнер всей среды:</p>
+    <ul>
+      <li>окно приложения</li>
+      <li>local runtime</li>
+      <li>локальный сервер</li>
+      <li>agent communication</li>
+      <li>встроенный браузер <small>(следующий этап)</small></li>
+      <li>assistant layer</li>
+    </ul>
+  </div>
+  <div class="card alpha-card">
+    <h4>2. Pyramid Core</h4>
+    <p><strong>Это главное.</strong> Пирамида — логическое хранилище и рабочая карта архитектуры.</p>
+    <ul>
+      <li>узлы = первичные единицы среды</li>
+      <li>связи = реальные арх. отношения</li>
+      <li>состояния = live статусы системы</li>
+      <li>single source of truth среды</li>
+    </ul>
+  </div>
+  <div class="card beta-card">
+    <h4>3. Integrated Browser + Assistant</h4>
+    <p>Слой работы <em>(следующий этап)</em>:</p>
+    <ul>
+      <li>закреплённые сервисы</li>
+      <li>AI-веб-аппы (GitHub, Gemini…)</li>
+      <li>контекст сессий</li>
+      <li>агентная координация</li>
+      <li>contextual web routing внутри среды</li>
+    </ul>
+  </div>
+</div>
+
+<p class="note" style="margin-top:4px">
+  <strong>Пирамида vs файловое дерево:</strong> Вместо <code>app/folders/services/docs/memory/</code> — модель
+  <code>EvoPyramid Environment { node, node, link, state, summary, runtime_flag, canon_flag }</code>.
+  Первичная единица — узел архитектуры, а не папка.
+</p>
+
+<hr>
+
+<!-- ═══════════ S8: PYRAMID CORE MODEL ═══════════ -->
+<h2 class="sec" style="background:#4a148c" id="s8">8. Pyramid Core Model — сущности, связи, состояния <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 3 / Дополнения</span></h2>
+<p class="note">Пирамида является не просто визуализацией, а <strong>логическим хранилищем и рабочей картой архитектуры</strong>, в которой узлы, связи, состояния и артефакты заменяют традиционную файлово-директорную модель.</p>
+
+<h3 class="subsec">Схема узла пирамиды</h3>
+<div class="node-schema">
+  <h4>Node — первичная сущность среды</h4>
+  <div class="node-fields">
+    <div class="nf"><code>id</code> <span>· уникальный идентификатор</span></div>
+    <div class="nf"><code>title</code> <span>· человекочитаемое имя</span></div>
+    <div class="nf"><code>z_level</code> <span>· позиция в Z17 (1–17)</span></div>
+    <div class="nf"><code>sector</code> <span>· SPINE / PURPLE / RED / GOLD / GREEN</span></div>
+    <div class="nf"><code>coords</code> <span>· (x, y, z) в сетке пирамиды</span></div>
+    <div class="nf"><code>layer_type</code> <span>· alpha / beta / gamma</span></div>
+    <div class="nf"><code>kind</code> <span>· module / service / memory / protocol / agent / summary / canon / runtime</span></div>
+    <div class="nf"><code>summary</code> <span>· краткое описание</span></div>
+    <div class="nf"><code>links[]</code> <span>· связи с другими узлами</span></div>
+    <div class="nf"><code>state</code> <span>· active / idle / degraded / failed / quarantined / canon-only / runtime-only</span></div>
+    <div class="nf"><code>artifacts[]</code> <span>· прикреплённые файлы/артефакты</span></div>
+    <div class="nf"><code>children[]</code> <span>· вложенные узлы</span></div>
+    <div class="nf"><code>source_refs[]</code> <span>· ссылки на исходные файлы</span></div>
+    <div class="nf"><code>runtime_status</code> <span>· текущий статус в runtime</span></div>
+    <div class="nf"><code>canon_status</code> <span>· статус канонизации</span></div>
+    <div class="nf"><code>provides[]</code> <span>· capability declarations</span></div>
+    <div class="nf"><code>consumes[]</code> <span>· зависимости</span></div>
+  </div>
+</div>
+
+<h3 class="subsec">Состояния узла</h3>
+<table>
+  <tr><th>State</th><th>Значение</th><th>Реакция среды</th></tr>
+  <tr><td><code class="exists">active</code></td><td>Узел работает нормально</td><td>Полный доступ, отображается как активный в пирамиде</td></tr>
+  <tr><td><code style="color:#555">idle</code></td><td>Узел существует, не используется</td><td>Отображается приглушённо, доступен по запросу</td></tr>
+  <tr><td><code class="partial">degraded</code></td><td>Узел работает с ограничениями</td><td>Предупреждение, маршрут перенаправляется</td></tr>
+  <tr><td><code class="planned">failed</code></td><td>Узел недоступен</td><td>Изоляция, recovery signal, observer log</td></tr>
+  <tr><td><code class="blocked">quarantined</code></td><td>Узел изолирован системой</td><td>Запрет интеграции до revalidation</td></tr>
+  <tr><td><code style="color:#4a148c">canon-only</code></td><td>Только канонические операции</td><td>Readonly для runtime, запись только через coevo loop</td></tr>
+  <tr><td><code style="color:#0f3460">runtime-only</code></td><td>Временный рабочий узел</td><td>Не закреплён в каноне, может быть удалён</td></tr>
+</table>
+
+<h3 class="subsec">Состояния интеграций (Sync model)</h3>
+<table>
+  <tr><th>Sync State</th><th>Значение</th></tr>
+  <tr><td><code class="exists">verified</code></td><td>Интеграция проверена и валидна</td></tr>
+  <tr><td><code class="partial">pending</code></td><td>Ожидает проверки / staging</td></tr>
+  <tr><td><code style="color:#555">detached</code></td><td>Отключена, но не удалена</td></tr>
+  <tr><td><code class="planned">conflict</code></td><td>Конфликт с другим узлом или каноном</td></tr>
+  <tr><td><code class="blocked">stale</code></td><td>Устаревшая, требует revalidation</td></tr>
+</table>
+
+<hr>
+
+<!-- ═══════════ S9: THREE TRUTHS ═══════════ -->
+<h2 class="sec" style="background:#263238" id="s9">9. Три уровня истины системы <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 3 / Дополнения</span></h2>
+
+<div class="truth-row">
+  <div class="truth-cell t-physical">
+    <h4>🗂 Физический слой</h4>
+    <p><strong>Локальная директория</strong></p>
+    <ul>
+      <li>Хранение данных и артефактов</li>
+      <li>Состояние, логи, event log</li>
+      <li>Manifests, asset files</li>
+      <li>Локальная синхронизация</li>
+      <li>Резервирование и persistence</li>
+    </ul>
+    <p style="margin-top:10px;font-size:11px;opacity:0.7">Не является «рабочим лицом» системы. Пользователь напрямую не работает с папками.</p>
+  </div>
+  <div class="truth-cell t-app">
+    <h4>🖥 Среда доступа</h4>
+    <p><strong>Приложение — единственная среда взаимодействия</strong></p>
+    <ul>
+      <li>Пользователь входит только через app</li>
+      <li>Агенты работают через внутреннюю среду</li>
+      <li>Все операции проходят через внутреннюю модель</li>
+      <li>Локальный сервер, runtime, state store</li>
+      <li>Agent communication layer</li>
+    </ul>
+    <p style="margin-top:10px;font-size:11px;opacity:0.7">Никакого «пошёл в папку и изменил руками» как основной логики.</p>
+  </div>
+  <div class="truth-cell t-pyramid">
+    <h4>🔺 Источник истины</h4>
+    <p><strong>Пирамида — логический источник структуры, валидности и канона</strong></p>
+    <ul>
+      <li>Определяет какие узлы существуют</li>
+      <li>Какие связи валидны</li>
+      <li>Что активно, что канонично, что временно</li>
+      <li>Registry узлов · связи · состояния</li>
+      <li>Summaries · канонические отметки</li>
+      <li>Runtime-статусы · координаты в Z17</li>
+    </ul>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════ S10: STACK ═══════════ -->
+<h2 class="sec stack" id="s10">10. Практический стек первой реализации <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 3</span></h2>
+
+<div class="grid3">
+  <div class="card stack-card">
+    <h4>UI / Визуальная среда</h4>
+    <ul>
+      <li><span class="tag tag-stack">React</span> <span class="tag tag-stack">TypeScript</span></li>
+      <li><span class="tag tag-stack">React Three Fiber / Three.js</span></li>
+    </ul>
+    <p style="margin-top:8px">Пирамида должна быть живой, интерактивной, state-driven, расширяемой до runtime-подсветки.</p>
+  </div>
+  <div class="card stack-card">
+    <h4>Local App Shell</h4>
+    <p><span class="tag tag-stack">Electron</span> или <span class="tag tag-stack">Tauri</span></p>
+    <p style="margin-top:6px">Electron — проще старт и экосистема.<br>Tauri — легче и компактнее.<br>Решение открытое. Логика одинакова: desktop-app = контейнер всей среды.</p>
+  </div>
+  <div class="card stack-card">
+    <h4>Local Runtime / Backend</h4>
+    <p><span class="tag tag-stack">Python + FastAPI</span></p>
+    <p style="margin-top:6px">Лучше стыкуется с архивами, индексацией, агентными пайплайнами, локальными AI-моделями. orchestration · memory · service adapters.</p>
+  </div>
+  <div class="card stack-card">
+    <h4>Local Communication</h4>
+    <p><span class="tag tag-stack">WebSocket</span> / локальный event stream</p>
+    <p style="margin-top:6px">Для виджета · статусов · agent communication · runtime-state · sync events.</p>
+  </div>
+  <div class="card stack-card">
+    <h4>Local Persistence</h4>
+    <p><span class="tag tag-stack">SQLite</span> → Postgres / vector memory</p>
+    <p style="margin-top:6px">На старте: SQLite.<br>Потом: Postgres / vector memory / canonical registries по мере роста.</p>
+  </div>
+  <div class="card stack-card">
+    <h4>AI Layer</h4>
+    <p><span class="tag tag-stack">Ollama</span> <span class="tag tag-stack">GPT</span> <span class="tag tag-stack">Copilot</span> <span class="tag tag-stack">Gemini</span></p>
+    <p style="margin-top:6px">Не «четыре внешних сервиса» — четыре стартовые агентные роли среды.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════ S11: RELIABILITY ═══════════ -->
+<h2 class="sec gamma" id="s11">11. Каркас надёжности и self-healing <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 3</span></h2>
+<p class="note">Каркас первой версии должен держать пять вещей: <strong>целостность состояния · контроль интеграций · устойчивость к отказам · самокоррекцию · эффективность.</strong></p>
+
+<table>
+  <tr><th class="gamma-hdr">Модель</th><th class="gamma-hdr">Что держит</th><th class="gamma-hdr">Механизм</th><th class="gamma-hdr">Источник в EvoGenesis</th></tr>
+  <tr>
+    <td><strong>Health model</strong></td>
+    <td>Состояние каждого узла: active / idle / degraded / failed / quarantined</td>
+    <td>Node state machine · observer polling · heartbeat check</td>
+    <td><code>tri_heartbeat.py · heartbeat_sync.py</code></td>
+  </tr>
+  <tr>
+    <td><strong>Sync model</strong></td>
+    <td>Состояние каждой интеграции: verified / pending / detached / conflict / stale</td>
+    <td>Registration → staging → verification pipeline</td>
+    <td><code>inter_arch_sync.py · auto_merge.py</code></td>
+  </tr>
+  <tr>
+    <td><strong>Recovery model</strong></td>
+    <td>Перезапуск · изоляция · откат плохой интеграции · восстановление маршрута</td>
+    <td>quarantine zone · rollback signal · safe-state restore</td>
+    <td><code>auto_merge.py · joint_sync.py</code></td>
+  </tr>
+  <tr>
+    <td><strong>Observer model</strong></td>
+    <td>Heartbeat · ошибки · drift · рассогласования · correction flows</td>
+    <td>Observer loop → γ-ledger → correction signal → runtime</td>
+    <td><code>tri_heartbeat.py · γ_Pyramid_Reflective/A_Observation/</code></td>
+  </tr>
+  <tr>
+    <td><strong>Efficiency model</strong></td>
+    <td>Поднимать только нужные модули · активировать нужные контексты по требованию</td>
+    <td>Lazy loading · focus context · demand activation</td>
+    <td><code>orchestrator.py · provider_matrix.py</code></td>
+  </tr>
+</table>
+
+<div class="card warn-card" style="margin-bottom:16px">
+  <h4>⚡ Что происходит при отказе узла</h4>
+  <p>Узел → <code>degraded</code> → маршрут перекидывается → контекст сохраняется → observer log → изоляция зоны → recovery signal → revalidation. Среда <strong>не рушится целиком</strong>.</p>
+</div>
+
+<hr>
+
+<!-- ═══════════ S12: INTEGRATION SOURCES ═══════════ -->
+<h2 class="sec" id="s12">12. Интеграционные источники из EvoGenesis <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 4</span></h2>
+<p class="note">Это не «исторический материал» — это <strong>реальные источники логики</strong>. Не обязательно переносить как есть. Рассматривается как источник подходов и паттернов.</p>
+
+<div class="grid2">
+  <div class="card alpha-card">
+    <h4>A. Циклы, обработка, коэволюция</h4>
+    <p><em>Даёт проекту метаболизм</em></p>
+    <ul>
+      <li><code>GLOBAL_NEXUS/pear_cycle.py</code></li>
+      <li><code>GLOBAL_NEXUS/pear_query.py</code></li>
+      <li><code>GLOBAL_NEXUS/reality_anchor.py</code></li>
+      <li><code>GLOBAL_NEXUS/reality_anchor.yaml</code></li>
+      <li><code>GLOBAL_NEXUS/auto_merge.py</code></li>
+      <li><code>GLOBAL_NEXUS/inter_arch_sync.py</code></li>
+      <li><code>GLOBAL_NEXUS/joint_sync.py</code></li>
+    </ul>
+    <p>→ обработка импульса · anchor · синтез · merge · канонизация</p>
+  </div>
+  <div class="card beta-card">
+    <h4>B. Оркестрация и провайдеры</h4>
+    <p><em>Runtime coordination layer</em></p>
+    <ul>
+      <li><code>GLOBAL_NEXUS/orchestrator.py</code></li>
+      <li><code>GLOBAL_NEXUS/provider_matrix.py</code></li>
+      <li><code>GLOBAL_NEXUS/nexus_bridge.py</code></li>
+      <li><code>GLOBAL_NEXUS/protocol_manifest.yaml</code></li>
+    </ul>
+    <p>→ orchestration layer · provider role mapping · bridge thinking</p>
+  </div>
+  <div class="card beta-card">
+    <h4>C. Session / Runtime / Request логика</h4>
+    <p><em>Контекстный и сессионный позвоночник</em></p>
+    <ul>
+      <li><code>GLOBAL_NEXUS/EVO_SESSION_BRIDGE.yaml</code></li>
+      <li><code>C_evo-gmini-os/specs/EVO_REQUEST.yaml</code></li>
+      <li><code>C_evo-gmini-os/core/worldstate.json</code></li>
+    </ul>
+    <p>→ session lifecycle · request formalization · world-state model</p>
+  </div>
+  <div class="card gamma-card">
+    <h4>D. Sync / Heartbeat / Self-correction</h4>
+    <p><em>Устойчивость среды</em></p>
+    <ul>
+      <li><code>GLOBAL_NEXUS/tri_heartbeat.py</code></li>
+      <li><code>GLOBAL_NEXUS/heartbeat_sync.py</code></li>
+    </ul>
+    <p>→ health model · node heartbeat · observer logic · recovery signals</p>
+  </div>
+  <div class="card stack-card">
+    <h4>E. Capability / Extension / Gateway</h4>
+    <p><em>Внешняя расширяемость</em></p>
+    <ul>
+      <li><code>GLOBAL_NEXUS/extensions/codex_capabilities.yaml</code></li>
+      <li><code>api/api_gateway.py</code></li>
+      <li><code>api/termux_bridge.py</code></li>
+    </ul>
+    <p>→ provider adapter layer · capability declarations · service gateway</p>
+  </div>
+  <div class="card">
+    <h4>F. Архитектурные карты</h4>
+    <p><em>Canon seed / documentation</em></p>
+    <ul>
+      <li><code>README.md</code></li>
+      <li><code>EVO_ARCH_MAP.yaml</code></li>
+      <li><code>EVO_SYNC_MANIFEST.yaml</code></li>
+    </ul>
+    <p>→ общая картография · начальная среда описания · canon seed</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- ═══════════ S13: ROADMAP ═══════════ -->
+<h2 class="sec road" id="s13">13. Дорожная карта первой реализации <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 4</span></h2>
+
+<div class="phases">
+  <div class="phase ph-a">
+    <h4>Phase A — Среда пирамиды</h4>
+    <ul>
+      <li>Базовая визуализация Z17</li>
+      <li>Узлы и уровни</li>
+      <li>Архитектурные summaries</li>
+      <li>Структурные сектора</li>
+      <li>Состояния узлов</li>
+      <li>Базовая интерактивность</li>
+    </ul>
+  </div>
+  <div class="phase ph-b">
+    <h4>Phase B — Каркас среды</h4>
+    <ul>
+      <li>Local state registry</li>
+      <li>Node state machine</li>
+      <li>Runtime status model</li>
+      <li>Observer / health model</li>
+      <li>Sync basis</li>
+      <li>Recovery / quarantine logic</li>
+    </ul>
+  </div>
+  <div class="phase ph-c">
+    <h4>Phase C — Agent + Provider</h4>
+    <ul>
+      <li>Роли агентов</li>
+      <li>Provider adapters</li>
+      <li>Agent communication protocol</li>
+      <li>Task transfer between agents</li>
+      <li>Artifact exchange</li>
+    </ul>
+  </div>
+  <div class="phase ph-d">
+    <h4>Phase D — Canon/Runtime Loop</h4>
+    <ul>
+      <li>Runtime / canon distinction</li>
+      <li>Canon candidates</li>
+      <li>Observer validation</li>
+      <li>Coevolution flow</li>
+      <li>PEAR orchestration</li>
+    </ul>
+  </div>
+  <div class="phase ph-e">
+    <h4>Phase E — Browser Shell</h4>
+    <ul>
+      <li>Internal browsing layer</li>
+      <li>Pinned service links</li>
+      <li>Account-bound service nodes</li>
+      <li>AI web-app integration</li>
+      <li>Contextual web routing</li>
+    </ul>
+  </div>
+</div>
+
+<h3 class="subsec">Обязательное ядро v1</h3>
+<div class="grid4" style="margin-top:12px">
+  <div class="card alpha-card"><h4>Z17 pyramid widget</h4><p class="tag tag-exists" style="display:inline-block">Phase A</p></div>
+  <div class="card alpha-card"><h4>Local desktop shell</h4><p class="tag tag-exists" style="display:inline-block">Phase A</p></div>
+  <div class="card beta-card"><h4>Runtime backbone</h4><p class="tag tag-partial" style="display:inline-block">Phase B</p></div>
+  <div class="card beta-card"><h4>State registry</h4><p class="tag tag-partial" style="display:inline-block">Phase B</p></div>
+  <div class="card beta-card"><h4>Agent comm. spine</h4><p class="tag tag-planned" style="display:inline-block">Phase C</p></div>
+  <div class="card beta-card"><h4>Provider adapter layer</h4><p class="tag tag-planned" style="display:inline-block">Phase C</p></div>
+  <div class="card gamma-card"><h4>Observer / sync basis</h4><p class="tag tag-planned" style="display:inline-block">Phase B–C</p></div>
+  <div class="card"><h4>Browser shell</h4><p class="tag tag-block" style="display:inline-block">Phase E — потом</p></div>
+</div>
+
+<hr>
+
+<!-- ═══════════ S14: NOT NOW ═══════════ -->
+<h2 class="sec" style="background:#455a64" id="s14">14. Что сознательно НЕ делается сейчас <span style="font-size:14px;font-weight:400;opacity:0.7">Часть 4</span></h2>
+
+<div class="grid3">
+  <div class="card warn-card"><h4>🚫 Не импортируем всё подряд</h4><p>Не строим музей. Из архивов берётся только то, что нужно для текущего этапа.</p></div>
+  <div class="card warn-card"><h4>🚫 Не заселяем пирамиду заранее</h4><p>Пирамида не должна быть набита сущностями только ради полноты.</p></div>
+  <div class="card warn-card"><h4>🚫 Не делаем полный AGI-runtime</h4><p>На этом этапе преждевременно.</p></div>
+  <div class="card warn-card"><h4>🚫 Не строим браузер сейчас</h4><p>Browser-shell — следующий этап после среды и agent layer.</p></div>
+  <div class="card warn-card"><h4>🚫 Не превращаем в набор AI-вкладок</h4><p>Внешние сервисы будут подчинены среде, а не наоборот.</p></div>
+  <div class="card warn-card"><h4>🚫 Не навешиваем все концепты разом</h4><p>Даже сильные идеи из архивов — вводятся по мере реальной необходимости.</p></div>
+</div>
+
+<hr>
+
+<!-- ═══════════ S15: OPEN QUESTIONS ═══════════ -->
+<h2 class="sec" style="background:#6a1b9a" id="s15">15. Открытые архитектурные вопросы <span style="font-size:14px;font-weight:400;opacity:0.7">→ Pyramid Core Model</span></h2>
+<table>
+  <tr><th>Вопрос</th><th>Суть</th><th>Артефакты</th><th>Что нужно решить</th></tr>
+  <tr>
+    <td><strong>αβγ ↔ Z17 схождение</strong></td>
+    <td>αβγ — директории EvoGenesis. Z17 — координатная сетка canon_builder. Формально не объединены.</td>
+    <td><code>EVO_ARCH_MAP.yaml</code> vs <code>canon_builder/models.py</code></td>
+    <td class="partial">α=Z15-17, β=Z7-13, γ=Z1-5 — вложены внутри Z17 ИЛИ существуют параллельно как filesystem + pyramid-view</td>
+  </tr>
+  <tr>
+    <td><strong>Сектора → роли αβγ маппинг</strong></td>
+    <td>В canon_builder: SPINE/PURPLE/RED/GOLD/GREEN. В EvoGenesis: tier Structural/Cognitive/Syntonic. Прямого маппинга нет.</td>
+    <td><code>canon_builder/models.py → class Sector</code></td>
+    <td class="planned">Создать <code>manifest.json</code> для каждого EvoGenesis-модуля с coords (x,y,z) и sector. Это встраивает его в пирамиду.</td>
+  </tr>
+  <tr>
+    <td><strong>ABC123 — что конкретно</strong></td>
+    <td>Зафиксирован в Части 2 как «сетка памяти». Прямой реализации нет ни в одном архиве.</td>
+    <td>Косвенно: <code>occupancy.json, link_passports.json</code></td>
+    <td class="planned">Уточнить: разметка виджета? Адресная схема узлов? Проекция на occupancy-сетку?</td>
+  </tr>
+  <tr>
+    <td><strong>Desktop shell — Electron vs Tauri</strong></td>
+    <td>Оба подходят. Решение открытое. Может повлиять на архитектуру local runtime bridge.</td>
+    <td><code>termux_stack / apps/cli/</code> как мобильный прецедент</td>
+    <td class="planned">Принять решение при старте Phase A. Логика среды одинакова — технический выбор второстепенен.</td>
+  </tr>
+  <tr>
+    <td><strong>Pyramid Core Model → реализация</strong></td>
+    <td>Схема узла определена. Нужна полная модель: что такое связь, переход, вложенность, правило валидности.</td>
+    <td>Узел схема → см. Раздел 8</td>
+    <td class="planned">Следующий документ: Pyramid Core Model spec — полная модель данных + правила хранения + validation rules.</td>
+  </tr>
+</table>
+
+<hr>
+<div class="footer">
+  EvoPyramid OS · Полная архитектурная карта v0.3 · Части 1–4<br>
+  Источники: EvoGenesis-Digital_Soul_initiative + EvoPyramid_OS archives · EVO_ARCH_MAP.yaml · EVO_SYNC_MANIFEST.yaml
+</div>
+
+</div>
+</body>
+</html>
