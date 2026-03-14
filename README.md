@@ -1,0 +1,95 @@
+﻿# EvoPyramid OS
+
+EvoPyramid OS is a local-first architecture workspace where the 3D pyramid view is synchronized with real project directories.
+
+## Source of Truth
+
+The canonical flow is:
+
+1. Directory + `.node_manifest.json`
+2. Core discovery (`/sync/discover-modules?update_existing=true`)
+3. Core state (`state/pyramid_state.json`)
+4. Live UI rendering (`evopyramid-v2`)
+
+This keeps visual nodes aligned with physical folders.
+
+## Repository Layout
+
+- `α_Pyramid_Core` (Z17-Z11): canon, intent, high-level governance
+- `β_Pyramid_Functional` (Z9-Z5): runtime operations, agents, interface
+- `γ_Pyramid_Reflective` (Z3-Z1): reflection, deploy checkpoints, archival memory
+- `evopyramid-v2`: React/Vite UI for 3D pyramid and session control
+- `state`: runtime state and architecture registries
+
+## Quick Start
+
+**Recommended (Python launcher — all-in-one, no console spam):**
+
+```powershell
+cd "C:\Users\Alex Bear\Desktop\EvoPyramid OS"
+python Nexus_Boot.py
+```
+
+**Legacy CMD launcher (still works):**
+
+```powershell
+cd "C:\Users\Alex Bear\Desktop\EvoPyramid OS"
+.\Launch_EvoPyramid.bat
+```
+
+Health checks:
+
+```powershell
+Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8000/state
+Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8001/health
+Invoke-WebRequest -UseBasicParsing http://127.0.0.1:3000
+```
+
+## Structure Sync
+
+Use update mode to keep existing node metadata and coordinates in sync with manifests:
+
+```powershell
+Invoke-RestMethod -Method Post "http://127.0.0.1:8000/sync/discover-modules?update_existing=true"
+```
+
+To also prune ghost nodes that no longer have a physical folder:
+
+```powershell
+Invoke-RestMethod -Method Post "http://127.0.0.1:8000/canon/guard/apply?update_existing=true&prune_missing=true"
+```
+
+> **Note:** Run this after deleting or renaming node folders to keep `pyramid_state.json` clean.
+
+## State Reset
+
+If `state/pyramid_state.json` contains stale or corrupt node paths (e.g. after folder renames),
+delete it and restart — Core Engine will re-seed from the filesystem on boot:
+
+```powershell
+Remove-Item state\pyramid_state.json -Force
+python Nexus_Boot.py
+```
+
+## Integration Docs
+
+- Z-service registry: `state/z_service_vertical.md`
+- Frontend/runtime guide: `evopyramid-v2/README.md`
+- CI workflow: `.github/workflows/evopyramid-ci.yml`
+- Secrets checklist: `.github/SECRETS_CHECKLIST.md`
+
+## Known Issues & Fixes Applied
+
+| Issue | Fix |
+| --- | --- |
+| `WebSocketDisconnect` 500 on `/sync/discover-modules` | `ConnectionManager.broadcast` now silently drops dead sockets |
+| Mojibake paths (`ОІ_Pyramid_Functional`) in state | Delete `pyramid_state.json` and let Core Engine re-discover |
+| `subprocess.CREATE_NEW_CONSOLE` not found | Removed from `Nexus_Boot.py`; use standard `Popen` |
+| Duplicate node folders (`13_EVO_BRIDGE`, `9_tmp_layer_check`) | Deleted; registry pruned via canon guard |
+| `node.dict()` deprecation warnings (Pydantic v2) | Replaced with `node.model_dump()` |
+
+## Gemini Quota Troubleshooting
+
+- If Session Registry receives `429 quota exceeded`, it emits a compact `[SYSTEM QUOTA]` assistant message and moves the session to `WAITING`.
+- If the payload contains `limit: 0`, quota is effectively disabled for the current Gemini project/key (not just a short burst limit).
+- Fix path: enable billing/quota in Google AI Studio for that key/project, then retry.

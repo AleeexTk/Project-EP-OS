@@ -1,0 +1,100 @@
+import os
+import json
+import logging
+from pathlib import Path
+
+# --- CONFIG ---
+ROOT_DIR = Path(__file__).resolve().parents[2]
+STATE_FILE = ROOT_DIR / "state" / "pyramid_state.json"
+
+class RealityMonitor:
+    """
+    Reflective Layer: Monitors synchronization between the Memory (state) 
+    and the Physical Manifestation (files).
+    """
+
+    @staticmethod
+    def check_integrity():
+        issues: list[str] = []
+        report = {
+            "status": "HEALTHY",
+            "issues": issues,
+            "stats": {
+                "nodes_in_state": 0,
+                "nodes_on_disk": 0,
+                "orphaned_folders": 0,
+                "missing_folders": 0
+            }
+        }
+
+        # 1. Load State
+        if not STATE_FILE.exists():
+            report["status"] = "DEGRADED"
+            report["issues"].append("pyramid_state.json missing.")
+            return report
+
+        try:
+            with open(STATE_FILE, "r", encoding='utf-8') as f:
+                state = json.load(f)
+        except Exception as e:
+            report["status"] = "ERROR"
+            report["issues"].append(f"Failed to parse state: {e}")
+            return report
+
+        nodes = state.get("nodes", {})
+        report["stats"]["nodes_in_state"] = len(nodes)
+
+        # 2. Check Folders
+        layer_patterns = ["α_Pyramid_Core", "β_Pyramid_Functional", "γ_Pyramid_Reflective"]
+        disk_node_dirs = []
+        for lp in layer_patterns:
+            layer_path = ROOT_DIR / lp
+            if layer_path.exists():
+                # Scan all subfolders that look like nodes (e.g. Z-Level prefixes or specific sector folders)
+                for root, dirs, files in os.walk(layer_path):
+                    if ".node_manifest.json" in files:
+                        disk_node_dirs.append(Path(root))
+
+        report["stats"]["nodes_on_disk"] = len(disk_node_dirs)
+
+        # 3. Cross-Reference
+        state_ids = set(nodes.keys())
+        
+        # Verify if state nodes have disk folders
+        for node_id, node_data in nodes.items():
+            # Minimal check: does any folder contain a manifest with this ID?
+            found = False
+            for d in disk_node_dirs:
+                manifest_path = d / ".node_manifest.json"
+                try:
+                    with open(manifest_path, "r", encoding='utf-8') as mf:
+                        m_data = json.load(mf)
+                        if m_data.get("id") == node_id:
+                            found = True
+                            break
+                except:
+                    continue
+            
+            if not found:
+                report["stats"]["missing_folders"] += 1
+                report["issues"].append(f"Node '{node_id}' ({node_data.get('title')}) has no folder on disk.")
+
+        if report["issues"]:
+            report["status"] = "DEGRADED"
+
+        return report
+
+def run_self_heal():
+    """Attempt to fix common structural entropy."""
+    monitor = RealityMonitor()
+    report = monitor.check_integrity()
+    
+    if report["status"] != "HEALTHY":
+        print(f"[HEALER] Issues detected: {len(report['issues'])}")
+        # Add logic here to touch missing __init__.py files or regenerate broken manifests
+        pass
+
+if __name__ == "__main__":
+    monitor = RealityMonitor()
+    result = monitor.check_integrity()
+    print(json.dumps(result, indent=2))

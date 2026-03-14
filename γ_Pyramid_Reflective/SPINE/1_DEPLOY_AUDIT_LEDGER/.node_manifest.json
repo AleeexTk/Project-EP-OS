@@ -1,0 +1,17 @@
+{
+  "id": "deploy_audit_ledger",
+  "title": "Deploy Audit Ledger",
+  "z_level": 1,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 9, "z": 1 },
+  "layer_type": "gamma",
+  "kind": "memory",
+  "summary": "Persistent release trail and post-deploy coherence notes.",
+  "state": "active",
+  "links": [],
+  "metadata": {
+    "service": "deploy-audit",
+    "owner": "integrations",
+    "z_vertical": "continuity"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "gen-dashboard",
+  "title": "EVO DASHBOARD",
+  "z_level": 5,
+  "sector": "SPINE",
+  "coords": {
+    "x": 9,
+    "y": 9,
+    "z": 5
+  },
+  "layer_type": "beta",
+  "kind": "service",
+  "summary": "Operator view and assistant workspace",
+  "state": "active",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [],
+  "children": [],
+  "source_refs": [],
+  "metadata": {},
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "layer_folder": "\u03b2_Pyramid_Functional"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "gen-nexus",
+  "title": "GLOBAL NEXUS",
+  "z_level": 17,
+  "sector": "SPINE",
+  "coords": {
+    "x": 9,
+    "y": 9,
+    "z": 17
+  },
+  "layer_type": "alpha",
+  "kind": "service",
+  "summary": "Automated manifestation of GLOBAL NEXUS",
+  "state": "failed",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [],
+  "children": [],
+  "source_refs": [],
+  "metadata": {
+    "source": "filesystem-discovery",
+    "path": "\u03b1_Pyramid_Core/SPINE/17_GLOBAL_NEXUS",
+    "layer_folder": "\u03b1_Pyramid_Core"
+  },
+  "layer_folder": "\u03b1_Pyramid_Core"
+}

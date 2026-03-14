@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "EvoPyramid OS - Nexus Link",
+  "version": "1.0",
+  "description": "Fail-safe offline-capable link between EvoPyramid OS and Web AI models.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "alarms"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "https://chatgpt.com/*",
+    "https://grok.com/*",
+    "https://*.anthropic.com/*",
+    "https://docs.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://grok.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "EvoPyramid Nexus"
+  }
+}

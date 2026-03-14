@@ -1,0 +1,17 @@
+{
+  "id": "openai_docs_hub",
+  "title": "OpenAI Docs Hub",
+  "z_level": 15,
+  "sector": "PURPLE",
+  "coords": { "x": 10, "y": 9, "z": 15 },
+  "layer_type": "alpha",
+  "kind": "protocol",
+  "summary": "Primary documentation oracle for API/schema decisions and upgrade guidance.",
+  "state": "active",
+  "links": ["gh_ci_guardian", "chatgpt_apps_bridge"],
+  "metadata": {
+    "service": "openai-docs",
+    "owner": "integrations",
+    "z_vertical": "external-knowledge"
+  }
+}

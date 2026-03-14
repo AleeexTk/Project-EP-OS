@@ -1,0 +1,670 @@
+{
+  "sessions": {
+    "sess_f4793792": {
+      "id": "sess_f4793792",
+      "node_id": "8-9-13",
+      "node_z": 8,
+      "node_sector": "empty",
+      "provider": "gemini",
+      "account_hint": "aleeexzp@gmail.com",
+      "model_hint": null,
+      "task_title": "Create & Bind",
+      "task_context": null,
+      "status": "active",
+      "created_at": "2026-03-09T15:44:25.722299+00:00",
+      "updated_at": "2026-03-09T15:44:25.722323+00:00",
+      "messages": [],
+      "external_url": null
+    },
+    "sess_1b75d8dd": {
+      "id": "sess_1b75d8dd",
+      "node_id": "8-9-13",
+      "node_z": 8,
+      "node_sector": "empty",
+      "provider": "gemini",
+      "account_hint": "aleeexzp@gmail.com",
+      "model_hint": null,
+      "task_title": "Create & Bind",
+      "task_context": null,
+      "status": "active",
+      "created_at": "2026-03-09T15:45:18.296929+00:00",
+      "updated_at": "2026-03-12T15:47:11.958420+00:00",
+      "messages": [
+        {
+          "id": "109c4a1a-12bd-4098-afb5-88f8a774c330",
+          "role": "user",
+          "content": "Привет",
+          "ts": "2026-03-09T15:45:28.941037+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "fe5126fb-bc87-4299-ae2a-2e8f7b243ef0",
+          "role": "assistant",
+          "content": "[SYSTEM DEBUG] GEMINI_API_KEY not found. Static simulation only node 8-9-13 (Z8).",
+          "ts": "2026-03-09T15:45:29.453950+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "8e52fd1f-a71a-4982-9594-c519d125d191",
+          "role": "user",
+          "content": "Привет",
+          "ts": "2026-03-12T15:47:11.239982+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "b09b1c87-687f-408b-84bc-ff9714cb24a3",
+          "role": "assistant",
+          "content": "⚠ AI Orchestration Error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 47.42299904s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\"\n  quota_id: \"GenerateContentInputTokensPerModelPerMinute-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\nviolations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\nviolations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\n, retry_delay {\n  seconds: 47\n}\n]",
+          "ts": "2026-03-12T15:47:11.958401+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_afe574b4": {
+      "id": "sess_afe574b4",
+      "node_id": "memory_core",
+      "node_z": 13,
+      "node_sector": "purple",
+      "provider": "gemini",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Status node",
+      "task_context": null,
+      "status": "active",
+      "created_at": "2026-03-09T18:36:42.711111+00:00",
+      "updated_at": "2026-03-09T18:36:50.341663+00:00",
+      "messages": [
+        {
+          "id": "f1a02fd5-3c0a-450f-bfeb-86e87d01d66e",
+          "role": "user",
+          "content": "Привет",
+          "ts": "2026-03-09T18:36:49.830577+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "f15e8ae2-2bda-43f3-a255-e70493222d42",
+          "role": "assistant",
+          "content": "[SYSTEM DEBUG] GEMINI_API_KEY not found. Static simulation only node memory_core (Z13).",
+          "ts": "2026-03-09T18:36:50.341650+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_b3fabe69": {
+      "id": "sess_b3fabe69",
+      "node_id": "apex_core",
+      "node_z": 17,
+      "node_sector": "spine",
+      "provider": "gemini",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Status",
+      "task_context": null,
+      "status": "active",
+      "created_at": "2026-03-10T01:55:07.653594+00:00",
+      "updated_at": "2026-03-10T01:55:17.516468+00:00",
+      "messages": [
+        {
+          "id": "8fa38d4c-7903-4bb8-9240-ef5227a57874",
+          "role": "user",
+          "content": "Приветє",
+          "ts": "2026-03-10T01:55:16.645881+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "19caea4a-32b4-4d7b-96b2-085a2de05c48",
+          "role": "assistant",
+          "content": "⚠ AI Orchestration Error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+          "ts": "2026-03-10T01:55:17.516452+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_1b9451e0": {
+      "id": "sess_1b9451e0",
+      "node_id": "pear_seed",
+      "node_z": 13,
+      "node_sector": "spine",
+      "provider": "gemini",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "z13 status",
+      "task_context": null,
+      "status": "waiting",
+      "created_at": "2026-03-10T05:02:19.469693+00:00",
+      "updated_at": "2026-03-12T20:22:35.570353+00:00",
+      "messages": [
+        {
+          "id": "200e6958-7ed8-4364-9f67-cc8762e49ee5",
+          "role": "assistant",
+          "content": "[AUTORUN FAILED]\nNode pear_seed not found on disk",
+          "ts": "2026-03-10T05:02:23.190503+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "ca30c67b-de0f-4b78-8f0a-79db34695c49",
+          "role": "user",
+          "content": "еще раз",
+          "ts": "2026-03-12T20:22:33.789478+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "ff17da8b-d6c0-49db-8a2c-307c251e73d2",
+          "role": "assistant",
+          "content": "[SYSTEM QUOTA] Gemini API quota is disabled for this project (limit=0). Session moved to WAITING for 300s. Enable billing/quota in Google AI Studio for this key/project, then retry. Use 'Open' to continue externally (GEMINI).",
+          "ts": "2026-03-12T20:22:35.567799+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_2fe75883": {
+      "id": "sess_2fe75883",
+      "node_id": "pear_seed",
+      "node_z": 13,
+      "node_sector": "spine",
+      "provider": "gemini",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "healthcheck",
+      "task_context": "sanity test",
+      "status": "active",
+      "created_at": "2026-03-11T00:22:15.068453+00:00",
+      "updated_at": "2026-03-12T15:46:13.499132+00:00",
+      "messages": [
+        {
+          "id": "8e84c487-9c12-4c32-a28e-c4071c24bef6",
+          "role": "user",
+          "content": "ping",
+          "ts": "2026-03-11T00:22:15.105003+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "912691a5-fb60-4017-a985-18e1c00cf85f",
+          "role": "assistant",
+          "content": "⚠ AI Orchestration Error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+          "ts": "2026-03-11T00:22:15.939762+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "fe5c354e-701f-4ed3-abe3-cdd89a8e82a5",
+          "role": "user",
+          "content": "ping",
+          "ts": "2026-03-12T15:46:12.412341+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "7a6c35ae-54a2-4a9f-8844-50b4f9abb86e",
+          "role": "assistant",
+          "content": "⚠ AI Orchestration Error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\nPlease retry in 45.954469373s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\nviolations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\nviolations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\"\n  quota_id: \"GenerateContentInputTokensPerModelPerMinute-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\n, retry_delay {\n  seconds: 45\n}\n]",
+          "ts": "2026-03-12T15:46:13.499117+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_fff86981": {
+      "id": "sess_fff86981",
+      "node_id": "ollama_node",
+      "node_z": 9,
+      "node_sector": "GREEN",
+      "provider": "ollama",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Local Ollama test",
+      "task_context": "Verify local free AI integration",
+      "status": "active",
+      "created_at": "2026-03-12T20:01:19.041020+00:00",
+      "updated_at": "2026-03-12T20:01:19.140856+00:00",
+      "messages": [
+        {
+          "id": "a3ffff5c-4656-407f-b10e-4c3d47fbe034",
+          "role": "user",
+          "content": "?????? ????? ??????: ????????? Ollama ?????????.",
+          "ts": "2026-03-12T20:01:19.140846+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_66567456": {
+      "id": "sess_66567456",
+      "node_id": "ollama_node",
+      "node_z": 9,
+      "node_sector": "GREEN",
+      "provider": "ollama",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Local Ollama test 2",
+      "task_context": "Verify local free AI integration",
+      "status": "active",
+      "created_at": "2026-03-12T20:02:07.987069+00:00",
+      "updated_at": "2026-03-12T20:02:08.251479+00:00",
+      "messages": [
+        {
+          "id": "ec82f3e0-d911-46eb-a3b5-190a3046d388",
+          "role": "user",
+          "content": "Reply in one sentence: local Ollama is connected.",
+          "ts": "2026-03-12T20:02:08.251461+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_1857bcf6": {
+      "id": "sess_1857bcf6",
+      "node_id": "ollama_node",
+      "node_z": 9,
+      "node_sector": "GREEN",
+      "provider": "ollama",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Local Ollama test 3",
+      "task_context": "Verify local free AI integration",
+      "status": "active",
+      "created_at": "2026-03-12T20:03:23.059022+00:00",
+      "updated_at": "2026-03-12T20:09:16.190855+00:00",
+      "messages": [
+        {
+          "id": "9168e018-7676-48bb-a05d-f6a1e01c21ef",
+          "role": "user",
+          "content": "Reply in one sentence: local Ollama is connected.",
+          "ts": "2026-03-12T20:03:23.304687+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "fe85d637-2a15-472b-b833-6eba1d2efe3c",
+          "role": "assistant",
+          "content": "Local Ollama node integration status: Connected.",
+          "ts": "2026-03-12T20:03:25.861081+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "e07fe86c-2468-4c2a-86bb-de1eea31f913",
+          "role": "user",
+          "content": "Общий статус",
+          "ts": "2026-03-12T20:06:34.645949+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "6ce48cf9-ebb2-42a7-afac-b8094f15ce79",
+          "role": "assistant",
+          "content": "Integration status for AI on local Ollama node: Connected.",
+          "ts": "2026-03-12T20:06:53.265482+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "49dc0636-f45a-4569-938d-9a71100da90a",
+          "role": "user",
+          "content": "+",
+          "ts": "2026-03-12T20:08:43.550635+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "2a51140f-8c60-471b-910e-b329795f61df",
+          "role": "assistant",
+          "content": "Integration status for AI on ollama_node at Z-Level 9: Connected.",
+          "ts": "2026-03-12T20:08:54.419588+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "df513386-3de8-4381-865e-8d7139f748d5",
+          "role": "user",
+          "content": "+",
+          "ts": "2026-03-12T20:09:03.978808+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "c6acf928-47da-48d0-886a-5f49f8857378",
+          "role": "assistant",
+          "content": "Integration status for AI on ollama_node at Z-Level 9: Connected.",
+          "ts": "2026-03-12T20:09:16.190842+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_dc736788": {
+      "id": "sess_dc736788",
+      "node_id": "gen-meta",
+      "node_z": 15,
+      "node_sector": "purple",
+      "provider": "ollama",
+      "account_hint": "aleeexzp@gmail.com",
+      "model_hint": null,
+      "task_title": "Статус",
+      "task_context": null,
+      "status": "active",
+      "created_at": "2026-03-12T20:10:26.154927+00:00",
+      "updated_at": "2026-03-12T20:21:07.193998+00:00",
+      "messages": [
+        {
+          "id": "647326e1-f6c1-4826-bfa5-c4c2e345f06d",
+          "role": "user",
+          "content": "Hfccrf;b j ct,t",
+          "ts": "2026-03-12T20:10:38.304267+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "37fd1327-5e0b-41e1-a957-4b9409499167",
+          "role": "user",
+          "content": "Расскажи о себе",
+          "ts": "2026-03-12T20:10:44.667091+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "1ae4f9f4-6925-4c0b-8ed3-ab74c0d1dce4",
+          "role": "assistant",
+          "content": "[SYSTEM OLLAMA] timed out",
+          "ts": "2026-03-12T20:12:08.855209+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "2a015480-0779-4c03-b87c-204f3f3377c2",
+          "role": "assistant",
+          "content": "[SYSTEM OLLAMA] timed out",
+          "ts": "2026-03-12T20:12:15.177166+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "0345e8bf-265f-455c-92d4-4393af4df7bb",
+          "role": "user",
+          "content": "Расскажи о себе",
+          "ts": "2026-03-12T20:19:36.660807+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "a406116c-03a1-4e43-b496-a412e7bda25e",
+          "role": "assistant",
+          "content": "[SYSTEM OLLAMA] timed out",
+          "ts": "2026-03-12T20:21:07.193972+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_0b3b5d0e": {
+      "id": "sess_0b3b5d0e",
+      "node_id": "alexcreator_navigator",
+      "node_z": 17,
+      "node_sector": "SPINE",
+      "provider": "ollama",
+      "account_hint": null,
+      "model_hint": "llama3.2:3b",
+      "task_title": "AlexCreator Navigator",
+      "task_context": "Navigator smoke test",
+      "status": "active",
+      "created_at": "2026-03-12T20:32:22.642107+00:00",
+      "updated_at": "2026-03-12T20:32:23.241887+00:00",
+      "messages": [
+        {
+          "id": "b5729422-67d3-44c9-8fc3-80c864a40d6a",
+          "role": "user",
+          "content": "Reply exactly: navigator-ok",
+          "ts": "2026-03-12T20:32:22.675563+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "6d58e89c-0821-406e-a0af-18835c5431c0",
+          "role": "assistant",
+          "content": "[SYSTEM OLLAMA] Ollama HTTP 404 on /api/generate: {\"error\":\"model 'llama3.2:3b' not found\"}",
+          "ts": "2026-03-12T20:32:23.241876+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_cec939b4": {
+      "id": "sess_cec939b4",
+      "node_id": "alexcreator_navigator",
+      "node_z": 17,
+      "node_sector": "SPINE",
+      "provider": "ollama",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "AlexCreator Navigator",
+      "task_context": "Navigator smoke no model_hint",
+      "status": "active",
+      "created_at": "2026-03-12T20:33:45.180506+00:00",
+      "updated_at": "2026-03-12T20:34:19.967830+00:00",
+      "messages": [
+        {
+          "id": "e909c2be-d936-416d-884e-dbe3864f0a50",
+          "role": "user",
+          "content": "Reply exactly: navigator-ok",
+          "ts": "2026-03-12T20:33:45.276083+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "f23fbd0e-8874-4991-aadd-2ffa079c08be",
+          "role": "assistant",
+          "content": "Navigator-OK, I am functioning as expected on NODE: 'alexcreator_navigator' at Z-LEVEL: 17. I am not currently utilizing a model hint. My primary duty is to navigate through the EvoPyramid OS architecture and provide efficient routes for data and resource allocation. I am ready for further commands or instructions.",
+          "ts": "2026-03-12T20:34:19.967810+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": null
+    },
+    "sess_27b80d9a": {
+      "id": "sess_27b80d9a",
+      "node_id": "manual_browser_link",
+      "node_z": 9,
+      "node_sector": "GREEN",
+      "provider": "gpt",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Attached Browser Session",
+      "task_context": "Manual linked chat",
+      "status": "waiting",
+      "created_at": "2026-03-12T20:59:27.125193+00:00",
+      "updated_at": "2026-03-12T21:20:49.429830+00:00",
+      "messages": [
+        {
+          "id": "3e627510-0b23-451d-88ae-d22cf83bd94c",
+          "role": "user",
+          "content": "привет",
+          "ts": "2026-03-12T21:20:48.316111+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "be8059b6-55ca-42ff-a482-7d9d951bde30",
+          "role": "assistant",
+          "content": "[SYSTEM QUOTA] Gemini API quota is disabled for this project (limit=0). Session moved to WAITING for 300s. Enable billing/quota in Google AI Studio for this key/project, then retry. Use 'Open' to continue externally (GPT).",
+          "ts": "2026-03-12T21:20:49.425665+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": "https://chatgpt.com/c/69b32791-7da4-8387-928e-2913ec886f08"
+    },
+    "sess_97c12c09": {
+      "id": "sess_97c12c09",
+      "node_id": "chatgpt_apps_bridge",
+      "node_z": 7,
+      "node_sector": "spine",
+      "provider": "gemini",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Test",
+      "task_context": null,
+      "status": "active",
+      "created_at": "2026-03-12T21:20:30.371725+00:00",
+      "updated_at": "2026-03-14T18:48:00.904201+00:00",
+      "messages": [
+        {
+          "id": "d72d1a7f-bc8f-43a7-bf3b-d23bd3bc1ca2",
+          "role": "user",
+          "content": "help",
+          "ts": "2026-03-13T07:07:27.506943+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "053f8a01-ff99-4a97-8ce7-ae81aca361c0",
+          "role": "assistant",
+          "content": "[SYSTEM LINKED] This session is attached to an external browser chat. Use 'Open' to continue directly there. Local bridge unavailable: Ollama HTTP 500 on /api/generate: {\"error\":\"model requires more system memory (8.0 GiB) than is available (4.3 GiB)\"}",
+          "ts": "2026-03-13T07:07:28.766222+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "873cf028-66c6-4c76-9685-24210693be0c",
+          "role": "user",
+          "content": "Чего?",
+          "ts": "2026-03-13T20:46:21.592852+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "4069684e-c8d6-4f0e-adef-3963bb3b54d4",
+          "role": "assistant",
+          "content": "As a GEMINI agent bound to NODE 'chatgpt\\_apps\\_bridge' at Z-LEVEL 7, my primary function is to facilitate communication and coordination between various applications running on the EvoPyramid OS. This includes managing application data, ensuring efficient resource allocation, and maintaining the integrity of the system architecture. On this specific node, my duties are focused on bridging the connection between the user and various chat applications, providing seamless interaction and data exchange.",
+          "ts": "2026-03-13T20:47:35.487778+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "29860f6d-1350-459e-be4d-4897076cfe82",
+          "role": "user",
+          "content": "Я не понимаю английский",
+          "ts": "2026-03-13T21:13:24.957529+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "8e23198b-22e3-4802-87b5-4e07997e41b7",
+          "role": "assistant",
+          "content": "[SYSTEM LINKED] This session is attached to an external browser chat. Use 'Open' to continue directly there. Local bridge unavailable: timed out",
+          "ts": "2026-03-13T21:14:55.520941+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "4129daf3-00f5-416b-9903-c7870d677d99",
+          "role": "user",
+          "content": "Я не понимаю английский",
+          "ts": "2026-03-14T18:46:30.218307+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "86fedf1e-1891-405a-9a6d-963741e5f1f9",
+          "role": "assistant",
+          "content": "[SYSTEM LINKED] This session is attached to an external browser chat. Use 'Open' to continue directly there. Local bridge unavailable: timed out",
+          "ts": "2026-03-14T18:48:00.904163+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": "https://chatgpt.com/c/69b32791-7da4-8387-928e-2913ec886f08"
+    },
+    "sess_69ac36d7": {
+      "id": "sess_69ac36d7",
+      "node_id": "test_linked",
+      "node_z": 7,
+      "node_sector": "SPINE",
+      "provider": "gpt",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Attached Browser Session",
+      "task_context": "Manual linked chat",
+      "status": "active",
+      "created_at": "2026-03-12T21:27:31.560882+00:00",
+      "updated_at": "2026-03-12T21:27:31.660252+00:00",
+      "messages": [
+        {
+          "id": "789874fa-9ae9-4872-a3a2-f2f3a276d4e8",
+          "role": "user",
+          "content": "hello from attached session",
+          "ts": "2026-03-12T21:27:31.660242+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": "https://chatgpt.com/c/test"
+    },
+    "sess_404d08f1": {
+      "id": "sess_404d08f1",
+      "node_id": "test_policy",
+      "node_z": 7,
+      "node_sector": "SPINE",
+      "provider": "gpt",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Attached Browser Session",
+      "task_context": "Manual linked chat",
+      "status": "active",
+      "created_at": "2026-03-12T22:09:44.373794+00:00",
+      "updated_at": "2026-03-12T22:15:32.821076+00:00",
+      "messages": [
+        {
+          "id": "891aaabc-f429-42b7-9bff-d461bdbe7d7e",
+          "role": "user",
+          "content": "+",
+          "ts": "2026-03-12T22:14:02.167179+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "f656d992-775f-40be-910c-c354f3120e9b",
+          "role": "assistant",
+          "content": "[SYSTEM LINKED] This session is attached to an external browser chat. Use 'Open' to continue directly there. Local bridge unavailable: timed out",
+          "ts": "2026-03-12T22:15:32.820998+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": "https://chatgpt.com/c/test"
+    },
+    "sess_8dccaeb4": {
+      "id": "sess_8dccaeb4",
+      "node_id": "test_interface_validation",
+      "node_z": 7,
+      "node_sector": "SPINE",
+      "provider": "gpt",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Attached Browser Session",
+      "task_context": "Interface validation run",
+      "status": "active",
+      "created_at": "2026-03-12T22:19:51.633551+00:00",
+      "updated_at": "2026-03-13T01:14:09.696282+00:00",
+      "messages": [
+        {
+          "id": "e9f4e8ac-7d76-4cd7-880c-c179be0b957b",
+          "role": "user",
+          "content": "healthcheck ping",
+          "ts": "2026-03-12T22:19:51.659559+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "0d47aa93-0a89-41ab-a6ac-fbc6a96d9dfd",
+          "role": "assistant",
+          "content": "The 'healthcheck ping' function in the EvoPyramid OS is designed to verify the operational status of a specific node, in this case, NODE: 'test_interface_validation' at Z-LEVEL: 7. The function sends a signal to the node and awaits a response, indicating whether the node is functioning correctly and accepting tasks. This helps in maintaining a smooth flow of tasks within the EvoPyramid OS architecture. The node 'test_interface_validation' is responsible for validating interfaces and ensuring they adhere to the established system standards, contributing to the overall efficiency and reliability of the system.",
+          "ts": "2026-03-12T22:20:39.954641+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "ae9ef446-bdd5-4e0f-aeaa-44dff0e7b79e",
+          "role": "user",
+          "content": "привет",
+          "ts": "2026-03-13T01:01:58.973677+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "6ed98ebd-9b5b-412b-8744-a72d3511571e",
+          "role": "assistant",
+          "content": "[SYSTEM LINKED] This session is attached to an external browser chat. Use 'Open' to continue directly there. Local bridge unavailable: timed out",
+          "ts": "2026-03-13T01:03:29.675960+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "912417b3-efb7-4443-bd3d-e45117a5df4b",
+          "role": "user",
+          "content": "help",
+          "ts": "2026-03-13T01:12:39.148066+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "475d4fe7-f726-4da5-8865-f1c558343a8e",
+          "role": "assistant",
+          "content": "[SYSTEM LINKED] This session is attached to an external browser chat. Use 'Open' to continue directly there. Local bridge unavailable: timed out",
+          "ts": "2026-03-13T01:14:09.696220+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": "https://chatgpt.com/c/test-interface-validation"
+    }
+  }
+}

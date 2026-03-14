@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "chrome",
+            "name": "http://PROVOCATEUR",
+            "request": "launch",
+            "url": "http://PROVOCATEUR"
+        }
+    ]
+}

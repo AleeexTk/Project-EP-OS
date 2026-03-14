@@ -1,0 +1,169 @@
+2026-03-11 01:27:52,384 [ERROR] Manifestation error: 'charmap' codec can't encode character '\u03b2' in position 46: character maps to <undefined>
+2026-03-11 01:31:58,063 [ERROR] Manifestation error: 'charmap' codec can't encode character '\u03b1' in position 39: character maps to <undefined>
+2026-03-11 01:31:58,064 [ERROR] Failed to manifest node: 'charmap' codec can't encode character '\u03b1' in position 39: character maps to <undefined>
+2026-03-11 01:31:58,072 [ERROR] Manifestation error: 'charmap' codec can't encode character '\u03b2' in position 44: character maps to <undefined>
+2026-03-11 01:31:58,072 [ERROR] Failed to manifest node: 'charmap' codec can't encode character '\u03b2' in position 44: character maps to <undefined>
+2026-03-11 01:31:58,084 [ERROR] Manifestation error: 'charmap' codec can't encode character '\u03b1' in position 41: character maps to <undefined>
+2026-03-11 01:31:58,084 [ERROR] Failed to manifest node: 'charmap' codec can't encode character '\u03b1' in position 41: character maps to <undefined>
+2026-03-11 01:31:58,094 [ERROR] Manifestation error: 'charmap' codec can't encode character '\u03b1' in position 40: character maps to <undefined>
+2026-03-11 01:31:58,094 [ERROR] Failed to manifest node: 'charmap' codec can't encode character '\u03b1' in position 40: character maps to <undefined>
+2026-03-11 01:31:58,107 [ERROR] Manifestation error: 'charmap' codec can't encode character '\u03b2' in position 47: character maps to <undefined>
+2026-03-11 01:31:58,107 [ERROR] Failed to manifest node: 'charmap' codec can't encode character '\u03b2' in position 47: character maps to <undefined>
+2026-03-11 01:31:58,114 [ERROR] Manifestation error: 'charmap' codec can't encode character '\u03b2' in position 43: character maps to <undefined>
+2026-03-11 01:31:58,114 [ERROR] Failed to manifest node: 'charmap' codec can't encode character '\u03b2' in position 43: character maps to <undefined>
+2026-03-11 01:32:11,129 [ERROR] Anchor Pulse Error: Cannot call "send" once a close message has been sent.
+2026-03-11 02:02:54,300 [ERROR] Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Users\Alex Bear\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Alex Bear\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2026-03-11 02:02:54,304 [ERROR] Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Users\Alex Bear\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Alex Bear\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2026-03-11 03:01:48,711 [INFO] Bootstrap from structure completed: added=8 scanned_dirs=8
+2026-03-11 03:11:39,596 [INFO] Bootstrap from structure completed: added=8 scanned_dirs=8
+2026-03-11 03:38:11,499 [INFO] Bootstrap from structure completed: added=6 scanned_dirs=14
+2026-03-12 17:45:30,626 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 17:49:00,176 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 18:11:21,860 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 18:53:24,365 [ERROR] Anchor Pulse Error: Cannot call "send" once a close message has been sent.
+2026-03-12 20:20:51,483 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 20:23:28,819 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 20:34:31,373 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 22:05:52,495 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 22:35:49,281 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=14
+2026-03-12 23:04:32,128 [INFO] Bootstrap from structure completed: added=15 scanned_dirs=16
+2026-03-12 23:12:25,047 [INFO] Bootstrap from structure completed: added=15 scanned_dirs=16
+2026-03-13 00:12:15,722 [INFO] Bootstrap from structure completed: added=15 scanned_dirs=16
+2026-03-13 00:13:14,415 [INFO] Bootstrap from structure completed: added=15 scanned_dirs=16
+2026-03-13 00:16:40,945 [INFO] Bootstrap from structure completed: added=15 scanned_dirs=16
+2026-03-13 01:59:42,078 [INFO] Bootstrap from structure completed: added=15 scanned_dirs=16
+2026-03-13 02:44:28,546 [INFO] Bootstrap from structure completed: added=15 scanned_dirs=16
+2026-03-13 04:31:04,995 [INFO] Bootstrap from structure completed: added=14 scanned_dirs=15
+2026-03-14 13:48:11,259 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 13:51:28,309 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 13:51:28,310 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 13:51:28,310 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 13:52:29,480 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 13:52:29,481 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 13:52:29,481 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 13:57:32,213 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 13:57:32,213 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:02:33,501 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:02:33,502 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:07:33,512 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:07:33,513 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:12:33,519 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:12:33,519 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:17:36,084 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:17:36,084 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:22:36,090 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:22:36,091 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:27:36,106 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:27:36,107 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:32:36,119 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:32:36,120 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:37:36,131 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:37:36,131 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:42:36,143 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:42:36,143 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:47:36,146 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:47:36,146 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:52:39,794 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:52:39,794 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 14:57:39,808 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 14:57:39,809 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:02:42,829 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:02:42,830 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:07:42,841 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:07:42,841 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:12:42,851 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:12:42,852 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:17:42,859 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:17:42,859 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:22:42,868 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:22:42,868 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:27:47,627 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:27:47,627 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:32:47,631 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:32:47,631 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:37:47,636 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:37:47,637 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:42:47,867 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:42:47,868 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:47:48,154 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:47:48,154 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:52:48,530 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:52:48,530 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 15:57:48,537 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 15:57:48,537 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:02:48,551 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:02:48,552 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:07:48,561 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:07:48,562 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:12:48,564 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:12:48,564 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:17:48,580 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:17:48,581 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:22:48,586 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:22:48,586 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:27:48,596 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:27:48,596 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:32:48,600 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:32:48,600 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:37:49,034 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:37:49,034 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:42:49,043 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:42:49,043 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:47:49,078 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:47:49,079 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:52:49,090 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:52:49,091 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 16:57:49,101 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 16:57:49,102 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:02:49,105 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 17:02:49,105 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:07:49,108 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 17:07:49,108 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:12:49,123 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 17:12:49,124 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:17:51,474 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 17:17:51,475 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:22:51,480 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 17:22:51,481 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:27:51,496 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 17:27:51,496 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:32:51,511 [WARNING] [HEALER] Integrity issues found: 1
+2026-03-14 17:32:51,511 [INFO] [HEALER] pyramid_state.json missing.
+2026-03-14 17:59:24,876 [INFO] [PULSER] Engine started.
+2026-03-14 17:59:28,053 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 18:18:37,927 [INFO] [PULSER] Engine started.
+2026-03-14 18:18:40,490 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 18:37:30,933 [INFO] [PULSER] Engine started.
+2026-03-14 18:37:34,069 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 18:53:36,095 [INFO] [PULSER] Engine started.
+2026-03-14 18:53:36,181 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 19:17:19,277 [INFO] [PULSER] Engine started.
+2026-03-14 19:17:19,429 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 19:20:29,764 [INFO] [PULSER] Engine started.
+2026-03-14 19:20:29,992 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 19:23:41,526 [INFO] [PULSER] Engine started.
+2026-03-14 19:23:41,616 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 19:25:12,497 [INFO] [PULSER] Engine started.
+2026-03-14 19:25:12,597 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 19:26:29,922 [INFO] [PULSER] Engine started.
+2026-03-14 19:26:30,014 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-14 20:46:03,675 [INFO] [PULSER] Engine started.
+2026-03-14 20:46:03,753 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...

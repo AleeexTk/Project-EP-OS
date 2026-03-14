@@ -1,0 +1,27 @@
+{
+  "id": "gen-webmcp",
+  "title": "WEB MCP CORE",
+  "z_level": 7,
+  "sector": "GREEN",
+  "coords": {
+    "x": 9,
+    "y": 9,
+    "z": 7
+  },
+  "layer_type": "beta",
+  "kind": "runtime",
+  "summary": "Runtime shell + web interaction gateway",
+  "state": "active",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [
+    "gen-dashboard"
+  ],
+  "children": [],
+  "source_refs": [],
+  "metadata": {},
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "layer_folder": "\u03b2_Pyramid_Functional"
+}

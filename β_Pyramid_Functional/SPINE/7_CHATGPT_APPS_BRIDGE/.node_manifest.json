@@ -1,0 +1,17 @@
+{
+  "id": "chatgpt_apps_bridge",
+  "title": "ChatGPT Apps Bridge",
+  "z_level": 7,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 11, "z": 7 },
+  "layer_type": "beta",
+  "kind": "protocol",
+  "summary": "Bridge layer for ChatGPT App scaffolds and runtime handoff.",
+  "state": "active",
+  "links": ["netlify_deploy_beacon"],
+  "metadata": {
+    "service": "chatgpt-apps",
+    "owner": "integrations",
+    "z_vertical": "app-interface"
+  }
+}
