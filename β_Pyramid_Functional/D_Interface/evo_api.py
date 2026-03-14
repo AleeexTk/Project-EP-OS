@@ -4,6 +4,7 @@ import os
 import sys
 import re
 import asyncio
+from datetime import datetime
 from typing import Any, List, Dict, Optional, Tuple, cast
 from pathlib import Path
 from contextlib import asynccontextmanager
@@ -11,49 +12,26 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from datetime import datetime, timezone
 
 # ─────────────────────────────────────────
-#  Environment Setup
+#  Kernel Spine Discovery
 # ─────────────────────────────────────────
 ROOT_DIR = Path(__file__).resolve().parents[2]
-if str(ROOT_DIR) not in sys.path:
-    sys.path.append(str(ROOT_DIR))
-
-# Discovery of pyramid layers
-core_layer = None
-functional_layer = None
-reflective_layer = None
+# Bootstrap kernel path
+kernel_path = str(ROOT_DIR / "β_Pyramid_Functional" / "B1_Kernel")
+if kernel_path not in sys.path:
+    sys.path.insert(0, kernel_path)
 
 try:
-    for d in ROOT_DIR.iterdir():
-        if not d.is_dir(): continue
-        name = d.name.lower()
-        if "pyramid_core" in name: core_layer = d
-        elif "pyramid_functional" in name: functional_layer = d
-        elif "pyramid_reflective" in name: reflective_layer = d
-except Exception as e:
-    logging.warning(f"Iterdir failed, falling back to positional: {e}")
-
-# Fallback to hardcoded names if iterdir fails to find by substring
-if core_layer is None: core_layer = ROOT_DIR / "α_Pyramid_Core"
-if functional_layer is None: functional_layer = ROOT_DIR / "β_Pyramid_Functional"
-if reflective_layer is None: reflective_layer = ROOT_DIR / "γ_Pyramid_Reflective"
-
-# Absolute validation
-if not core_layer.exists() or not functional_layer.exists() or not reflective_layer.exists():
-    # Final attempt: direct strings
-    core_layer = ROOT_DIR / "\u03b1_Pyramid_Core"
-    functional_layer = ROOT_DIR / "\u03b2_Pyramid_Functional"
-    reflective_layer = ROOT_DIR / "\u03b3_Pyramid_Reflective"
-
-if not core_layer.exists():
-    raise RuntimeError(f"Critical error: Core layer NOT found at {core_layer}")
-
-# Inject critical paths into sys.path
-sys.path.insert(0, str(core_layer / "B_Structure"))
-sys.path.insert(0, str(functional_layer / "D_Interface"))
-sys.path.insert(0, str(functional_layer / "B2_Orchestrator"))
-sys.path.insert(0, str(reflective_layer / "A_Pulse"))
+    from path_discovery import initialize_kernel_paths
+    initialize_kernel_paths()
+    # Now that paths are initialized, import Kernel contracts
+    from contracts import TaskEnvelope, TaskStatus
+    from policy_manager import SystemPolicyManager
+except ImportError as e:
+    logging.error(f"Kernel path discovery failed: {e}")
+    sys.exit(1)
 
 try:
     from models import Node, Link, PyramidState, NodeState, NodeKind, LayerType, OrchestratorState
@@ -242,6 +220,17 @@ def discover_structure_nodes() -> Tuple[List[Node], Dict[str, int]]:
 async def get_state():
     return current_state
 
+@app.get("/health")
+async def health():
+    return {
+        "status": "ok",
+        "layer": "alpha",
+        "z_level": 17,
+        "sector": "SPINE",
+        "module": "core_engine",
+        "nodes_total": len(current_state.nodes)
+    }
+
 @app.get("/health/audit")
 async def health_audit():
     try:
@@ -249,6 +238,60 @@ async def health_audit():
         return RealityMonitor().check_integrity()
     except Exception as e:
         return {"status": "ERROR", "message": str(e)}
+
+@app.get("/health/seven")
+async def health_seven():
+    try:
+        from reality_monitor_z3 import RealityMonitor
+        return RealityMonitor.perform_seven_audit()
+    except Exception as e:
+        return {"status": "ERROR", "message": str(e)}
+
+@app.get("/health/kernel")
+async def health_kernel():
+    """
+    Returns the status of the Spine-Kernel and active security policies.
+    """
+    try:
+        from policy_manager import SystemPolicyManager
+        policy_mgr = SystemPolicyManager()
+        return {
+            "status": "ONLINE",
+            "spine_version": "2.0.0-crystallization",
+            "policy": policy_mgr.policy.model_dump(),
+            "audit_violations": len(policy_mgr.audit_log),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        return {"status": "ERROR", "message": f"Kernel link failed: {e}"}
+
+@app.post("/kernel/dispatch")
+async def kernel_dispatch(envelope: TaskEnvelope):
+    """
+    Mandatory dispatch gate for all autonomous tasks.
+    Enforces security policies defined in the Kernel.
+    """
+    try:
+        from policy_manager import SystemPolicyManager
+        # Initialize policy manager (in a real scenario, this would be a singleton)
+        policy_mgr = SystemPolicyManager()
+        
+        if not policy_mgr.validate_action(envelope):
+            return {
+                "status": "REJECTED",
+                "task_id": envelope.task_id,
+                "reason": envelope.metadata.get("error", "Policy violation")
+            }
+            
+        # If valid, normally we would route to the destination node
+        # For this test, we just return success
+        return {
+            "status": "ACCEPTED",
+            "task_id": envelope.task_id,
+            "orchestrator": "Spine-V2"
+        }
+    except Exception as e:
+        return {"status": "ERROR", "message": f"Dispatch failure: {e}"}
 
 @app.post("/sync/discover-modules")
 async def sync_modules(update_existing: bool = False):

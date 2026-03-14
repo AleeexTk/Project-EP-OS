@@ -1,10 +1,24 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
-            "name": "http://PROVOCATEUR",
+            "name": "EvoOS: Core Engine (evo_api)",
+            "type": "debugpy",
             "request": "launch",
-            "url": "http://PROVOCATEUR"
+            "program": "${workspaceFolder}/β_Pyramid_Functional/D_Interface/evo_api.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "PYTHONIOENCODING": "utf-8"
+            },
+            "justMyCode": true
+        },
+        {
+            "type": "chrome",
+            "name": "EvoOS: Frontend (localhost:3000)",
+            "request": "launch",
+            "url": "http://localhost:3000"
         }
     ]
 }
