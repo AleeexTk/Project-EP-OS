@@ -22,5 +22,9 @@
     "path": "\u03b1_Pyramid_Core/SPINE/17_GLOBAL_NEXUS",
     "layer_folder": "\u03b1_Pyramid_Core"
   },
+  "runtime_canon_flag": "runtime",
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
   "layer_folder": "\u03b1_Pyramid_Core"
 }

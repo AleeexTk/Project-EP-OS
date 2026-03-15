@@ -132,15 +132,27 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
             {/* Active Agents */}
             {node.activeAgents && node.activeAgents.length > 0 && (
               <div className="flex gap-1">
-                {node.activeAgents.map((agent) => (
-                  <div
-                    key={agent.id}
-                    className="px-1.5 py-0.5 rounded text-[8px] font-bold text-white shadow-sm whitespace-nowrap"
-                    style={{ backgroundColor: agent.color }}
-                  >
-                    {agent.model}
-                  </div>
-                ))}
+                {node.activeAgents.map((agent) => {
+                  const colorMap: Record<string, string> = {
+                    '#10a37f': 'bg-[#10a37f]',
+                    '#4285f4': 'bg-[#4285f4]',
+                    '#f5a623': 'bg-[#f5a623]',
+                    '#7c3aed': 'bg-[#7c3aed]',
+                    '#94a3b8': 'bg-[#94a3b8]',
+                    '#1a73e8': 'bg-[#1a73e8]',
+                    '#043b72': 'bg-[#043b72]',
+                    '#d97757': 'bg-[#d97757]',
+                  };
+                  const bgClass = colorMap[agent.color.toLowerCase()] || 'bg-slate-600';
+                  return (
+                    <div
+                      key={agent.id}
+                      className={`px-1.5 py-0.5 rounded text-[8px] font-bold text-white shadow-sm whitespace-nowrap ${bgClass}`}
+                    >
+                      {agent.model}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
