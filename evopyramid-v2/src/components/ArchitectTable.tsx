@@ -8,7 +8,7 @@ interface ArchitectTableProps {
   onSelectNode: (node: EvoNode) => void;
 }
 
-const STRUCTURAL_LEVELS = [17, 15, 13, 11, 9, 7, 5, 3, 1];
+const ALL_LEVELS = [17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 const GRID_CLASS: Record<number, string> = {
   1: 'grid-cols-1',
@@ -34,7 +34,7 @@ function ArchitectTable({ nodes, onSelectNode }: ArchitectTableProps) {
     <div className="h-full rounded-2xl overflow-hidden border border-white/10 bg-slate-900 shadow-2xl flex flex-col">
       <div className="border-b border-white/10 bg-slate-950/80 overflow-x-auto no-scrollbar">
         <div className="flex min-w-max">
-          {STRUCTURAL_LEVELS.map((zLevel) => (
+          {ALL_LEVELS.map((zLevel) => (
             <button
               key={zLevel}
               onClick={() => setActiveZ(zLevel)}
