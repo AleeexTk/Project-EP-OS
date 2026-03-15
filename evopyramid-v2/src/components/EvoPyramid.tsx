@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Billboard, Html, OrbitControls, QuadraticBezierLine, Text } from '@react-three/drei';
 import * as THREE from 'three';
@@ -115,18 +115,34 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
         </Billboard>
       )}
 
-      {!isDimmed && node.activeAgents && node.activeAgents.length > 0 && (
-        <Html transform position={[0, 0.8, 0]} distanceFactor={10} zIndexRange={[100, 0]}>
-          <div className="flex gap-1 pointer-events-none">
-            {node.activeAgents.map((agent) => (
-              <div
-                key={agent.id}
-                className="px-1.5 py-0.5 rounded text-[8px] font-bold text-white shadow-sm whitespace-nowrap"
-                style={{ backgroundColor: agent.color }}
-              >
-                {agent.model}
+      {!isDimmed && node.kind !== 'empty' && (
+        <Html transform position={[0, 1.1, 0]} distanceFactor={10} zIndexRange={[100, 0]}>
+          <div className="flex flex-col items-center gap-1 pointer-events-none">
+            {/* Architectural State Badge */}
+            {node.status === 'quarantined' ? (
+              <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-white bg-purple-600 shadow-sm whitespace-nowrap border border-purple-400/50">QUARANTINED</div>
+            ) : node.status === 'degraded' || node.status === 'warning' ? (
+              <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-black bg-amber-500 shadow-sm whitespace-nowrap border border-amber-400/50">DEGRADED</div>
+            ) : node.runtime_canon_flag === 'canon' ? (
+              <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-white bg-slate-900 shadow-sm whitespace-nowrap border border-slate-700/80">CANON</div>
+            ) : node.runtime_canon_flag === 'runtime' ? (
+              <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-slate-300 bg-black/40 shadow-sm whitespace-nowrap border border-slate-500/50">RUNTIME</div>
+            ) : null}
+
+            {/* Active Agents */}
+            {node.activeAgents && node.activeAgents.length > 0 && (
+              <div className="flex gap-1">
+                {node.activeAgents.map((agent) => (
+                  <div
+                    key={agent.id}
+                    className="px-1.5 py-0.5 rounded text-[8px] font-bold text-white shadow-sm whitespace-nowrap"
+                    style={{ backgroundColor: agent.color }}
+                  >
+                    {agent.model}
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </Html>
       )}
@@ -232,7 +248,7 @@ function EvoScene({
     <>
       <fog attach="fog" args={['#0e2144', 24, 92]} />
       <ambientLight intensity={0.62} />
-      <hemisphereLight skyColor="#7fb4f8" groundColor="#0b1324" intensity={0.16} />
+      <hemisphereLight args={['#7fb4f8', '#0b1324']} intensity={0.16} />
       <pointLight position={[10, 20, 10]} intensity={0.8} />
       <pointLight position={[-10, 10, -10]} intensity={0.6} />
 

@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CORE_WS_URL } from './config';
 import { CENTER, EvoNode, NodeKind, NodeStatus, Sector, generateEmptyGridNodes, getRadius } from './evo';
 
@@ -107,6 +107,7 @@ const toNode = (id: string, value: any): EvoNode => {
     links: normalizeLinks(value?.links),
     capability: value?.capability,
     metadata,
+    runtime_canon_flag: value?.runtime_canon_flag,
   };
 };
 

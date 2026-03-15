@@ -1,4 +1,4 @@
-﻿
+
 export type Sector = 'spine' | 'purple' | 'red' | 'gold' | 'green' | 'empty';
 export type NodeStatus = 'active' | 'idle' | 'degraded' | 'failed' | 'quarantined' | 'none' | 'warning';
 export type Layer = 'alpha' | 'beta' | 'gamma' | 'pear' | 'z17' | 'structure';
@@ -28,6 +28,7 @@ export interface EvoNode {
   links: string[];
   activeAgents?: AgentActivity[];
   metadata?: Record<string, unknown>;
+  runtime_canon_flag?: 'canon' | 'runtime' | 'degraded' | 'quarantined';
 }
 
 export const GRID_SIZE = 17;
@@ -161,6 +162,12 @@ export function generateMockNodes(): EvoNode[] {
     ]
   });
   addNode(7, 11, 9, 'purple', 'provider_matrix', 'Provider Matrix', 'beta', 'module', 'active', ['nexus_bridge'], { capability: 'provider_matrix.py', description: 'Configuration of available models' });
+
+  // --- Z8: mvp_browser modules ---
+  addNode(8, 8, 9, 'spine', 'spine_bridge', 'Spine Bridge', 'beta', 'protocol', 'active');
+  addNode(8, 10, 9, 'green', 'semantic_engine', 'Semantic Engine', 'beta', 'service', 'active');
+  addNode(8, 9, 9, 'purple', 'purple_sanctuary', 'Purple Sanctuary', 'beta', 'module', 'active');
+  addNode(8, 9, 10, 'gold', 'view_matrix', 'View Matrix', 'beta', 'module', 'active');
 
   // --- Z5: Observer / Gamma (Phase C) ---
   addNode(5, 9, 9, 'spine', 'gamma_spine', 'Gamma Spine', 'gamma', 'module', 'active', ['tri_heartbeat', 'observer_core']);

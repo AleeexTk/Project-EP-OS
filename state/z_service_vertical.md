@@ -1,4 +1,5 @@
 # Z-Service Vertical Mapping
+
 > Updated: 2026-03-15 | Full Z1–Z17 spine complete
 
 ## Structural Nodes (odd Z — bones)
@@ -35,7 +36,7 @@
 
 ## Full Vertical Flow (Z17 → Z1)
 
-```
+```text
 gen-nexus (Z17)
   → [nexus_router_z16]
     → gen-meta (Z15)
