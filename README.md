@@ -6,20 +6,19 @@ EvoPyramid OS is a local-first architecture workspace where the 3D pyramid view 
 
 The canonical flow is:
 
-1. Directory + `.node_manifest.json`
-2. Core discovery (`/sync/discover-modules?update_existing=true`)
-3. Core state (`state/pyramid_state.json`)
-4. Live UI rendering (`evopyramid-v2`)
-
-This keeps visual nodes aligned with physical folders.
+1. Directory + `.node_manifest.json` (Physical Layer)
+2. Spine-Kernel Dispatcher (`/kernel/dispatch`)
+3. Task Contract Validation (`TaskEnvelope` via `B1_Kernel`)
+4. Live UI Rendering (`evopyramid-v2` + Nucleus Monitor)
 
 ## Repository Layout
 
-- `α_Pyramid_Core` (Z17-Z11): canon, intent, high-level governance
-- `β_Pyramid_Functional` (Z9-Z5): runtime operations, agents, interface
-- `γ_Pyramid_Reflective` (Z3-Z1): reflection, deploy checkpoints, archival memory
-- `evopyramid-v2`: React/Vite UI for 3D pyramid and session control
-- `state`: runtime state and architecture registries
+- `α_Pyramid_Core`: Governance & Essential Principles (Z17-Z11).
+- `β_Pyramid_Functional`: The Living Engine (Z9-Z5).
+  - `B1_Kernel`: The Crystallized Spine (Contracts, Policies, DISCOVERY).
+  - `D_Interface`: Trinity Hub (`evo_api.py`, UX Core).
+- `γ_Pyramid_Reflective`: Evolution Journal & Audits (Z3-Z1).
+- `evopyramid-v2`: React UX with real-time Nucleus Monitoring.
 
 ## Quick Start
 

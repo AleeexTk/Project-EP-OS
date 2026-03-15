@@ -48,6 +48,30 @@ All discretionary actions must be logged in the `Evolution Journal`.
 
 ---
 
+### [TECH-0] — THE TASK ENVELOPE (Mandatory Contract)
+
+All inter-node and UX-to-Core communication MUST use the `TaskEnvelope` Pydantic model:
+
+- `task_id`: Unique trace identifier (UUID).
+- `source_node`: Origin of the request (e.g., `EvoPyramid_UX_Core`).
+- `action`: The intent (e.g., `manifest_node`, `sync_structure`).
+- `payload`: Data required for the action.
+- `metadata`: Origin tracks and diagnostic data.
+
+### [TECH-1] — THE SPINE DISPATCHER (`/kernel/dispatch`)
+
+Implementation detail in `evo_api.py`:
+
+```python
+@app.post("/kernel/dispatch")
+async def kernel_dispatch(envelope: TaskEnvelope):
+    # 1. Validation via PolicyManager
+    # 2. Sequential Execution (manifest_node, sync, etc.)
+    # 3. Secure Feedback (ACCEPTED/REJECTED)
+```
+
+---
+
 ### FUNCTIONAL FLOW: Sequential Development Mode
 
 1. **Integrator** identifies the structural needs and external dependencies.
@@ -56,4 +80,5 @@ All discretionary actions must be logged in the `Evolution Journal`.
 
 ### FUNCTIONAL FLOW: Autonomous Mode
 
-Individual Z-Nodes act as independent agents, maintaining their own structure and validation logic while feeding into the Global Pyramid.
+Individual Z-Nodes act as independent agents, maintaining their own structure and validation logic while feeding into the Global Pyramid via the Mandatory Dispatcher.
+No node may bypass the Kernel to mutate the filesystem or global state.

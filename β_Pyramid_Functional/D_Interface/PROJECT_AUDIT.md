@@ -15,22 +15,15 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 
 ---
 
-### 2. THE PYRAMID HIERARCHY (CORE STRUCTURE)
-
-#### 🟩 LAYER 1: α_Pyramid_Core (Z11–Z16)
-
-*The Intellectual Brain*
+#### LAYER 1: α_Pyramid_Core (Z11–Z16)
 
 - **Purpose**: Defines *what* the system is and *why* it works.
 - **Key Modules**:
   - `A_Principles`: Philosophical and ethical constraints (Trinity Protocols).
   - `B_Structure/models.py`: The Pydantic-based DNA of every node in the system.
   - `apex_core.py`: The root logic that stabilizes the entire pyramid.
-- **Role Assignment**: **TRAILBLAZER (The Observer)** monitors this layer to ensure no structural drift occurs.
 
-#### 🟨 LAYER 2: β_Pyramid_Functional (Z5–Z10)
-
-*The Operational Engine*
+#### LAYER 2: β_Pyramid_Functional (Z5–Z10)
 
 - **Purpose**: Defines *how* the system interacts with the world.
 - **Key Modules**:
@@ -38,11 +31,8 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
   - `B2_Orchestrator/zbus.py`: The asynchronous neural network (Z-Bus).
   - `B3_SessionRegistry`: Tracking active AI sessions (ChatGPT, Grok, etc.).
 - **Nexus Link**: `EvoPyramid_Extension` (Chrome/Brave bridge).
-- **Role Assignment**: **SOUL (The Coordinator)** manages this layer, translating tasks for the Architect and aligning the agents.
 
-#### 🟥 LAYER 3: γ_Pyramid_Reflective (Z1–Z4)
-
-*The Evolutionary Echo*
+#### LAYER 3: γ_Pyramid_Reflective (Z1–Z4)
 
 - **Purpose**: Defines *what was done* and how to improve.
 - **Key Modules**:
@@ -59,8 +49,9 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 | **Data Models** | ✅ Stable | 100% | `models.py` updated with `OrchestratorState`. |
 | **Communication** | 🟨 Functional | 85% | Z-Bus (zbus.py) implemented; requires real-world stress test. |
 | **Bridge (Chrome Ext)** | 🟨 Beta | 70% | Manifest V3 ready; REQ: User manual authentication/login. |
-| **API Server** | ✅ Active | 95% | `evo_api.py` integrated with Z-Bus and lifespan tasks. |
-| **Reality Anchor** | 🟨 Monitoring | 60% | Health calculation fixed but needs "drift" detection polish. |
+| **Security Policy** | ✅ Verified | 100% | `policy_manager.py` enforced via `/kernel/dispatch`. |
+| **API Server** | ✅ Protected | 100% | Integrated with Spine-Kernel; stress tested. |
+| **Reality Anchor** | 🟨 Monitoring | 65% | Heartbeat includes Policy & Violation checks. |
 
 ---
 

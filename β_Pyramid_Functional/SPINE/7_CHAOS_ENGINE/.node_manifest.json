@@ -1,0 +1,13 @@
+{
+  "id": "chaos_engine",
+  "title": "Chaos Engine",
+  "z_level": 7,
+  "sector": "SPINE",
+  "coords": { "x": 10, "y": 9, "z": 7 },
+  "layer_type": "beta",
+  "kind": "service",
+  "summary": "Chaos bus Z7 — detects anomalies, triggers quarantine, emits Observer events upstream.",
+  "state": "active",
+  "links": ["agent_bus_z8", "resolution_stream_z6"],
+  "runtime_canon_flag": "runtime"
+}

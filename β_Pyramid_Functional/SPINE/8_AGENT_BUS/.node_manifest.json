@@ -1,0 +1,13 @@
+{
+  "id": "agent_bus_z8",
+  "title": "Agent Bus",
+  "z_level": 8,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 9, "z": 8 },
+  "layer_type": "beta",
+  "kind": "router",
+  "summary": "Inter-agent message bus. Routes tasks and events between Z9 runners and Z7 runtime engines.",
+  "state": "active",
+  "links": ["gen-async-jobs", "gen-webmcp"],
+  "runtime_canon_flag": "runtime"
+}

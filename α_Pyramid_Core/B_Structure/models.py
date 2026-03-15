@@ -16,6 +16,7 @@ class NodeKind(str, Enum):
     SUMMARY = "summary"
     CANON = "canon"
     RUNTIME = "runtime"
+    ROUTER = "router"
 
 class NodeState(str, Enum):
     ACTIVE = "active"
@@ -67,6 +68,11 @@ class Node(BaseModel):
     source_refs: List[str] = []
     metadata: Dict[str, Any] = {}
     
+    # Canon / Runtime distinction (used by UI badge and PATCH /nodes/{id}/status)
+    # "canon" = Architect-managed, immutable at runtime
+    # "runtime" = live, mutable via PATCH
+    runtime_canon_flag: str = "runtime"
+
     # Browser Orchestrator Support
     session_url: Optional[str] = None
     browser_profile_dir: Optional[str] = None

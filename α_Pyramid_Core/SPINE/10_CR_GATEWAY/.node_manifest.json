@@ -1,0 +1,13 @@
+{
+  "id": "cr_gateway_z10",
+  "title": "CR Gateway",
+  "z_level": 10,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 9, "z": 10 },
+  "layer_type": "alpha",
+  "kind": "router",
+  "summary": "Contract relay — routes validated task envelopes from Alpha governance to Beta runtime.",
+  "state": "active",
+  "links": ["gen-pear", "gen-async-jobs"],
+  "runtime_canon_flag": "canon"
+}

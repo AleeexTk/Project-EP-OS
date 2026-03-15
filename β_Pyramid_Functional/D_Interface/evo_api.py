@@ -139,7 +139,7 @@ app.add_middleware(
 # ─────────────────────────────────────────
 #  Discovery Utilities
 # ─────────────────────────────────────────
-SCAN_SECTORS = {"SPINE", "PURPLE", "RED", "GOLD", "GREEN"}
+SCAN_SECTORS = {"SPINE", "PURPLE", "RED", "GOLD", "GREEN", "SANDBOX"}
 VALID_LAYER_TYPES = {"alpha", "beta", "gamma"}
 
 def _safe_slug(value: str) -> str:
@@ -283,12 +283,34 @@ async def kernel_dispatch(envelope: TaskEnvelope):
                 "reason": envelope.metadata.get("error", "Policy violation")
             }
             
-        # If valid, normally we would route to the destination node
-        # For this test, we just return success
+        # Action Execution Logic
+        result = {}
+        if envelope.action == "manifest_node":
+            from models import Node
+            node_data = envelope.payload
+            node = Node(**node_data)
+            current_state.nodes[node.id] = node
+            save_state(current_state)
+            path = PhysicalManifestor.manifest_node(node)
+            await manager.broadcast({"type": "node_update", "data": node.model_dump(), "manifest_path": path})
+            result = {"path": path}
+            
+        elif envelope.action == "sync_structure":
+            update_existing = envelope.payload.get("update_existing", False)
+            sync_res = await sync_modules(update_existing=update_existing)
+            result = sync_res
+            
+        elif envelope.action == "apply_canon_guard":
+            update_existing = envelope.payload.get("update_existing", True)
+            prune_missing = envelope.payload.get("prune_missing", False)
+            guard_res = await guard_apply(update_existing=update_existing, prune_missing=prune_missing)
+            result = guard_res
+
         return {
             "status": "ACCEPTED",
             "task_id": envelope.task_id,
-            "orchestrator": "Spine-V2"
+            "orchestrator": "Spine-V2",
+            "result": result
         }
     except Exception as e:
         return {"status": "ERROR", "message": f"Dispatch failure: {e}"}
@@ -344,6 +366,43 @@ async def add_update_node(node: Node):
         return {"status": "ok", "path": path}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
+
+class NodeStatusPatch(BaseModel):
+    status: str  # NodeState value: active | idle | degraded | quarantined | failed
+    runtime_canon_flag: Optional[str] = None  # canon | runtime | None (no change)
+
+@app.patch("/nodes/{node_id}/status")
+async def patch_node_status(node_id: str, patch: NodeStatusPatch):
+    """
+    Update node state and optionally runtime_canon_flag.
+    Used by Observer Banner: Confirm Route / Quarantine Z7 actions.
+    Broadcasts node_update over WebSocket to all connected clients.
+    """
+    if node_id not in current_state.nodes:
+        return {"status": "error", "detail": f"Node '{node_id}' not found"}
+    
+    node = current_state.nodes[node_id]
+    
+    # Validate status value
+    valid_states = {s.value for s in NodeState}
+    if patch.status not in valid_states:
+        return {"status": "error", "detail": f"Invalid status '{patch.status}'. Valid: {sorted(valid_states)}"}
+    
+    node.state = patch.status
+    if patch.runtime_canon_flag is not None:
+        node.runtime_canon_flag = patch.runtime_canon_flag
+    
+    current_state.nodes[node_id] = node
+    save_state(current_state)
+    await manager.broadcast({"type": "node_update", "data": node.model_dump()})
+    
+    return {
+        "status": "ok",
+        "node_id": node_id,
+        "new_state": node.state,
+        "runtime_canon_flag": node.runtime_canon_flag
+    }
+
 
 @app.post("/link")
 async def add_link(link: Link):

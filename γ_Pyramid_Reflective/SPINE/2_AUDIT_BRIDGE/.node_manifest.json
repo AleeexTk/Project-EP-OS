@@ -1,0 +1,13 @@
+{
+  "id": "audit_bridge_z2",
+  "title": "Audit Bridge",
+  "z_level": 2,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 9, "z": 2 },
+  "layer_type": "gamma",
+  "kind": "router",
+  "summary": "Gamma reflection relay. Bridges Netlify Deploy Beacon events to Deploy Audit Ledger at Z1.",
+  "state": "active",
+  "links": ["netlify_deploy_beacon", "deploy_audit_ledger"],
+  "runtime_canon_flag": "runtime"
+}

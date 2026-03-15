@@ -4,6 +4,8 @@ import EvoPyramid from './components/EvoPyramid';
 import ArchitectTable from './components/ArchitectTable';
 import SessionLauncher from './components/SessionLauncher';
 import AgentWorkspace from './components/AgentWorkspace';
+import KernelMonitor from './components/KernelMonitor';
+
 import { CORE_API_BASE } from './lib/config';
 import { EvoNode } from './lib/evo';
 import { SwarmEvent, useSwarmTerminal } from './lib/useSwarmTerminal';
@@ -70,7 +72,7 @@ function EventRow({ event }: { event: SwarmEvent }) {
   return (
     <div className="flex gap-2 text-[10px]">
       <span className="text-slate-500 shrink-0">[{ts}]</span>
-      <span className="font-bold shrink-0" style={{ color }}>
+      <span className="font-bold shrink-0 opacity-80">
         {provider.toUpperCase()}
       </span>
       <span className="text-slate-300">{message}</span>
@@ -203,17 +205,37 @@ function App() {
     [],
   );
 
-  const syncNodeToCore = useCallback(async (node: EvoNode) => {
-    const response = await fetch(`${CORE_API_BASE}/node`, {
+  const dispatchKernelTask = useCallback(async (action: string, payload: any = {}) => {
+    const envelope = {
+      task_id: `ux-${Date.now()}`,
+      source_node: 'EvoPyramid_UX_Core',
+      target_node: 'gen-nexus',
+      action: action,
+      payload: payload,
+      timestamp: new Date().toISOString(),
+      metadata: { origin: 'ux-interface' }
+    };
+
+    const response = await fetch(`${CORE_API_BASE}/kernel/dispatch`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nodeToPayload(node)),
+      body: JSON.stringify(envelope),
     });
+
     if (!response.ok) {
-      throw new Error(`Failed to sync ${node.id}`);
+      throw new Error(`Dispatch failed: ${response.statusText}`);
     }
-    return response.json();
+    
+    const result = await response.json();
+    if (result.status === 'REJECTED') {
+      throw new Error(`Kernel Rejected: ${result.reason}`);
+    }
+    return result;
   }, []);
+
+  const syncNodeToCore = useCallback(async (node: EvoNode) => {
+    return dispatchKernelTask('manifest_node', nodeToPayload(node));
+  }, [dispatchKernelTask]);
 
   const baseNodes = useMemo(() => {
     if (activeTab === 'core' || activeTab === 'table') {
@@ -331,25 +353,18 @@ function App() {
 
     setSyncingStructure(true);
     try {
-      const response = await fetch(`${CORE_API_BASE}/sync/discover-modules?update_existing=true`, {
-        method: 'POST',
-      });
-      const data = await response.json();
-
-      if (!response.ok || data?.status !== 'ok') {
-        throw new Error('Sync failed');
-      }
-
-      const added = Number(data?.added ?? 0);
-      const updated = Number(data?.updated ?? 0);
-      const scannedDirs = Number(data?.scanned_dirs ?? 0);
+      const data = await dispatchKernelTask('sync_structure', { update_existing: true });
+      const stats = data.result || {};
+      const added = Number(stats.added ?? 0);
+      const updated = Number(stats.updated ?? 0);
+      const scannedDirs = Number(stats.scanned_dirs ?? 0);
       setNotice(`Structure sync: +${added}, updated ${updated}, scanned ${scannedDirs}`);
-    } catch {
-      setNotice('Structure sync failed');
+    } catch (err: any) {
+      setNotice(err.message || 'Structure sync failed');
     } finally {
       setSyncingStructure(false);
     }
-  }, [syncingStructure]);
+  }, [syncingStructure, dispatchKernelTask]);
 
   const handleCanonGuard = useCallback(async () => {
     if (guardingCanon) {
@@ -358,28 +373,21 @@ function App() {
 
     setGuardingCanon(true);
     try {
-      const response = await fetch(`${CORE_API_BASE}/canon/guard/apply?update_existing=true&prune_missing=false`, {
-        method: 'POST',
-      });
-      const data = await response.json();
-
-      if (!response.ok || data?.status !== 'ok') {
-        throw new Error('Canon guard failed');
-      }
-
-      const sync = data?.sync ?? {};
-      const summary = data?.guard?.summary ?? {};
-      const added = Number(sync?.added ?? 0);
-      const updated = Number(sync?.updated ?? 0);
-      const drifted = Number(summary?.drifted ?? 0);
-      const missing = Number(summary?.missing_in_state ?? 0);
+      const data = await dispatchKernelTask('apply_canon_guard', { update_existing: true, prune_missing: false });
+      const res = data.result || {};
+      const sync = res.sync || {};
+      const summary = res.guard?.summary || {};
+      const added = Number(sync.added ?? 0);
+      const updated = Number(sync.updated ?? 0);
+      const drifted = Number(summary.drifted ?? 0);
+      const missing = Number(summary.missing_in_state ?? 0);
       setNotice(`Canon guard: +${added}, updated ${updated}, drift ${drifted}, missing ${missing}`);
-    } catch {
-      setNotice('Canon guard failed');
+    } catch (err: any) {
+      setNotice(err.message || 'Canon guard failed');
     } finally {
       setGuardingCanon(false);
     }
-  }, [guardingCanon]);
+  }, [guardingCanon, dispatchKernelTask]);
 
   useEffect(() => {
     if (hasAutoSyncedRef.current) {
@@ -402,6 +410,7 @@ function App() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            <KernelMonitor />
             <div className="hidden md:flex items-center gap-2 text-[10px] px-2 py-1 rounded-full bg-black/30 border border-white/10">
               <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
               <span>CORE</span>
@@ -516,6 +525,7 @@ function App() {
               <div className="flex items-center gap-2">
                 <select
                   value={viewMode}
+                  title="Pyramid View Mode"
                   onChange={(e) => setViewMode(e.target.value as ViewMode)}
                   className="bg-transparent text-[11px] text-slate-200 outline-none"
                 >
@@ -561,6 +571,7 @@ function App() {
               </div>
               <button
                 onClick={() => setSelectedNodeId(null)}
+                title="Deselect node"
                 className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/10"
               >
                 <X className="w-4 h-4" />

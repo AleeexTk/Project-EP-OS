@@ -10,10 +10,25 @@
       "model_hint": null,
       "task_title": "Create & Bind",
       "task_context": null,
-      "status": "active",
+      "status": "waiting",
       "created_at": "2026-03-09T15:44:25.722299+00:00",
-      "updated_at": "2026-03-09T15:44:25.722323+00:00",
-      "messages": [],
+      "updated_at": "2026-03-14T22:22:26.971972+00:00",
+      "messages": [
+        {
+          "id": "12cc9c02-2c91-434d-b33b-a33aeb0e7143",
+          "role": "user",
+          "content": "status",
+          "ts": "2026-03-14T22:22:24.270779+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "ffab497e-60c0-49a9-9fb9-427c29772569",
+          "role": "assistant",
+          "content": "[SYSTEM QUOTA] Gemini API quota is disabled for this project (limit=0). Session moved to WAITING for 300s. Enable billing/quota in Google AI Studio for this key/project, then retry. Use 'Open' to continue externally (GEMINI).",
+          "ts": "2026-03-14T22:22:26.970170+00:00",
+          "agent_ref": null
+        }
+      ],
       "external_url": null
     },
     "sess_1b75d8dd": {

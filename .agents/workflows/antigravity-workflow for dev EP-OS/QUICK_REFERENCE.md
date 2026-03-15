@@ -10,25 +10,27 @@
 | ws-qa | QA Browser | Gemini 2.5 Pro | read-only, browser testing |
 | ws-research | Research | Sonnet / GPT | read-only, external research |
 
-## 3 immediate next tasks
+## 3 immediate next tasks (as of 2026-03-15)
 
 **ws-runtime / Plan mode:**
 ```
-Create environment/state/ dir, start uvicorn port 8000,
-verify WebSocket sends full_state on connect → Core Link turns green
+Implement PATCH /nodes/{node_id}/status endpoint.
+Allows UI to set node status to quarantined/active/degraded.
+Add runtime_canon_flag field to PyramidNode in models.py.
 ```
 
 **ws-ui / Fast mode:**
 ```
 Add Confirm Route + Quarantine Z7 buttons to Observer banner in App.tsx.
-Confirm → banner closes. Quarantine → chaos_engine status = quarantined.
+Confirm → banner closes (anomaly resolved).
+Quarantine → PATCH chaos_engine status = quarantined.
 ```
 
 **ws-ui / Fast mode:**
 ```
-Add spine_bridge(Z8,SPINE,8,9,8), semantic_engine(Z8,GREEN,10,9,8),
-purple_sanctuary(Z8,PURPLE,9,9,8), view_matrix(Z8,GOLD,9,10,8)
-to generateMockNodes() in evo.ts
+Add Canon vs Runtime visual badge to each node cube in EvoPyramid.tsx:
+CANON = dark/solid, RUNTIME = outlined, DEGRADED = amber, QUARANTINED = purple.
+Read runtime_canon_flag from node data.
 ```
 
 ## PR title format

@@ -19,6 +19,18 @@ class SystemPolicyManager:
         """
         Validates if a TaskEnvelope complies with system policies.
         """
+        # EP-Sandbox Isolation Logic
+        is_sandbox = "sandbox" in envelope.source_node.lower() or "sandbox" in envelope.target_node.lower()
+        
+        if is_sandbox:
+            # Sandbox nodes are heavily restricted by default
+            restricted_actions = ["filesystem_write", "network_request", "system_reboot"]
+            if envelope.action in restricted_actions:
+                envelope.status = TaskStatus.FAILED
+                envelope.metadata["error"] = f"SandboxViolation: Action '{envelope.action}' is forbidden in EP-Sandbox."
+                self._log_violation(envelope)
+                return False
+
         # Basic Security Checks
         if envelope.action == "filesystem_write" and not self.policy.allow_filesytem_write:
             envelope.status = TaskStatus.FAILED

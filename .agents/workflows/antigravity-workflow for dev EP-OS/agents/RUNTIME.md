@@ -20,24 +20,44 @@ You own:
 
 ---
 
-## Current critical task
+## Current state (as of 2026-03-14)
 
-**The WebSocket between frontend and backend is not connected.**
+**WebSocket integration: ✅ COMPLETE.**
 
-`usePyramidState.ts` connects to `ws://localhost:8000/ws`  
-Backend sends `full_state` on connect, `node_update` on changes  
-Frontend mapping already written: `update.state → status`, `update.title → label`
+- `usePyramidState.ts` → `ws://localhost:8000/ws` — connected and stable
+- Backend sends `full_state` on connect, `node_update` on changes
+- `/health/kernel` endpoint integrated → frontend polls kernel status, displays version and audit violations in UI header
+- `Nexus_Boot.py` starts all services (port 8000 API + port 3000 UI) reliably
 
-Steps to fix:
-```bash
-# 1. Create state directory
-mkdir -p environment/state
+---
 
-# 2. Start backend
-cd environment && uvicorn core_engine:app --reload --port 8000
+## Current priorities
 
-# 3. Verify frontend connects — Core Link indicator turns green
+### 1. Observer Banner — action buttons (UI Agent owns this, but Runtime must expose state)
+
+The `chaos_engine` node must expose a `status` field writable via API:
+
 ```
+PATCH /nodes/{node_id}/status
+Body: { "status": "quarantined" | "active" | "degraded" }
+```
+
+Runtime Agent must implement this endpoint so UI Agent can wire the `Quarantine Z7` button.
+
+### 2. Canon vs Runtime flag on nodes
+
+Nodes in `pyramid_state.json` must carry a `runtime_canon_flag` field:
+- `"canon"` — Architect-managed, immutable at runtime
+- `"runtime"` — live, mutable via PATCH
+- `"degraded"` / `"quarantined"` — alert states
+
+Amend `environment/models.py` → `PyramidNode` schema to include this field.
+
+### 3. State persistence hardening
+
+On restart, `pyramid_state.json` must survive without corruption. Add:
+- Atomic write (write to `.tmp` → rename)
+- Schema version field `"schema_version": 2`
 
 ---
 

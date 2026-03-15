@@ -1,0 +1,13 @@
+{
+  "id": "provider_router_z12",
+  "title": "Provider Router",
+  "z_level": 12,
+  "sector": "RED",
+  "coords": { "x": 9, "y": 9, "z": 12 },
+  "layer_type": "alpha",
+  "kind": "router",
+  "summary": "AI provider adapter layer. Routes between EVO BRIDGE and downstream runtime: Gemini / OpenAI / Replicate.",
+  "state": "active",
+  "links": ["gen-bridge", "gh_ci_guardian"],
+  "runtime_canon_flag": "canon"
+}

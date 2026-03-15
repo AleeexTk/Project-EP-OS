@@ -1,0 +1,13 @@
+{
+  "id": "nexus_router_z16",
+  "title": "Nexus Router",
+  "z_level": 16,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 9, "z": 16 },
+  "layer_type": "alpha",
+  "kind": "router",
+  "summary": "Boot orchestration router. Nexus_Boot.py startup sequencing and health-gate between Z17 and Z15.",
+  "state": "active",
+  "links": ["gen-nexus", "gen-meta"],
+  "runtime_canon_flag": "canon"
+}

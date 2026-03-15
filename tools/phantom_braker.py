@@ -17,7 +17,7 @@ async def send_task(client, task_id, is_malicious=False):
     action = "filesystem_write" if is_malicious else "status_check"
     payload = {
         "task_id": str(task_id),
-        "source_agent": "rogue_agent_X" if is_malicious else "trusted_monitor",
+        "source_node": "rogue_agent_X" if is_malicious else "trusted_monitor",
         "target_node": "gen-nexus",
         "action": action,
         "payload": {"content": "HACK"} if is_malicious else {"check": "health"},
@@ -58,9 +58,9 @@ async def run_stress_test():
     print("="*40)
     
     if len(rejected) == (STRESS_LOAD // 10) and len(errors) == 0:
-        print("\n\u2705 ARCHITECTURE STATUS: IMMUNE (Policy enforced)")
+        print("\n[V] ARCHITECTURE STATUS: IMMUNE (Policy enforced)")
     else:
-        print("\n\u26a0\ufe0f ARCHITECTURE STATUS: VULNERABLE or ERROR")
+        print("\n[X] ARCHITECTURE STATUS: VULNERABLE or ERROR")
 
 if __name__ == "__main__":
     asyncio.run(run_stress_test())
