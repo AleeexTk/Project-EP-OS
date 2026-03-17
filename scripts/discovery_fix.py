@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import Any, List, Dict, Optional, Tuple
 
 # Environment
-ROOT_DIR = Path(__file__).resolve().parents[0]
+ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(ROOT_DIR))
 
-from α_Pyramid_Core.B_Structure.models import PyramidState, Node, NodeState
+from alpha_pyramid_core.B_Structure.models import PyramidState, Node, NodeState
 
 STATE_FILE = ROOT_DIR / "state" / "pyramid_state.json"
 SCAN_SECTORS = {"SPINE", "PURPLE", "RED", "GOLD", "GREEN", "SANDBOX"}
@@ -30,7 +30,7 @@ def _load_manifest(manifest_path: Path) -> Dict[str, Any]:
     return {}
 
 def discover_nodes():
-    layers = [d for d in ROOT_DIR.glob("*_Pyramid_*") if d.is_dir()]
+    layers = [d for d in ROOT_DIR.glob("*pyramid*") if d.is_dir()]
     discovered = {}
     
     for layer in layers:
@@ -74,7 +74,7 @@ def discover_nodes():
                 discovered[node.id] = node
 
     # Special check for B1_Kernel/SK_Engine which is deep inside Functional but should be a node
-    sk_path = ROOT_DIR / "β_Pyramid_Functional" / "B1_Kernel" / "SK_Engine"
+    sk_path = ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel" / "SK_Engine"
     if sk_path.exists():
         manifest = _load_manifest(sk_path / ".node_manifest.json")
         node = Node(
@@ -88,7 +88,7 @@ def discover_nodes():
             summary="Associative memory, MinHash indexing and LSH similarity search.",
             state="active",
             links=manifest.get("links", []),
-            metadata={"path": "β_Pyramid_Functional/B1_Kernel/SK_Engine"}
+            metadata={"path": "beta_pyramid_functional/B1_Kernel/SK_Engine"}
         )
         discovered[node.id] = node
 

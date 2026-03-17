@@ -2,7 +2,7 @@ import os
 import json
 from pathlib import Path
 
-# Z15: Atlas Generator - Alpha Layer
+# Z15: Atlas Generator - alpha Layer
 # Manifest-driven 3D Projection & Atlas Sync
 
 class AtlasGenerator:
@@ -25,8 +25,8 @@ class AtlasGenerator:
             search_name = node["title"].replace(" ", "_")
             found = False
             
-            # Проверка в α, β, γ
-            for layer_prefix in ["α_Pyramid_Core", "β_Pyramid_Functional", "γ_Pyramid_Reflective"]:
+            # Проверка в alpha, beta, gamma
+            for layer_prefix in ["alpha_pyramid_core", "beta_pyramid_functional", "gamma_pyramid_reflective"]:
                 layer_path = self.root_dir / layer_prefix
                 if layer_path.exists():
                     # Проверяем наличие подпапок

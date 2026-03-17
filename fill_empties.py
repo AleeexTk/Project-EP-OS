@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 def fill_empties():
-    root = Path(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS\β_Pyramid_Functional")
+    root = Path(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS\beta_pyramid_functional")
     count = 0
     for p in root.rglob("*.py"):
         if p.stat().st_size == 0 and not p.name.startswith("__"):

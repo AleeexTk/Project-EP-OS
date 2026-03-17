@@ -51,7 +51,7 @@ class EvoValidator:
         self.log("State File Existence", state_file.exists(), str(state_file))
         
         # 2. Key Directories
-        layers = ["α_Pyramid_Core", "β_Pyramid_Functional", "γ_Pyramid_Reflective"]
+        layers = ["alpha_pyramid_core", "beta_pyramid_functional", "gamma_pyramid_reflective"]
         for l in layers:
             path = ROOT_DIR / l
             self.log(f"Layer Check: {l}", path.exists(), "Found" if path.exists() else "MISSING")

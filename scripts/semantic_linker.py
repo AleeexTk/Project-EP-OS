@@ -7,12 +7,12 @@ from pathlib import Path
 # ─────────────────────────────────────────
 #  Environment Setup
 # ─────────────────────────────────────────
-ROOT_DIR = Path(__file__).resolve().parents[2]
+ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(ROOT_DIR))
 
 # Ensure sub-modules are discoverable
-from α_Pyramid_Core.B_Structure.models import PyramidState, Node
-from β_Pyramid_Functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, MemoryColor, write_atomic
+from alpha_pyramid_core.B_Structure.models import PyramidState, Node
+from beta_pyramid_functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, MemoryColor, write_atomic
 
 STATE_FILE = ROOT_DIR / "state" / "pyramid_state.json"
 

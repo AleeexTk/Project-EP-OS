@@ -1,5 +1,5 @@
 """
-ApexCore — Z17 SPINE · α_Pyramid_Core
+ApexCore — Z17 SPINE · alpha_pyramid_core
 Global module registry and PEAR pulse initiator.
 The apex of the Z17 pyramid: loads state, reports node health,
 and fires the primary PEAR impulse downstream.

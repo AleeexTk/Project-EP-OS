@@ -14,9 +14,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timezone
 
-from α_Pyramid_Core.B_Structure.models import PyramidState, Node, Link, NodeStatus, NodeState, NodeKind, LayerType, OrchestratorState
-from β_Pyramid_Functional.B1_Kernel.ws_manager import ConnectionManager
-from β_Pyramid_Functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
+from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeStatus, NodeState, NodeKind, LayerType, OrchestratorState
+from beta_pyramid_functional.B1_Kernel.ws_manager import ConnectionManager
+from beta_pyramid_functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
 import uuid
 
 # ─────────────────────────────────────────
@@ -24,7 +24,7 @@ import uuid
 # ─────────────────────────────────────────
 ROOT_DIR = Path(__file__).resolve().parents[2]
 # Bootstrap kernel path
-kernel_path = str(ROOT_DIR / "β_Pyramid_Functional" / "B1_Kernel")
+kernel_path = str(ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel")
 if kernel_path not in sys.path:
     sys.path.insert(0, kernel_path)
 
@@ -75,7 +75,7 @@ def save_state(state: PyramidState):
     try:
         write_atomic(STATE_FILE, state.model_dump())
     except Exception as e:
-        logger.error(f"CRITICAL: Failed to save state: {e}")
+        logging.error(f"CRITICAL: Failed to save state: {e}")
 
 current_state = load_state()
 
@@ -215,7 +215,7 @@ def _node_from_structure_dir(layer_dir: Path, sector_dir: Path, node_dir: Path) 
     )
 
 def discover_structure_nodes() -> Tuple[List[Node], Dict[str, int]]:
-    layers = [d for d in ROOT_DIR.glob("*_Pyramid_*") if d.is_dir()]
+    layers = [d for d in ROOT_DIR.glob("*pyramid*") if d.is_dir()]
     discovered: Dict[str, Node] = {}
     scanned_dirs: int = 0
 

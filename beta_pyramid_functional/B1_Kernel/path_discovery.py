@@ -11,9 +11,9 @@ def initialize_kernel_paths():
     
     # Canonical Layers
     layers = [
-        "α_Pyramid_Core",
-        "β_Pyramid_Functional",
-        "γ_Pyramid_Reflective"
+        "alpha_pyramid_core",
+        "beta_pyramid_functional",
+        "gamma_pyramid_reflective"
     ]
     
     for layer in layers:

@@ -22,7 +22,7 @@ nodes = [
 
     # Z10 — CR Gateway (alpha SPINE, infra)  [cr_gateway_z10.py already exists in beta root]
     (
-        "α_Pyramid_Core/SPINE/10_CR_GATEWAY",
+        "alpha_pyramid_core/SPINE/10_CR_GATEWAY",
         {
             "id": "cr_gateway_z10",
             "title": "CR Gateway",
@@ -39,7 +39,7 @@ nodes = [
     ),
     # Z8 — Agent Bus (beta SPINE, infra)  [agent_bus_z8.py already exists in beta root]
     (
-        "β_Pyramid_Functional/SPINE/8_AGENT_BUS",
+        "beta_pyramid_functional/SPINE/8_AGENT_BUS",
         {
             "id": "agent_bus_z8",
             "title": "Agent Bus",
@@ -56,7 +56,7 @@ nodes = [
     ),
     # Z7 — Chaos Engine (beta SPINE, structural service)  [chaos_bus_z7.py exists in beta root]
     (
-        "β_Pyramid_Functional/SPINE/7_CHAOS_ENGINE",
+        "beta_pyramid_functional/SPINE/7_CHAOS_ENGINE",
         {
             "id": "chaos_engine",
             "title": "Chaos Engine",
@@ -73,7 +73,7 @@ nodes = [
     ),
     # Z6 — Resolution Stream (beta SPINE, infra)  [resolution_stream_z6.py exists in beta root]
     (
-        "β_Pyramid_Functional/SPINE/6_RESOLUTION_STREAM",
+        "beta_pyramid_functional/SPINE/6_RESOLUTION_STREAM",
         {
             "id": "resolution_stream_z6",
             "title": "Resolution Stream",
@@ -90,7 +90,7 @@ nodes = [
     ),
     # Z4 — Observer Relay (beta/gamma boundary SPINE, infra)  [observer_relay_z4.py exists in gamma root]
     (
-        "β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY",
+        "beta_pyramid_functional/SPINE/4_OBSERVER_RELAY",
         {
             "id": "observer_relay_z4",
             "title": "Observer Relay",
@@ -110,7 +110,7 @@ nodes = [
 
     # Z16 — Nexus Router (alpha SPINE, infra)
     (
-        "α_Pyramid_Core/SPINE/16_NEXUS_ROUTER",
+        "alpha_pyramid_core/SPINE/16_NEXUS_ROUTER",
         {
             "id": "nexus_router_z16",
             "title": "Nexus Router",
@@ -127,7 +127,7 @@ nodes = [
     ),
     # Z14 — Policy Bus (alpha SPINE, infra)
     (
-        "α_Pyramid_Core/SPINE/14_POLICY_BUS",
+        "alpha_pyramid_core/SPINE/14_POLICY_BUS",
         {
             "id": "policy_bus_z14",
             "title": "Policy Bus",
@@ -144,7 +144,7 @@ nodes = [
     ),
     # Z12 — Provider Router (alpha RED, infra)
     (
-        "α_Pyramid_Core/RED/12_PROVIDER_ROUTER",
+        "alpha_pyramid_core/RED/12_PROVIDER_ROUTER",
         {
             "id": "provider_router_z12",
             "title": "Provider Router",
@@ -161,7 +161,7 @@ nodes = [
     ),
     # Z2 — Audit Bridge (gamma SPINE, infra)
     (
-        "γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE",
+        "gamma_pyramid_reflective/SPINE/2_AUDIT_BRIDGE",
         {
             "id": "audit_bridge_z2",
             "title": "Audit Bridge",

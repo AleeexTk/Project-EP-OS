@@ -1,4 +1,4 @@
-﻿# EvoPyramid OS
+# EvoPyramid OS
 
 EvoPyramid OS is a local-first architecture workspace where the 3D pyramid view is synchronized with real project directories.
 
@@ -13,11 +13,11 @@ The canonical flow is:
 
 ## Repository Layout
 
-- `α_Pyramid_Core`: Governance & Essential Principles (Z17-Z11).
-- `β_Pyramid_Functional`: The Living Engine (Z9-Z5).
+- `alpha_pyramid_core`: Governance & Essential Principles (Z17-Z11).
+- `beta_pyramid_functional`: The Living Engine (Z9-Z5).
   - `B1_Kernel`: The Crystallized Spine (Contracts, Policies, DISCOVERY).
   - `D_Interface`: Trinity Hub (`evo_api.py`, UX Core).
-- `γ_Pyramid_Reflective`: Evolution Journal & Audits (Z3-Z1).
+- `gamma_pyramid_reflective`: Evolution Journal & Audits (Z3-Z1).
 - `evopyramid-v2`: React UX with real-time Nucleus Monitoring.
 
 ## Quick Start
@@ -33,7 +33,7 @@ python Nexus_Boot.py
 
 ```powershell
 cd "C:\Users\Alex Bear\Desktop\EvoPyramid OS"
-.\Launch_EvoPyramid.bat
+.\Start_OS.cmd
 ```
 
 Health checks:

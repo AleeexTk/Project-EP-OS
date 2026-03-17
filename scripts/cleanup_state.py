@@ -1,7 +1,8 @@
 import json
 from pathlib import Path
 
-STATE_FILE = Path("state/pyramid_state.json")
+ROOT_DIR = Path(__file__).resolve().parents[1]
+STATE_FILE = ROOT_DIR / "state" / "pyramid_state.json"
 
 def cleanup():
     if not STATE_FILE.exists():

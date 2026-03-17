@@ -2,14 +2,14 @@ import json
 from pathlib import Path
 from typing import Dict, Any
 
-# Z17: Apex Core - Alpha Layer
+# Z17: Apex Core - alpha Layer
 # Global Module Registry & Canon Root
 
 class ApexCore:
     def __init__(self, root_dir: Path):
         self.root_dir = root_dir
         self.registry_path = self.root_dir / "state" / "pyramid_state.json"
-        self.canon_path = self.root_dir / "α_Pyramid_Core" / "A_Principles" / "canon.json"
+        self.canon_path = self.root_dir / "alpha_pyramid_core" / "A_Principles" / "canon.json"
         
     def get_full_state(self) -> Dict[str, Any]:
         """Возвращает текущее состояние всей пирамиды Z17"""

@@ -20,7 +20,7 @@ const getProjectPathForNode = (node: EvoNode) => {
   if (typeof pathFromMetadata === 'string' && pathFromMetadata.trim().length > 0) {
     return normalizePath(pathFromMetadata);
   }
-  const layerFolder = node.z >= 11 ? 'α_Pyramid_Core' : node.z >= 5 ? 'β_Pyramid_Functional' : 'γ_Pyramid_Reflective';
+  const layerFolder = node.z >= 11 ? 'alpha_pyramid_core' : node.z >= 5 ? 'beta_pyramid_functional' : 'gamma_pyramid_reflective';
   return `${layerFolder}/${node.sector.toUpperCase()}/${node.z}_${slugLabel(node.label ?? node.id)}`;
 };
 

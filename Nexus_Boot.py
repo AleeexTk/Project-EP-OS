@@ -67,8 +67,8 @@ def main():
     log_status("Phase 2: Deploying Ecosystem Clusters...", "INFO")
     
     ui_dir = root_dir / "evopyramid-v2"
-    core_api_path = root_dir / "β_Pyramid_Functional" / "D_Interface" / "evo_api.py"
-    session_api_dir = root_dir / "β_Pyramid_Functional" / "B3_SessionRegistry"
+    core_api_path = root_dir / "beta_pyramid_functional" / "D_Interface" / "evo_api.py"
+    session_api_dir = root_dir / "beta_pyramid_functional" / "B3_SessionRegistry"
     
     # Using 'uv run python' ensures the .venv is used
     # Explicitly quoting commands for Windows shell

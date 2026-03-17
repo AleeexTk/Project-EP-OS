@@ -15,16 +15,16 @@
 
 ---
 
-## ALPHA LAYER — α_Pyramid_Core (Z17–Z11)
+## ALPHA LAYER — alpha_pyramid_core (Z17–Z11)
 
 ### Z17 — SPINE · Вершина системы (Structural ✅)
 
 | Node ID | Title | Sector | Файл/Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-nexus` | GLOBAL NEXUS | SPINE | `α_Pyramid_Core/SPINE/17_GLOBAL_NEXUS` | ✅ Есть |
+| `gen-nexus` | GLOBAL NEXUS | SPINE | `alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS` | ✅ Есть |
 
 **Z16 — INFRA** (между Z17 и Z15): ✅ **ЕСТЬ**
-> Файл: `α_Pyramid_Core/SPINE/16_NEXUS_ROUTER/index.py`
+> Файл: `alpha_pyramid_core/SPINE/16_NEXUS_ROUTER/index.py`
 
 ---
 
@@ -32,11 +32,11 @@
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-meta` | EVO META | PURPLE | `α_Pyramid_Core/PURPLE/15_EVO_META` | ✅ Есть |
-| `openai_docs_hub` | OpenAI Docs Hub | PURPLE | `α_Pyramid_Core/PURPLE/15_OPENAI_DOCS_HUB` | ✅ Есть |
+| `gen-meta` | EVO META | PURPLE | `alpha_pyramid_core/PURPLE/15_EVO_META` | ✅ Есть |
+| `openai_docs_hub` | OpenAI Docs Hub | PURPLE | `alpha_pyramid_core/PURPLE/15_OPENAI_DOCS_HUB` | ✅ Есть |
 
 **Z14 — INFRA** (между Z15 и Z13): ✅ **ЕСТЬ**
-> Файл: `α_Pyramid_Core/SPINE/14_POLICY_BUS/index.py`
+> Файл: `alpha_pyramid_core/SPINE/14_POLICY_BUS/index.py`
 
 ---
 
@@ -44,10 +44,10 @@
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-bridge` | EVO BRIDGE | RED | `α_Pyramid_Core/RED/13_EVO_BRIDGE` | ✅ Есть |
+| `gen-bridge` | EVO BRIDGE | RED | `alpha_pyramid_core/RED/13_EVO_BRIDGE` | ✅ Есть |
 
 **Z12 — INFRA** (между Z13 и Z11): ✅ **ЕСТЬ**
-> Файл: `α_Pyramid_Core/RED/12_PROVIDER_ROUTER/index.py`
+> Файл: `alpha_pyramid_core/RED/12_PROVIDER_ROUTER/index.py`
 
 ---
 
@@ -55,25 +55,25 @@
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-pear` | PEAR LOOP | GOLD | `α_Pyramid_Core/GOLD/11_PEAR_LOOP` | ✅ Есть |
-| `gh_ci_guardian` | GH CI Guardian | RED | `α_Pyramid_Core/RED/11_GH_CI_GUARDIAN` | ✅ Есть |
+| `gen-pear` | PEAR LOOP | GOLD | `alpha_pyramid_core/GOLD/11_PEAR_LOOP` | ✅ Есть |
+| `gh_ci_guardian` | GH CI Guardian | RED | `alpha_pyramid_core/RED/11_GH_CI_GUARDIAN` | ✅ Есть |
 
 **Z10 — INFRA** (граница Alpha/Beta): ✅ **ЕСТЬ**
-> Файл: `α_Pyramid_Core/SPINE/10_CR_GATEWAY/index.py`
+> Файл: `alpha_pyramid_core/SPINE/10_CR_GATEWAY/index.py`
 
 ---
 
-## BETA LAYER — β_Pyramid_Functional (Z9–Z5)
+## BETA LAYER — beta_pyramid_functional (Z9–Z5)
 
 ### Z9 — GREEN · Агенты и раннеры (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-async-jobs` | ASYNC JOB RUNNER | GREEN | `β_Pyramid_Functional/GREEN/9_ASYNC_JOB_RUNNER` | ✅ Есть |
-| `gh_pr_resolver` | GH PR Resolver | GREEN | `β_Pyramid_Functional/GREEN/9_GH_PR_RESOLVER` | ✅ Есть |
+| `gen-async-jobs` | ASYNC JOB RUNNER | GREEN | `beta_pyramid_functional/GREEN/9_ASYNC_JOB_RUNNER` | ✅ Есть |
+| `gh_pr_resolver` | GH PR Resolver | GREEN | `beta_pyramid_functional/GREEN/9_GH_PR_RESOLVER` | ✅ Есть |
 
 **Z8 — INFRA** (между Z9 и Z7): ✅ **ЕСТЬ**
-> Файл: `β_Pyramid_Functional/SPINE/8_AGENT_BUS/index.py`
+> Файл: `beta_pyramid_functional/SPINE/8_AGENT_BUS/index.py`
 
 ---
 
@@ -81,15 +81,15 @@
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-webmcp` | WEB MCP CORE | GREEN | `β_Pyramid_Functional/GREEN/7_WEB_MCP_CORE` | ✅ Есть |
-| `chatgpt_apps_bridge` | ChatGPT Apps Bridge | SPINE | `β_Pyramid_Functional/SPINE/7_CHATGPT_APPS_BRIDGE` | ✅ Есть |
-| `sk_engine` | SK Engine | GOLD | `β_Pyramid_Functional/B1_Kernel/SK_Engine` | ✅ Есть (Active 3.3) |
+| `gen-webmcp` | WEB MCP CORE | GREEN | `beta_pyramid_functional/GREEN/7_WEB_MCP_CORE` | ✅ Есть |
+| `chatgpt_apps_bridge` | ChatGPT Apps Bridge | SPINE | `beta_pyramid_functional/SPINE/7_CHATGPT_APPS_BRIDGE` | ✅ Есть |
+| `sk_engine` | SK Engine | GOLD | `beta_pyramid_functional/B1_Kernel/SK_Engine` | ✅ Есть (Active 3.3) |
 
 > ⚠️ `chaos_bus_z7.py` существует в корне β но не имеет папки-узла!
-> Нужен узел: `β_Pyramid_Functional/SPINE/7_CHAOS_ENGINE/`
+> Нужен узел: `beta_pyramid_functional/SPINE/7_CHAOS_ENGINE/`
 
 **Z6 — INFRA** (между Z7 и Z5): ✅ **ЕСТЬ**
-> Файл: `β_Pyramid_Functional/SPINE/6_RESOLUTION_STREAM/index.py`
+> Файл: `beta_pyramid_functional/SPINE/6_RESOLUTION_STREAM/index.py`
 
 ---
 
@@ -97,23 +97,23 @@
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-dashboard` | EVO DASHBOARD | SPINE | `β_Pyramid_Functional/SPINE/5_EVO_DASHBOARD` | ✅ Есть |
+| `gen-dashboard` | EVO DASHBOARD | SPINE | `beta_pyramid_functional/SPINE/5_EVO_DASHBOARD` | ✅ Есть |
 
 **Z4 — INFRA** (граница Beta/Gamma): ✅ **ЕСТЬ**
-> Файл: `β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY/index.py`
+> Файл: `beta_pyramid_functional/SPINE/4_OBSERVER_RELAY/index.py`
 
 ---
 
-## GAMMA LAYER — γ_Pyramid_Reflective (Z3–Z1)
+## GAMMA LAYER — gamma_pyramid_reflective (Z3–Z1)
 
 ### Z3 — GOLD · Reflective Checkpoints (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `netlify_deploy_beacon` | Netlify Deploy Beacon | GOLD | `γ_Pyramid_Reflective/GOLD/3_NETLIFY_DEPLOY_BEACON` | ✅ Есть |
+| `netlify_deploy_beacon` | Netlify Deploy Beacon | GOLD | `gamma_pyramid_reflective/GOLD/3_NETLIFY_DEPLOY_BEACON` | ✅ Есть |
 
 **Z2 — INFRA** (между Z3 и Z1): ✅ **ЕСТЬ**
-> Файл: `γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE/index.py`
+> Файл: `gamma_pyramid_reflective/SPINE/2_AUDIT_BRIDGE/index.py`
 
 ---
 
@@ -121,7 +121,7 @@
 
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `deploy_audit_ledger` | Deploy Audit Ledger | SPINE | `γ_Pyramid_Reflective/SPINE/1_DEPLOY_AUDIT_LEDGER` | ✅ Есть |
+| `deploy_audit_ledger` | Deploy Audit Ledger | SPINE | `gamma_pyramid_reflective/SPINE/1_DEPLOY_AUDIT_LEDGER` | ✅ Есть |
 
 ---
 
@@ -136,12 +136,12 @@
 
 | Файл | Текущее место | Нужная папка-узел | Z | Sector |
 | --- | --- | --- | --- | --- |
-| `cr_gateway_z10.py` | `β_Pyramid_Functional/` | `α_Pyramid_Core/SPINE/10_CR_GATEWAY/` | Z10 | SPINE |
-| `agent_bus_z8.py` | `β_Pyramid_Functional/` | `β_Pyramid_Functional/SPINE/8_AGENT_BUS/` | Z8 | SPINE |
-| `chaos_bus_z7.py` | `β_Pyramid_Functional/` | `β_Pyramid_Functional/SPINE/7_CHAOS_ENGINE/` | Z7 | SPINE |
-| `resolution_stream_z6.py` | `β_Pyramid_Functional/` | `β_Pyramid_Functional/SPINE/6_RESOLUTION_STREAM/` | Z6 | SPINE |
-| `observer_relay_z4.py` | `γ_Pyramid_Reflective/` | `γ_Pyramid_Reflective/SPINE/4_OBSERVER_RELAY/` | Z4 | SPINE |
-| `joint_sync_z1.py` | `γ_Pyramid_Reflective/` | `γ_Pyramid_Reflective/SPINE/1_DEPLOY_AUDIT_LEDGER/` | Z1 | SPINE |
+| `cr_gateway_z10.py` | `beta_pyramid_functional/` | `alpha_pyramid_core/SPINE/10_CR_GATEWAY/` | Z10 | SPINE |
+| `agent_bus_z8.py` | `beta_pyramid_functional/` | `beta_pyramid_functional/SPINE/8_AGENT_BUS/` | Z8 | SPINE |
+| `chaos_bus_z7.py` | `beta_pyramid_functional/` | `beta_pyramid_functional/SPINE/7_CHAOS_ENGINE/` | Z7 | SPINE |
+| `resolution_stream_z6.py` | `beta_pyramid_functional/` | `beta_pyramid_functional/SPINE/6_RESOLUTION_STREAM/` | Z6 | SPINE |
+| `observer_relay_z4.py` | `gamma_pyramid_reflective/` | `gamma_pyramid_reflective/SPINE/4_OBSERVER_RELAY/` | Z4 | SPINE |
+| `joint_sync_z1.py` | `gamma_pyramid_reflective/` | `gamma_pyramid_reflective/SPINE/1_DEPLOY_AUDIT_LEDGER/` | Z1 | SPINE |
 
 #### 🟡 ФАЗА 2 — Создание инфра-узлов (Z-чётные) ✅ **DONE**
 
@@ -149,12 +149,12 @@
 
 | Папка | Z | Назначение |
 | --- | --- | --- |
-| `α_Pyramid_Core/SPINE/16_NEXUS_ROUTER/` | Z16 | Boot routing, Nexus_Boot.py wrapper |
-| `α_Pyramid_Core/SPINE/14_POLICY_BUS/` | Z14 | Policy dispatching Alpha→Beta |
-| `α_Pyramid_Core/RED/12_PROVIDER_ROUTER/` | Z12 | AI provider adapters (Gemini/OpenAI/Replicate) |
-| `β_Pyramid_Functional/SPINE/6_RESOLUTION_STREAM/` | Z6 | Resolution stream Beta→observability |
-| `β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY/` | Z4 | Event relay Beta→Gamma |
-| `γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE/` | Z2 | Audit relay Gamma Z3→Z1 |
+| `alpha_pyramid_core/SPINE/16_NEXUS_ROUTER/` | Z16 | Boot routing, Nexus_Boot.py wrapper |
+| `alpha_pyramid_core/SPINE/14_POLICY_BUS/` | Z14 | Policy dispatching Alpha→Beta |
+| `alpha_pyramid_core/RED/12_PROVIDER_ROUTER/` | Z12 | AI provider adapters (Gemini/OpenAI/Replicate) |
+| `beta_pyramid_functional/SPINE/6_RESOLUTION_STREAM/` | Z6 | Resolution stream Beta→observability |
+| `beta_pyramid_functional/SPINE/4_OBSERVER_RELAY/` | Z4 | Event relay Beta→Gamma |
+| `gamma_pyramid_reflective/SPINE/2_AUDIT_BRIDGE/` | Z2 | Audit relay Gamma Z3→Z1 |
 
 #### 🟡 ФАЗА 3 — Связи (links) [DONE]
 
@@ -208,6 +208,12 @@ Z1   SPINE  deploy_audit       [DEPLOY AUDIT LEDGER] ← основание
 
 ---
 
-## Следующий шаг
+## Следующий шаг — ФАЗА 5: Cognitive Evolution 🧠
 
-**ФАЗА 1 начинается сейчас**: создаём папки-узлы для файлов-сирот + их `.node_manifest.json` → затем запускаем `/sync/discover-modules?update_existing=true`.
+- [ ] **Z-Bus Semantic Routing**: Использование связей SK Engine для автоматической маршрутизации задач.
+- [ ] **Gravity-Based Visualization**: Динамическое изменение размера узлов в UI на основе их когнитивного веса (`gravity`).
+- [ ] **Nexus Core Boot**: Запуск Z16 роутера для последовательной активации всей пирамиды.
+
+---
+
+**Все системы в норме. Когнитивный резонанс достигнут.**

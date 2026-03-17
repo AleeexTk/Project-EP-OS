@@ -1,7 +1,6 @@
 """
-Atlas Generator Z15 (α_Pyramid_Core)
-EVO META / Structural Layer. Responsible for generating the topology and 
-mapping the high-level architecture into nodes for the pyramid.
+Atlas Generator Z15 (alpha_pyramid_core)
+Infrastructure layer. Responsible for generating the topology and mapping high-level architecture into nodes.
 """
 
 import logging
