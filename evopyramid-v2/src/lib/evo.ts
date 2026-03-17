@@ -31,6 +31,90 @@ export interface EvoNode {
   runtime_canon_flag?: 'canon' | 'runtime' | 'degraded' | 'quarantined';
 }
 
+// --- ZBus Event Schemas ---
+
+export interface NodeStartEvent {
+  event_type: "NODE_START";
+  node_id: string;
+  task_id: string;
+  trace_id: string;
+  provider?: string;
+  status: "running";
+  simulation: boolean;
+  timestamp: string;
+  payload: Record<string, any>;
+}
+
+export interface ProviderSelectedEvent {
+  event_type: "PROVIDER_SELECTED";
+  node_id: string;
+  task_id: string;
+  trace_id: string;
+  provider: string;
+  status: "running";
+  simulation: boolean;
+  timestamp: string;
+  payload: Record<string, any>;
+}
+
+export interface ProviderTimeoutEvent {
+  event_type: "PROVIDER_TIMEOUT";
+  node_id: string;
+  task_id: string;
+  trace_id: string;
+  provider: string;
+  status: "degraded";
+  simulation: boolean;
+  timestamp: string;
+  payload: Record<string, any>;
+}
+
+export interface NodeFallbackInitEvent {
+  event_type: "NODE_FALLBACK_INIT";
+  node_id: string;
+  task_id: string;
+  trace_id: string;
+  provider: string;
+  fallback_to: string;
+  status: "degraded";
+  simulation: boolean;
+  timestamp: string;
+  payload: Record<string, any>;
+}
+
+export interface NodeRecoverySuccessEvent {
+  event_type: "NODE_RECOVERY_SUCCESS";
+  node_id: string;
+  task_id: string;
+  trace_id: string;
+  provider: string;
+  status: "healthy";
+  simulation: boolean;
+  timestamp: string;
+  payload: Record<string, any>;
+}
+
+export interface NodeFailureEvent {
+  event_type: "NODE_FAILURE";
+  node_id: string;
+  task_id: string;
+  trace_id: string;
+  provider: string;
+  status: "failed";
+  simulation: boolean;
+  timestamp: string;
+  payload: Record<string, any>;
+}
+
+export type ZBusNodeEvent =
+  | NodeStartEvent
+  | ProviderSelectedEvent
+  | ProviderTimeoutEvent
+  | NodeFallbackInitEvent
+  | NodeRecoverySuccessEvent
+  | NodeFailureEvent;
+
+
 export const GRID_SIZE = 17;
 export const CENTER = 9; // 1-based index, so 9 is the center of 17
 
