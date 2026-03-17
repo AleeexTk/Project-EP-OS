@@ -156,8 +156,9 @@
 | `β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY/` | Z4 | Event relay Beta→Gamma |
 | `γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE/` | Z2 | Audit relay Gamma Z3→Z1 |
 
-#### 🟡 ФАЗА 3 — Связи (links) [/]
+#### 🟡 ФАЗА 3 — Связи (links) [DONE]
 
+- [DONE] ФАЗА 3: Links (Связи). SK Engine проанализировал узлы и создал 25 семантических связей через LSH.
 Добавить в `pyramid_state.json` и `.node_manifest.json` ссылки `links: []`:
 
 | От | К | Через |

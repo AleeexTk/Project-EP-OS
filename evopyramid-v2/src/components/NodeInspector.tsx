@@ -24,6 +24,24 @@ const getProjectPathForNode = (node: EvoNode) => {
   return `${layerFolder}/${node.sector.toUpperCase()}/${node.z}_${slugLabel(node.label ?? node.id)}`;
 };
 
+const memoryColorMap: Record<string, string> = {
+  'blue': 'bg-blue-400',
+  'yellow': 'bg-yellow-400',
+  'red': 'bg-red-500',
+  'green': 'bg-emerald-400',
+  'violet': 'bg-violet-400',
+  'white': 'bg-slate-200'
+};
+
+const memoryTextColorMap: Record<string, string> = {
+  'blue': 'text-blue-400',
+  'yellow': 'text-yellow-400',
+  'red': 'text-red-500',
+  'green': 'text-emerald-400',
+  'violet': 'text-violet-400',
+  'white': 'text-slate-200'
+};
+
 export default function NodeInspector({
   node,
   sessions,
@@ -66,10 +84,11 @@ export default function NodeInspector({
           <div className="flex items-center gap-1">
             <span className="text-slate-500 uppercase">Memory Color:</span>
             <div 
-              className="w-2 h-2 rounded-full shadow-[0_0_5px_rgba(255,255,255,0.3)]" 
-              style={{ backgroundColor: node.memory_color || 'white' }}
+              className={`w-2 h-2 rounded-full shadow-[0_0_5px_rgba(255,255,255,0.1)] ${memoryColorMap[node.memory_color || 'white'] || 'bg-white'}`}
             />
-            <span style={{ color: node.memory_color || 'white' }}>{node.memory_color || 'WHITE'}</span>
+            <span className={memoryTextColorMap[node.memory_color || 'white'] || 'text-white'}>
+              {(node.memory_color || 'WHITE').toUpperCase()}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-slate-500 uppercase">Gravity:</span>
