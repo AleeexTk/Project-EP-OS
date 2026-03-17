@@ -1,5 +1,5 @@
 """
-ChaosBus — Z7 GREEN · β_Pyramid_Functional  (Dialectical Crucible)
+ChaosBus — Z7 GREEN · beta_pyramid_functional  (Dialectical Crucible)
 Receives 4-agent outputs from Z8 Agent Bus, applies weighted synthesis,
 and routes a resolved decision downstream to Z5 Action Layer.
 """
@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).resolve().parent.parent
-RESOLUTION_LOG = ROOT_DIR / "β_Pyramid_Functional" / "logs" / "chaos_resolutions.jsonl"
+RESOLUTION_LOG = ROOT_DIR / "beta_pyramid_functional" / "logs" / "chaos_resolutions.jsonl"
 RESOLUTION_LOG.parent.mkdir(parents=True, exist_ok=True)
 
 # ── Agent weight config (matches architectural role framing) ──────────────────
@@ -138,7 +138,7 @@ class ChaosBus:
         # Import orchestrator lazily to avoid circular deps
         if orchestrator is None:
             try:
-                agent_dir = ROOT_DIR / "β_Pyramid_Functional" / "A_Agents"
+                agent_dir = ROOT_DIR / "beta_pyramid_functional" / "A_Agents"
                 sys.path.insert(0, str(agent_dir))
                 from agent_orch import Z9Orchestrator  # type: ignore
                 orchestrator = Z9Orchestrator()

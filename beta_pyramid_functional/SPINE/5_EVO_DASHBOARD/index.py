@@ -1,6 +1,6 @@
 """
 EvoPyramid Node: EVO DASHBOARD
-Layer: β_Pyramid_Functional | Sector: SPINE
+Layer: beta_pyramid_functional | Sector: SPINE
 Z-Level: 5
 
 Operator view and assistant workspace.
@@ -14,7 +14,7 @@ from typing import Dict
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
 STATE_FILE = ROOT_DIR / "state" / "pyramid_state.json"
-SESSION_LOG = ROOT_DIR / "β_Pyramid_Functional" / "logs" / "async_jobs.jsonl"
+SESSION_LOG = ROOT_DIR / "beta_pyramid_functional" / "logs" / "async_jobs.jsonl"
 
 
 def load_state() -> dict:
@@ -77,9 +77,9 @@ def main():
         lt = n.get("layer_type", "")
         if lt in layers:
             layers[lt] += 1
-    print(f"║  α Core      : {layers['alpha']:<4} nodes (Z≥11)                     ║")
-    print(f"║  β Functional: {layers['beta']:<4} nodes (Z5–9)                    ║")
-    print(f"║  γ Reflective: {layers['gamma']:<4} nodes (Z≤3)                     ║")
+    print(f"║  alpha Core  : {layers['alpha']:<4} nodes (Z≥11)                     ║")
+    print(f"║  beta Functional: {layers['beta']:<4} nodes (Z5–9)                    ║")
+    print(f"║  gamma Reflective: {layers['gamma']:<4} nodes (Z≤3)                     ║")
     print("╠" + "═" * 56 + "╣")
 
     # Recent jobs

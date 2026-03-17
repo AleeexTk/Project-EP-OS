@@ -7,41 +7,46 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+# --- Environment Setup ---
+ROOT_DIR = Path(__file__).resolve().parents[2]
+
+# Discovery of core layer for model imports
+core_layer = None
+for d in ROOT_DIR.iterdir():
+    if d.is_dir() and "pyramid_core" in d.name.lower():
+        core_layer = d
+        break
+if core_layer is None:
+    core_layer = ROOT_DIR / "alpha_pyramid_core"
+
 # Inject critical paths
-if core_layer and core_layer.exists():
+if core_layer.exists():
     path_str = str(core_layer / "B_Structure")
     if path_str not in sys.path:
         sys.path.insert(0, path_str)
 else:
-    raise RuntimeError(f"Core layer missing or invalid: {core_layer}. ROOT={ROOT_DIR}")
+    # Diagnostic print
+    print(f"DEBUG: ROOT_DIR={ROOT_DIR}")
+    print(f"DEBUG: sys.path={sys.path}")
+    raise RuntimeError(f"Core layer missing or invalid at {core_layer}")
 
 try:
     from models import Node, NodeState, NodeKind, LayerType, PyramidState
 except ImportError as e:
-    # Re-attempt core_layer discovery if it was not found or path was wrong
-    core_layer_fallback = next(iter(ROOT_DIR.glob("*_Pyramid_Core")), None)
-    if core_layer_fallback:
-        if str(core_layer_fallback / "B_Structure") not in sys.path:
-            sys.path.insert(0, str(core_layer_fallback / "B_Structure"))
-    
-    try:
-        from models import Node, NodeState, NodeKind, LayerType, PyramidState
-    except ImportError as e_inner:
-        raise RuntimeError(f"Manifestor failed to import models: {e_inner}. ROOT_DIR={ROOT_DIR}") from e
+    raise RuntimeError(f"Manifestor failed to import models: {e}. ROOT_DIR={ROOT_DIR}") from e
 
 class PhysicalManifestor:
     """
     Project Generator: Transforms visual nodes into a real folder structure.
     Architecture: projects/[PROJECT_NAME]/[LAYER]/[SECTOR]/[NODE_ID]
     """
-    ROOT_DIR = Path(__file__).resolve().parents[2]
     
     @classmethod
     def _get_layers(cls):
         core = None
         func = None
         refl = None
-        for d in cls.ROOT_DIR.iterdir():
+        for d in ROOT_DIR.iterdir():
             if not d.is_dir(): continue
             name = d.name.lower()
             if "pyramid_core" in name: core = d
@@ -49,9 +54,9 @@ class PhysicalManifestor:
             elif "pyramid_reflective" in name: refl = d
         
         # Fallback
-        if core is None: core = cls.ROOT_DIR / "α_Pyramid_Core"
-        if func is None: func = cls.ROOT_DIR / "β_Pyramid_Functional"
-        if refl is None: refl = cls.ROOT_DIR / "γ_Pyramid_Reflective"
+        if core is None: core = ROOT_DIR / "alpha_pyramid_core"
+        if func is None: func = ROOT_DIR / "beta_pyramid_functional"
+        if refl is None: refl = ROOT_DIR / "gamma_pyramid_reflective"
         
         return core, func, refl
 
@@ -72,7 +77,7 @@ class PhysicalManifestor:
             
             # Create path in the REAL project structure
             clean_label = "".join(x for x in node.title if x.isalnum() or x in " -_").strip().replace(" ", "_")
-            node_dir = cls.ROOT_DIR / layer_folder / sector / f"{node.z_level}_{clean_label}"
+            node_dir = ROOT_DIR / layer_folder / sector / f"{node.z_level}_{clean_label}"
             
             # Ensure folder and __init__.py exist to make it a package
             node_dir.mkdir(parents=True, exist_ok=True)
@@ -152,7 +157,7 @@ class PhysicalManifestor:
 
     @classmethod
     def resolve_node_dir(cls, node_id: str):
-        base_path = cls.ROOT_DIR
+        base_path = ROOT_DIR
 
         for manifest_path in base_path.glob("**/.node_manifest.json"):
             if cls._manifest_matches(manifest_path, node_id):

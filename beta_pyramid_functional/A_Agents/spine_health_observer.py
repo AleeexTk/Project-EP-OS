@@ -1,269 +1,149 @@
 import asyncio
-import json
 import logging
 import os
 import sys
 import time
-from datetime import datetime, timezone
 from pathlib import Path
-from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any, Literal
+from typing import Optional, Dict, Any
 
-# Configure logging (Bootstrap early so functions can use it)
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
-logger = logging.getLogger("Spine_Health_Observer")
+# --- Kernel Path Initialization ---
+ROOT_DIR = Path(__file__).resolve().parents[2]
+if str(ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel") not in sys.path:
+    sys.path.append(str(ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel"))
 
-# --- Path discovery to import core modules ---
-def setup_sys_path():
-    current_dir = Path(__file__).resolve().parent
-    # Root: EvoPyramid OS
-    root_dir = current_dir.parent.parent
-    
-    # Explicitly add module directories to sys.path
-    functional_dir = root_dir / "β_Pyramid_Functional"
-    sub_modules = [
-        "B1_Kernel",
-        "B2_Orchestrator",
-        "B2_ProviderMatrix",
-        "B3_SessionRegistry",
-        "D_Interface"
-    ]
-    
-    for sub in sub_modules:
-        p = str(functional_dir / sub)
-        if p not in sys.path:
-            sys.path.insert(0, p)
-            
-    try:
-        from path_discovery import initialize_kernel_paths
-        initialize_kernel_paths()
-        logger.info("[Spine_Health_Observer] Kernel paths initialized.")
-    except ImportError:
-        logger.warning("[Spine_Health_Observer] path_discovery failed. Proceeding with manual paths.")
-
-setup_sys_path()
+from base_node import BaseServiceNode, node_entry
+from events import (
+    EventType, EventSeverity, ProviderPayload, FallbackPayload, FailurePayload
+)
 
 try:
-    from provider_matrix import ProviderMatrix, ProviderConfig
     from session_models import Provider
-    from zbus import zbus
-except ImportError as e:
-    logger.error(f"Failed to import core modules: {e}")
+except ImportError:
     from enum import Enum
     class Provider(str, Enum):
-        UNKNOWN = "unknown"
-        GPT = "gpt"
         GEMINI = "gemini"
         OLLAMA = "ollama"
-    ProviderMatrix = None
-    zbus = None
-
-# Configure logging (moved down to ensure logger exists)
-# (Done above line 36)
-
-# ─────────────────────────────────────────
-#  Event Schemas (ZBus Events)
-# ─────────────────────────────────────────
-
-class ZBusNodeEvent(BaseModel):
-    event_type: Literal[
-        "NODE_START", 
-        "PROVIDER_SELECTED", 
-        "PROVIDER_TIMEOUT", 
-        "NODE_FALLBACK_INIT", 
-        "NODE_RECOVERY_SUCCESS", 
-        "NODE_FAILURE"
-    ]
-    node_id: str = "spine_health_observer"
-    task_id: str
-    trace_id: str
-    provider: Optional[str] = None
-    fallback_to: Optional[str] = None
-    status: Literal["healthy", "degraded", "failed", "running"] = "running"
-    simulation: bool = False
-    timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    payload: Dict[str, Any] = Field(default_factory=dict)
 
 # ─────────────────────────────────────────
 #  Spine Health Observer Task
 # ─────────────────────────────────────────
 
-class SpineHealthObserver:
+@node_entry
+class SpineHealthObserver(BaseServiceNode):
     """
-    First autonomous service node that traverses the tree ensuring manifest health.
-    Includes Provider Matrix fallback and a chaos-mode simulation for testing UI resilience.
+    Exemplary autonomous service node.
+    Inherits from BaseServiceNode for unified lifecyle, events, and paths.
     """
     
-    def __init__(self, trace_id: str = "trace-001", simulation: bool = False):
-        self.node_id = "spine_health_observer"
-        self.trace_id = trace_id
-        self.simulation = simulation
-        self.base_dir = Path(__file__).resolve().parent.parent.parent
+    def __init__(self, trace_id: Optional[str] = None, simulation: bool = False):
+        super().__init__(node_id="spine_health_observer", trace_id=trace_id, simulation=simulation)
         self.primary_provider = Provider.GEMINI
         self.fallback_provider = Provider.OLLAMA
-
-    async def emit_event(self, event: ZBusNodeEvent):
-        """Simulate publishing to ZBus (or actually publish if WS context exists)"""
-        event_dict = event.model_dump()
-        logger.info(f"==> ZBUS EVENT: {event.event_type} | Provider: {event.provider} | Status: {event.status}")
-        
-        # 1. Try internal memory broadcast (works only if running inside the same process as API)
-        try:
-            if zbus and hasattr(zbus, 'manager') and zbus.manager:
-                await zbus.broadcast_event(event_dict)
-                return event_dict
-        except Exception:
-            pass
-
-        # 2. HTTP Fallback (for standalone mode)
-        # We use a simple HTTP POST to the local core engine bridge
-        try:
-            import httpx
-            async with httpx.AsyncClient() as client:
-                await client.post("http://127.0.0.1:8000/zbus/publish", json=event_dict, timeout=1.0)
-        except ImportError:
-            # Fallback to sync urllib if httpx is missing
-            import urllib.request
-            import json
-            def sync_post():
-                try:
-                    req = urllib.request.Request(
-                        "http://127.0.0.1:8000/zbus/publish",
-                        data=json.dumps(event_dict).encode('utf-8'),
-                        headers={'Content-Type': 'application/json'},
-                        method='POST'
-                    )
-                    with urllib.request.urlopen(req, timeout=1) as f:
-                        pass
-                except:
-                    pass
-            await asyncio.get_event_loop().run_in_executor(None, sync_post)
-        except Exception as e:
-            logger.debug(f"HTTP Peer broadcast failed (is Core Engine running?): {e}")
-
-        return event_dict
 
     def scan_for_manifests(self) -> int:
         """Scan project for .node_manifest.json and return count."""
         count = 0
-        for root, dirs, files in os.walk(self.base_dir):
+        for root, dirs, files in os.walk(ROOT_DIR):
             if ".node_manifest.json" in files:
                 count += 1
         return count
 
     async def simulate_provider_call(self, provider: Provider, task: str, should_fail: bool) -> dict:
         """Simulate an LLM call which might timeout."""
-        await asyncio.sleep(1.5) # Simulate network delay
+        await asyncio.sleep(1.0) 
         if should_fail:
-            raise TimeoutError(f"Provider {provider.value} failed to respond in time.")
+            raise TimeoutError(f"Provider {provider.value} failed on Z7 SLA.")
         return {"result": "ok", "message": f"Verified with {provider.value}"}
 
-    async def verify_manifests(self, task_id: str):
-        """Main execution logic for the node."""
+    async def run(self, task_id: str, session_id: Optional[str] = None):
+        """Main execution logic for the node using the canonical lifecycle."""
         
-        # 1. Start Task
-        await self.emit_event(ZBusNodeEvent(
-            event_type="NODE_START",
-            task_id=task_id,
-            trace_id=self.trace_id,
-            simulation=self.simulation,
-            payload={"task": "verify_manifests", "action": "Scanning directories"}
-        ))
+        # 1. NODE_START
+        await self.publish(
+            event_type=EventType.NODE_START,
+            task_id=task_id, 
+            session_id=session_id,
+            payload={"action": "manifest_integrity_scan"}
+        )
 
-        # 2. Select Primary Provider
-        await self.emit_event(ZBusNodeEvent(
-            event_type="PROVIDER_SELECTED",
+        # 2. PROVIDER_SELECTED
+        await self.publish(
+            event_type=EventType.PROVIDER_SELECTED,
             task_id=task_id,
-            trace_id=self.trace_id,
-            provider=self.primary_provider.value,
-            simulation=self.simulation,
-            payload={"reason": "Highest Z-Level capability match"}
-        ))
+            payload=ProviderPayload(
+                provider_name=self.primary_provider.value,
+                model="gemini-1.5-pro"
+            ).model_dump()
+        )
 
         manifest_count = self.scan_for_manifests()
-        logger.info(f"Found {manifest_count} manifests to verify.")
+        self.logger.info(f"Targets: {manifest_count} manifests.")
 
-        # 3. Simulated Execution (with optional Chaos Mode)
+        # 3. Execution Phase
         try:
-            should_fail = self.simulation
+            await self.simulate_provider_call(self.primary_provider, "verify_manifests", self.simulation)
             
-            logger.info("Attempting verification with primary provider...")
-            await self.simulate_provider_call(self.primary_provider, "verify_manifests", should_fail)
-            
-            # If we succeed here on primary (chaos off):
-            await self.emit_event(ZBusNodeEvent(
-                event_type="NODE_RECOVERY_SUCCESS", # Or TASK_SUCCESS, but we use RECOVERY_SUCCESS based on prompt schema context if we just completed it
+            # SUCCESS
+            await self.publish(
+                event_type=EventType.NODE_COMPLETE,
                 task_id=task_id,
-                trace_id=self.trace_id,
-                provider=self.primary_provider.value,
-                status="healthy",
-                simulation=self.simulation,
-                payload={"task": "verify_manifests", "manifests_checked": manifest_count, "result": "clean"}
-            ))
+                payload={"manifests_checked": manifest_count, "integrity": "nominal"}
+            )
 
         except TimeoutError as e:
-            # 4. Chaos Mode hit - emit Timeout and init Fallback
-            logger.warning(f"Timeout detected: {e}")
-            
-            await self.emit_event(ZBusNodeEvent(
-                event_type="PROVIDER_TIMEOUT",
+            # 4. PROVIDER_TIMEOUT
+            await self.publish(
+                event_type=EventType.PROVIDER_TIMEOUT,
                 task_id=task_id,
-                trace_id=self.trace_id,
-                provider=self.primary_provider.value,
-                status="degraded",
-                simulation=self.simulation,
-                payload={"reason": str(e), "task": "verify_manifests"}
-            ))
+                severity=EventSeverity.WARNING,
+                payload=FailurePayload(error_code="TIMEOUT_Z7", message=str(e)).model_dump()
+            )
             
-            # Init fallback
-            await self.emit_event(ZBusNodeEvent(
-                event_type="NODE_FALLBACK_INIT",
+            # 5. NODE_FALLBACK_INIT
+            await self.publish(
+                event_type=EventType.NODE_FALLBACK_INIT,
                 task_id=task_id,
-                trace_id=self.trace_id,
-                provider=self.primary_provider.value,
-                fallback_to=self.fallback_provider.value,
-                status="degraded",
-                simulation=self.simulation,
-                payload={"reason": "provider_timeout", "task": "verify_manifests"}
-            ))
+                severity=EventSeverity.WARNING,
+                payload=FallbackPayload(
+                    from_provider=self.primary_provider.value,
+                    to_provider=self.fallback_provider.value,
+                    reason="Target provider unresponsive",
+                    trigger_node=self.node_id
+                ).model_dump()
+            )
             
             try:
-                # 5. Execute Fallback Recovery
-                logger.info("Attempting verification with fallback provider...")
-                await self.simulate_provider_call(self.fallback_provider, "verify_manifests", False) # Fallback doesn't fail
+                # 6. Fallback Execution
+                self.logger.info("Executing Fallback Recovery...")
+                await self.simulate_provider_call(self.fallback_provider, "verify_manifests", False)
                 
-                await self.emit_event(ZBusNodeEvent(
-                    event_type="NODE_RECOVERY_SUCCESS",
+                # 7. NODE_RECOVERY_SUCCESS
+                await self.publish(
+                    event_type=EventType.NODE_RECOVERY_SUCCESS,
                     task_id=task_id,
-                    trace_id=self.trace_id,
-                    provider=self.fallback_provider.value,
-                    status="healthy",
-                    simulation=self.simulation,
-                    payload={"task": "verify_manifests", "manifests_checked": manifest_count, "result": "recovered_locally"}
-                ))
+                    payload={"recovered_via": self.fallback_provider.value, "manifests_checked": manifest_count}
+                )
             except Exception as fe:
-                # Total Failure
-                await self.emit_event(ZBusNodeEvent(
-                    event_type="NODE_FAILURE",
+                # 8. NODE_FAILURE (CRITICAL)
+                await self.publish(
+                    event_type=EventType.NODE_FAILURE,
                     task_id=task_id,
-                    trace_id=self.trace_id,
-                    provider=self.fallback_provider.value,
-                    status="failed",
-                    simulation=self.simulation,
-                    payload={"reason": f"Fallback also failed: {fe}", "task": "verify_manifests"}
-                ))
+                    severity=EventSeverity.CRITICAL,
+                    payload=FailurePayload(error_code="RECOVERY_FAILED", message=str(fe)).model_dump()
+                )
 
 async def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Spine Health Observer daemon.")
-    parser.add_argument("--chaos-mode", action="store_true", help="Simulate a provider timeout to trigger fallback.")
+    parser = argparse.ArgumentParser(description="Spine Health Observer (BaseNode Implementation).")
+    parser.add_argument("--chaos-mode", action="store_true", help="Trigger fallback simulation.")
     args = parser.parse_args()
 
-    # Generate a dummy task_id for this standalone execution
-    task_id = f"task-{int(time.time())}"
+    # Initializing standardized logger
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
     
+    task_id = f"task-{int(time.time())}"
     observer = SpineHealthObserver(simulation=args.chaos_mode)
-    await observer.verify_manifests(task_id)
+    await observer.run(task_id)
 
 if __name__ == "__main__":
     asyncio.run(main())

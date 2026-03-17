@@ -58,7 +58,7 @@ class RealityMonitor:
         report["stats"]["nodes_in_state"] = len(nodes)
 
         # 2. Check Folders
-        layer_patterns = ["α_Pyramid_Core", "β_Pyramid_Functional", "γ_Pyramid_Reflective"]
+        layer_patterns = ["alpha_pyramid_core", "beta_pyramid_functional", "gamma_pyramid_reflective"]
         disk_node_dirs = []
         for lp in layer_patterns:
             layer_path = ROOT_DIR / lp
@@ -114,7 +114,7 @@ class RealityMonitor:
         Audit the current system state against the 7 stress vectors.
         """
         # Dynamic Checks
-        journal_exists = (ROOT_DIR / "γ_Pyramid_Reflective" / "B_Evo_Log" / "evolution_journal.md").exists()
+        journal_exists = (ROOT_DIR / "gamma_pyramid_reflective" / "B_Evo_Log" / "evolution_journal.md").exists()
         
         # Test writeability for BLIND vector
         is_writeable = True

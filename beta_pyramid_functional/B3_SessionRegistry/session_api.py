@@ -25,7 +25,7 @@ from pydantic import BaseModel, Field
 
 # Allow sibling and workspace imports
 THIS_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = THIS_DIR.parents[2]
+PROJECT_ROOT = THIS_DIR.parents[1]
 
 # Discovery of pyramid layers
 core_layer = None
@@ -36,8 +36,7 @@ for d in PROJECT_ROOT.iterdir():
         break
 
 if core_layer is None:
-    core_layer = PROJECT_ROOT / "α_Pyramid_Core"
-    if not core_layer.exists(): core_layer = PROJECT_ROOT / "\u03b1_Pyramid_Core"
+    core_layer = PROJECT_ROOT / "alpha_pyramid_core"
 
 # Inject critical paths
 sys.path.insert(0, str(THIS_DIR))
@@ -63,10 +62,10 @@ from session_models import (
     StatusUpdateRequest,
 )
 from provider_matrix import ProviderMatrix
-from β_Pyramid_Functional.B1_Kernel.contracts import AgentSessionContract, TaskStatus
-from β_Pyramid_Functional.B1_Kernel.ws_manager import ConnectionManager
-from β_Pyramid_Functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator, _session_routing_policy
-from α_Pyramid_Core.B_Structure.models import NodeStatus
+from beta_pyramid_functional.B1_Kernel.contracts import AgentSessionContract, TaskStatus
+from beta_pyramid_functional.B1_Kernel.ws_manager import ConnectionManager
+from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator, _session_routing_policy
+from alpha_pyramid_core.B_Structure.models import NodeState
 
 
 app = FastAPI(

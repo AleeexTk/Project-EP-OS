@@ -1,6 +1,6 @@
 """
-Observer Relay Z4 (γ_Pyramid_Reflective)
-Telemetry, Reflective layer. Monitors events streamed from Z6, emits 
+Observer Relay Z4 (gamma_pyramid_reflective)
+Telemetery, Reflective layer. Monitors events streamed from Z6, emits 
 health metrics to the UI or Z2 Audit Bridge.
 """
 
@@ -8,7 +8,7 @@ import logging
 from typing import Dict, Any
 
 # Assuming path discovery allows this import
-from β_Pyramid_Functional.agent_bus_z8 import get_bus
+from beta_pyramid_functional.agent_bus_z8 import get_bus
 
 logger = logging.getLogger(__name__)
 

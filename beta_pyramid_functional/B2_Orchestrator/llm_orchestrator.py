@@ -10,7 +10,7 @@ from urllib import request as urlrequest
 
 import google.generativeai as genai
 
-from β_Pyramid_Functional.B3_SessionRegistry.session_models import AgentSession, Provider
+from beta_pyramid_functional.B3_SessionRegistry.session_models import AgentSession, Provider
 
 logger = logging.getLogger("llm_orchestrator")
 
@@ -181,37 +181,50 @@ async def _resolve_ollama_model(model_hint: Optional[str], force_refresh: bool =
     global _OLLAMA_MODEL_CACHE
 
     hinted = _normalize_ollama_model_name(model_hint)
-    if hinted:
-        return hinted
+    
+    # Try to get what's actually on the machine
+    available: List[str] = []
+    try:
+        available = await asyncio.to_thread(_ollama_list_models)
+    except Exception as exc:
+        logger.warning("Ollama model discovery failed: %s", exc)
 
+    # 1. If user hinted a specific model, check if it exists locally
+    if hinted:
+        if hinted in available:
+            return hinted
+        # If hint not found, we'll continue to find a better one but log hint failure
+        logger.warning("Hinted model '%s' not found in Ollama. Looking for alternatives...", hinted)
+
+    # 2. Check environment variable
     env_model = _normalize_ollama_model_name(os.getenv("OLLAMA_MODEL"))
-    if env_model:
+    if env_model and env_model in available:
         return env_model
 
-    if _OLLAMA_MODEL_CACHE and not force_refresh:
+    # 3. Use cache if valid
+    if _OLLAMA_MODEL_CACHE and not force_refresh and _OLLAMA_MODEL_CACHE in available:
         return _OLLAMA_MODEL_CACHE
 
     async with _OLLAMA_MODEL_LOCK:
-        if _OLLAMA_MODEL_CACHE and not force_refresh:
+        # Re-check after lock
+        if _OLLAMA_MODEL_CACHE and not force_refresh and _OLLAMA_MODEL_CACHE in available:
             return _OLLAMA_MODEL_CACHE
 
-        available: List[str] = []
-        try:
-            available = await asyncio.to_thread(_ollama_list_models)
-        except Exception as exc:
-            logger.warning("Ollama model discovery failed: %s", exc)
-
+        # 4. Filter preferred models that actually exist
         for candidate in _PREFERRED_OLLAMA_MODELS:
             if candidate in available:
                 _OLLAMA_MODEL_CACHE = candidate
                 return candidate
 
+        # 5. ABSOLUTE FALLBACK: Just take the first one that exists!
         if available:
             _OLLAMA_MODEL_CACHE = available[0]
+            logger.info("Auto-selected fallback Ollama model: %s", _OLLAMA_MODEL_CACHE)
+            return _OLLAMA_MODEL_CACHE
         else:
+            # Nothing at all? Use a sane default but it might 404
             _OLLAMA_MODEL_CACHE = "llama3.2:3b"
-
-        return _OLLAMA_MODEL_CACHE
+            return _OLLAMA_MODEL_CACHE
 
 def _is_quota_error(text: str) -> bool:
     lowered = text.lower()
@@ -308,21 +321,45 @@ class AgentOrchestrator:
 
     @staticmethod
     def _system_context(session: AgentSession) -> str:
+        # Load real-time state insight
+        state_summary = "State context unavailable."
+        try:
+            root_dir = Path(__file__).resolve().parents[2]
+            state_path = root_dir / "state" / "pyramid_state.json"
+            if state_path.exists():
+                with open(state_path, "r", encoding="utf-8") as f:
+                    state_data = json.load(f)
+                    nodes = state_data.get("nodes", {})
+                    active_nodes = [n["title"] for n in nodes.values() if n.get("state") == "active"]
+                    idle_nodes = [n["title"] for n in nodes.values() if n.get("state") == "idle"]
+                    state_summary = (
+                        f"Pyramid Context: {len(nodes)} nodes total. "
+                        f"ACTIVE: {', '.join(active_nodes[:5])}... "
+                        f"IDLE: {', '.join(idle_nodes[:5])}... "
+                    )
+                    # Specific check for common queries
+                    if "observer_relay" in nodes:
+                        obs = nodes["observer_relay"]
+                        state_summary += f" NODE 'Observer Relay' (Z4) is {obs.get('state','unknown')}."
+        except Exception as e:
+            state_summary = f"State insight error: {e}"
+
         is_genesis = session.node_id and session.node_id.startswith("gen-")
         if is_genesis:
             return (
                 "You are an EvoGenesis Architect Agent. You operate under the GLOBAL NEXUS master-orchestration layer. "
                 "Principles: PEAR loop (Perception, Evolution, Action, Reflection). "
                 f"Binding: NODE '{session.node_id}' (EvoGenesis Child Pyramid). "
-                "Current Goal: Develop a professional architecture for an asynchronous GCP-hosted backend "
-                "calling Replicate video functions. Focus on Cloud Tasks, Pub/Sub, and polling/pushing queues. "
-                "Provide highly technical, structured advice aligned with evopyramid-ai and Nexus/Bridge architecture."
+                f"SYSTEM STATE: {state_summary} "
+                "Current Goal: Develop a professional architecture for an asynchronous GCP-hosted backend. "
+                "Provide highly technical, structured advice aligned with evopyramid-ai."
             )
         return (
             f"You are an EvoPyramid OS Agent. Role: {session.provider.upper()}. "
-            f"You are currently bound to NODE: '{session.node_id}' at Z-LEVEL: {session.node_z}. "
-            f"Task Context: {session.task_context or 'No specific brief.'}. "
-            "Keep responses professional, concise, and focused on system architecture and the specific node duties."
+            f"You are bound to NODE: '{session.node_id}' at Z-LEVEL: {session.node_z}. "
+            f"SYSTEM STATE: {state_summary} "
+            f"Task Context: {session.task_context or 'General assistance.'}. "
+            "Keep responses professional, factual, and based on the provided SYSTEM STATE."
         )
 
     @staticmethod

@@ -19,12 +19,14 @@
   "source_refs": [],
   "metadata": {
     "source": "filesystem-discovery",
-    "path": "\u03b1_Pyramid_Core/SPINE/17_GLOBAL_NEXUS",
-    "layer_folder": "\u03b1_Pyramid_Core"
+    "path": "alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS",
+    "layer_folder": "alpha_pyramid_core"
   },
   "runtime_canon_flag": "runtime",
   "session_url": null,
   "browser_profile_dir": null,
   "orchestrator_state": "unlinked",
-  "layer_folder": "\u03b1_Pyramid_Core"
+  "memory_color": "white",
+  "gravity": 1.0,
+  "layer_folder": "alpha_pyramid_core"
 }

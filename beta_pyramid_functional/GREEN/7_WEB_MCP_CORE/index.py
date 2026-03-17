@@ -1,6 +1,6 @@
 """
 EvoPyramid Node: WEB MCP CORE
-Layer: β_Pyramid_Functional | Sector: GREEN
+Layer: beta_pyramid_functional | Sector: GREEN
 Z-Level: 7
 
 Runtime shell + web interaction gateway.

@@ -1,46 +1,50 @@
-import json
-import logging
-import os
-import sys
-import re
-import asyncio
-from datetime import datetime
-from typing import Any, List, Dict, Optional, Tuple, cast
-from pathlib import Path
-from contextlib import asynccontextmanager
-
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from datetime import datetime, timezone
-
-from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeStatus, NodeState, NodeKind, LayerType, OrchestratorState
-from beta_pyramid_functional.B1_Kernel.ws_manager import ConnectionManager
-from beta_pyramid_functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
-import uuid
-
 # ─────────────────────────────────────────
 #  Kernel Spine Discovery
 # ─────────────────────────────────────────
+import sys
+from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parents[2]
+
 # Bootstrap kernel path
 kernel_path = str(ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel")
 if kernel_path not in sys.path:
     sys.path.insert(0, kernel_path)
 
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 try:
     from path_discovery import initialize_kernel_paths
     initialize_kernel_paths()
-    # Now that paths are initialized, import Kernel contracts
-    from contracts import TaskEnvelope, TaskStatus
-    from policy_manager import SystemPolicyManager
 except ImportError as e:
+    import logging
     logging.error(f"Kernel path discovery failed: {e}")
     sys.exit(1)
 
+# Now it is safe to import from layers
+import json
+import logging
+import os
+import re
+import asyncio
+import uuid
+from datetime import datetime, timezone
+from typing import Any, List, Dict, Optional, Tuple, cast
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeState, NodeKind, LayerType, OrchestratorState
+from beta_pyramid_functional.B1_Kernel.ws_manager import ConnectionManager
+from beta_pyramid_functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
+from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
+
 try:
-    from manifestor import PhysicalManifestor
-    from pulser import PulserEngine
+    from beta_pyramid_functional.B2_Orchestrator.manifestor import PhysicalManifestor
+    from gamma_pyramid_reflective.A_Pulse.pulser import PulserEngine
 except ImportError as e:
     # Diagnostic print
     print(f"DEBUG: sys.path = {sys.path}")

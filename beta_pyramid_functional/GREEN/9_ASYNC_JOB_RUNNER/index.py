@@ -1,6 +1,6 @@
 """
 EvoPyramid Node: ASYNC JOB RUNNER
-Layer: β_Pyramid_Functional | Sector: GREEN
+Layer: beta_pyramid_functional | Sector: GREEN
 Z-Level: 9
 
 Lightweight thread-pool job queue for background tasks.
@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Optional
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
-LOG_FILE = ROOT_DIR / "β_Pyramid_Functional" / "logs" / "async_jobs.jsonl"
+LOG_FILE = ROOT_DIR / "beta_pyramid_functional" / "logs" / "async_jobs.jsonl"
 LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
 MAX_HISTORY = 200

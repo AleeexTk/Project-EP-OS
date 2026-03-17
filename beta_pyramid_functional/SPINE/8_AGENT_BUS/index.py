@@ -1,5 +1,5 @@
 """
-AgentBusZ8 — Z8 SPINE · β_Pyramid_Functional
+AgentBusZ8 — Z8 SPINE · beta_pyramid_functional
 Infrastructure nerve layer: in-memory pulse bus between Z9 agent cluster and
 Z7 Chaos Bus. Thread-safe publish/subscribe with JSONL persistence.
 """
@@ -16,7 +16,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).resolve().parent.parent
-LOG_FILE = ROOT_DIR / "β_Pyramid_Functional" / "logs" / "agent_bus.jsonl"
+LOG_FILE = ROOT_DIR / "beta_pyramid_functional" / "logs" / "agent_bus.jsonl"
 LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
 MAX_QUEUE = 512  # maximum in-memory pulses retained

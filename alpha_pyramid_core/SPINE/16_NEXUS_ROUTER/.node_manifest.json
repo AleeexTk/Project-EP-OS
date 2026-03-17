@@ -3,13 +3,33 @@
   "title": "Nexus Router",
   "z_level": 16,
   "sector": "SPINE",
+  "coords": {
+    "x": 9,
+    "y": 9,
+    "z": 16
+  },
   "layer_type": "alpha",
-  "kind": "router",
+  "kind": "module",
   "summary": "Nexus-to-Meta boot routing and orchestration supervisor. Nexus_Boot wrapper.",
   "state": "active",
-  "coords": { "x": 9, "y": 9, "z": 16 },
-  "links": ["gen-nexus", "gen-meta"],
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [
+    "gen-nexus",
+    "gen-meta"
+  ],
+  "children": [],
+  "source_refs": [],
   "metadata": {
-    "main_script": "index.py"
-  }
+    "source": "filesystem-discovery",
+    "path": "alpha_pyramid_core/SPINE/16_NEXUS_ROUTER",
+    "layer_folder": "alpha_pyramid_core"
+  },
+  "runtime_canon_flag": "runtime",
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "memory_color": "white",
+  "gravity": 1.0,
+  "layer_folder": "alpha_pyramid_core"
 }

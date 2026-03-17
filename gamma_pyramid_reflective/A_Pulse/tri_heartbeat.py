@@ -8,7 +8,7 @@ from pathlib import Path
 class TriHeartbeat:
     def __init__(self, root_dir: Path):
         self.root_dir = root_dir
-        self.log_path = self.root_dir / "γ_Pyramid_Reflective" / "A_Pulse" / "heartbeat.log"
+        self.log_path = self.root_dir / "gamma_pyramid_reflective" / "A_Pulse" / "heartbeat.log"
         
     def beat(self, state_summary: str):
         """Записывает пульс системы (Z3)"""

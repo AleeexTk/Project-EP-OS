@@ -184,34 +184,6 @@ export function generateEmptyGridNodes(): EvoNode[] {
 
   return nodes;
 }
-export function generateEmptyGridNodes(): EvoNode[] {
-  const nodes: EvoNode[] = [];
 
-  for (let z = 1; z <= 17; z++) {
-    const r = getRadius(z);
-    const isStructural = z % 2 !== 0;
-
-    for (let x = CENTER - r; x <= CENTER + r; x++) {
-      for (let y = CENTER - r; y <= CENTER + r; y++) {
-        nodes.push({
-          id: `${z}-${x}-${y}`,
-          x,
-          y,
-          z,
-          sector: 'empty',
-          type: isStructural ? 'structural' : 'link',
-          status: 'none',
-          layer: 'structure',
-          kind: 'empty',
-          label: 'Empty Slot',
-          links: [],
-          description: 'Available for allocation',
-        });
-      }
-    }
-  }
-
-  return nodes;
-}
 
 

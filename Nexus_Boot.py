@@ -63,6 +63,20 @@ def main():
         log_status("Virtual environment missing. Creating...", "WARN")
         subprocess.run("uv sync", cwd=str(root_dir), shell=True)
 
+    # 2.5 OLLAMA VALIDATION
+    if not is_port_in_use(11434):
+        log_status("Ollama is not running. Attempting to ignite Ollama service...", "WARN")
+        try:
+            # Start Ollama serve in a new process group/window to keep it alive
+            subprocess.Popen("ollama serve", shell=True, creationflags=subprocess.CREATE_NEW_CONSOLE if os.name == 'nt' else 0)
+            time.sleep(5) # Give it time to bind
+            if is_port_in_use(11434):
+                log_status("Ollama service ignited successfully.", "SUCCESS")
+            else:
+                log_status("Ollama failed to start automatically. Please run 'ollama serve' manually.", "ERROR")
+        except Exception as e:
+            log_status(f"Failed to start Ollama: {e}", "ERROR")
+
     # 3. DEPLOYMENT PHASE
     log_status("Phase 2: Deploying Ecosystem Clusters...", "INFO")
     
