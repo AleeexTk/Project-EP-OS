@@ -10,6 +10,7 @@
   "coords": { "x": 9, "y": 9, "z": 10 },
   "links": ["gen-pear", "gen-async-jobs"],
   "metadata": {
-    "main_script": "cr_gateway_z10.py"
+    "main_script": "index.py",
+    "layer_boundary": "alpha-to-beta"
   }
 }

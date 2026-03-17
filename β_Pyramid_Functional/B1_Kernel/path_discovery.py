@@ -21,11 +21,11 @@ def initialize_kernel_paths():
         if layer_path not in sys.path:
             sys.path.append(layer_path)
             
-        # Add sub-sectors for direct import (e.g., allow 'import models' from B3)
-        for root, dirs, files in os.walk(layer_path):
-            if "__init__.py" in files or any(f.endswith(".py") for f in files):
-                if root not in sys.path:
-                    sys.path.append(root)
+        # Add sub-sectors for direct import (1st level only to prevent deep recursive scan slowdowns)
+        for child in Path(layer_path).iterdir():
+            if child.is_dir():
+                if any(child.glob("*.py")):
+                    sys.path.append(str(child))
 
 if __name__ == "__main__":
     initialize_kernel_paths()

@@ -14,6 +14,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timezone
 
+from α_Pyramid_Core.B_Structure.models import PyramidState, Node, Link, NodeStatus, NodeState, NodeKind, LayerType, OrchestratorState
+from β_Pyramid_Functional.B1_Kernel.ws_manager import ConnectionManager
+from β_Pyramid_Functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
+import uuid
+
 # ─────────────────────────────────────────
 #  Kernel Spine Discovery
 # ─────────────────────────────────────────
@@ -34,7 +39,6 @@ except ImportError as e:
     sys.exit(1)
 
 try:
-    from models import Node, Link, PyramidState, NodeState, NodeKind, LayerType, OrchestratorState
     from manifestor import PhysicalManifestor
     from pulser import PulserEngine
 except ImportError as e:
@@ -67,44 +71,52 @@ def load_state() -> PyramidState:
     return PyramidState()
 
 def save_state(state: PyramidState):
-    STATE_DIR.mkdir(parents=True, exist_ok=True)
-    with open(STATE_FILE, "w", encoding='utf-8') as f:
-        f.write(state.model_dump_json())
+    """Atomic state persistence using SK Engine utility."""
+    try:
+        write_atomic(STATE_FILE, state.model_dump())
+    except Exception as e:
+        logger.error(f"CRITICAL: Failed to save state: {e}")
 
 current_state = load_state()
 
 # ─────────────────────────────────────────
 #  Communication Manager
 # ─────────────────────────────────────────
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
-
-    def disconnect(self, websocket: WebSocket):
-        if websocket in self.active_connections:
-            self.active_connections.remove(websocket)
-
-    async def broadcast(self, message: dict):
-        dead = []
-        for c in self.active_connections:
-            try:
-                await c.send_json(message)
-            except Exception:
-                dead.append(c)
-        for c in dead:
-            self.disconnect(c)
-
 manager = ConnectionManager()
+sk_memory = CortexMemory()
 
 # ─────────────────────────────────────────
 #  Lifespan & Background Tasks
 # ─────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Initialize SK Memory from current state for associative search
+    logging.info("Initializing SK Memory from current state...")
+    for node_id, node in current_state.nodes.items():
+        # Sector-to-Color Logic Mapping
+        sector_colors = {
+            "SPINE": MemoryColor.BLUE,
+            "GOLD": MemoryColor.YELLOW,
+            "RED": MemoryColor.RED,
+            "GREEN": MemoryColor.GREEN,
+            "PURPLE": MemoryColor.VIOLET
+        }
+        m_color = sector_colors.get(node.sector, MemoryColor.WHITE)
+        
+        block = QuantumBlock(
+            id=node_id,
+            content=f"{node.title} {node.summary}",
+            color=m_color,
+            metadata={"path": node.metadata.get("path")}
+        )
+        await sk_memory.add_block(block, persist=False)
+        
+        # Sync back to current_state for UI
+        node.memory_color = m_color.value
+        node.gravity = block.gravity
+
+    logging.info(f"SK Memory initialized with {len(sk_memory.blocks)} nodes.")
+
     # Initialize background engine
     pulser = PulserEngine(current_state, manager, save_state)
     await pulser.start()
@@ -131,7 +143,13 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="EvoPyramid OS Core Engine", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://127.0.0.1:5173", 
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -216,7 +234,20 @@ def discover_structure_nodes() -> Tuple[List[Node], Dict[str, int]]:
 # ─────────────────────────────────────────
 #  API Routes
 # ─────────────────────────────────────────
-@app.get("/state")
+@app.get("/search/similarity")
+async def search_similarity(q: str, threshold: float = 0.1):
+    """Associative search for related nodes in the pyramid."""
+    results = await sk_memory.find_similar(q, threshold)
+    return [
+        {
+            "id": b.id,
+            "title": current_state.nodes[b.id].title if b.id in current_state.nodes else b.id,
+            "similarity": sk_memory._jaccard_similarity(sk_memory.minhash.create_signature(q), b.minhash)
+        } 
+        for b in results
+    ]
+
+@app.get("/state", response_model=PyramidState)
 async def get_state():
     return current_state
 

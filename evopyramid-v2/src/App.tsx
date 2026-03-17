@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Activity, Bot, ChevronRight, FolderTree, Layers3, PanelRightOpen, Radar, RefreshCw, ShieldCheck, Sparkles, Table2, Terminal, Wrench, X } from 'lucide-react';
+import { Activity, Layers3, PanelRightOpen, Radar, RefreshCw, ShieldCheck, Sparkles, Table2 } from 'lucide-react';
 import EvoPyramid from './components/EvoPyramid';
 import ArchitectTable from './components/ArchitectTable';
 import SessionLauncher from './components/SessionLauncher';
 import AgentWorkspace from './components/AgentWorkspace';
 import KernelMonitor from './components/KernelMonitor';
+import ObserverBanner from './components/ObserverBanner';
+import NodeInspector from './components/NodeInspector';
+import SwarmTerminalPanel from './components/SwarmTerminalPanel';
+import ZBusAlert from './components/ZBusAlert';
 
 import { CORE_API_BASE } from './lib/config';
 import { EvoNode } from './lib/evo';
-import { SwarmEvent, useSwarmTerminal } from './lib/useSwarmTerminal';
+import { useSwarmTerminal } from './lib/useSwarmTerminal';
 import { usePyramidState } from './lib/usePyramidState';
 import { AgentSession, useSessionRegistry } from './lib/useSessionRegistry';
 
@@ -48,37 +52,9 @@ const getProjectPathForNode = (node: EvoNode) => {
   if (typeof pathFromMetadata === 'string' && pathFromMetadata.trim().length > 0) {
     return normalizePath(pathFromMetadata);
   }
-
   const layerFolder = node.z >= 11 ? 'α_Pyramid_Core' : node.z >= 5 ? 'β_Pyramid_Functional' : 'γ_Pyramid_Reflective';
   return `${layerFolder}/${node.sector.toUpperCase()}/${node.z}_${slugLabel(node.label ?? node.id)}`;
 };
-
-function EventRow({ event }: { event: SwarmEvent }) {
-  const ts = new Date(event.ts).toLocaleTimeString('uk-UA', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-  const provider = event.provider ?? 'system';
-  const color = PROVIDER_COLORS[provider] ?? PROVIDER_COLORS.system;
-
-  const message =
-    event.event === 'session.created'
-      ? `Session ${event.session_id} attached to ${event.node_id}`
-      : event.event === 'session.status_changed'
-        ? `Status => ${event.new_status}`
-        : event.content ?? 'System event';
-
-  return (
-    <div className="flex gap-2 text-[10px]">
-      <span className="text-slate-500 shrink-0">[{ts}]</span>
-      <span className="font-bold shrink-0 opacity-80">
-        {provider.toUpperCase()}
-      </span>
-      <span className="text-slate-300">{message}</span>
-    </div>
-  );
-}
 
 function App() {
   const { nodes: coreNodes, isConnected, latestZBusEvent } = usePyramidState();
@@ -99,112 +75,8 @@ function App() {
   const [syncingStructure, setSyncingStructure] = useState(false);
   const [guardingCanon, setGuardingCanon] = useState(false);
   const [showObserverBanner, setShowObserverBanner] = useState(true);
-  const terminalRef = useRef<HTMLDivElement>(null);
+  
   const hasAutoSyncedRef = useRef(false);
-
-  const genesisNodes = useMemo<EvoNode[]>(
-    () => [
-      {
-        id: 'gen-nexus',
-        label: 'GLOBAL NEXUS',
-        description: 'Master orchestration layer',
-        z: 17,
-        x: 9,
-        y: 9,
-        sector: 'spine',
-        status: 'active',
-        kind: 'service',
-        layer: 'z17',
-        type: 'structural',
-        links: ['gen-meta', 'gen-bridge'],
-      },
-      {
-        id: 'gen-meta',
-        label: 'EVO META',
-        description: 'Self-governance and evolution policy',
-        z: 15,
-        x: 9,
-        y: 9,
-        sector: 'purple',
-        status: 'active',
-        kind: 'protocol',
-        layer: 'alpha',
-        type: 'structural',
-        links: ['gen-bridge'],
-      },
-      {
-        id: 'gen-bridge',
-        label: 'EVO BRIDGE',
-        description: 'Adapters for OpenAI, Gemini, Replicate',
-        z: 13,
-        x: 9,
-        y: 9,
-        sector: 'red',
-        status: 'active',
-        kind: 'agent',
-        layer: 'alpha',
-        type: 'structural',
-        links: ['gen-pear', 'gen-webmcp'],
-      },
-      {
-        id: 'gen-pear',
-        label: 'PEAR LOOP',
-        description: 'Perception, Evolution, Action, Reflection',
-        z: 11,
-        x: 9,
-        y: 9,
-        sector: 'gold',
-        status: 'active',
-        kind: 'memory',
-        layer: 'alpha',
-        type: 'structural',
-        links: ['gen-async-jobs'],
-      },
-      {
-        id: 'gen-async-jobs',
-        label: 'ASYNC JOB RUNNER',
-        description: 'Queue and retries for long jobs',
-        z: 9,
-        x: 9,
-        y: 9,
-        sector: 'green',
-        status: 'active',
-        kind: 'runtime',
-        layer: 'beta',
-        type: 'structural',
-        links: ['gen-webmcp'],
-      },
-      {
-        id: 'gen-webmcp',
-        label: 'WEB MCP CORE',
-        description: 'Runtime shell + web interaction gateway',
-        z: 7,
-        x: 9,
-        y: 9,
-        sector: 'green',
-        status: 'active',
-        kind: 'runtime',
-        layer: 'beta',
-        type: 'structural',
-        links: ['gen-dashboard'],
-      },
-      {
-        id: 'gen-dashboard',
-        label: 'EVO DASHBOARD',
-        description: 'Operator view and assistant workspace',
-        z: 5,
-        x: 9,
-        y: 9,
-        sector: 'spine',
-        status: 'active',
-        kind: 'service',
-        layer: 'beta',
-        type: 'structural',
-        links: [],
-      },
-    ],
-    [],
-  );
 
   const dispatchKernelTask = useCallback(async (action: string, payload: any = {}) => {
     const envelope = {
@@ -238,13 +110,7 @@ function App() {
     return dispatchKernelTask('manifest_node', nodeToPayload(node));
   }, [dispatchKernelTask]);
 
-  const baseNodes = useMemo(() => {
-    if (activeTab === 'core' || activeTab === 'table') {
-      return coreNodes;
-    }
-    const fromCore = coreNodes.filter((node) => node.id.startsWith('gen-'));
-    return fromCore.length > 0 ? fromCore : genesisNodes;
-  }, [activeTab, coreNodes, genesisNodes]);
+  const baseNodes = useMemo(() => coreNodes, [coreNodes]);
 
   const sessionsByNode = useMemo(() => {
     const map = new Map<string, AgentSession[]>();
@@ -304,14 +170,7 @@ function App() {
     }
   }, [activeSessionId, sessions]);
 
-  useEffect(() => {
-    if (activeTab !== 'genesis') {
-      return;
-    }
-    genesisNodes.forEach((node) => {
-      void syncNodeToCore(node).catch(() => undefined);
-    });
-  }, [activeTab, genesisNodes, syncNodeToCore]);
+  // Genesis sync effect removed. Nodes are now unified in backend state.
 
   useEffect(() => {
     if (!notice) {
@@ -333,12 +192,7 @@ function App() {
     }
   }, [latestZBusEvent]);
 
-  useEffect(() => {
-    if (!terminalRef.current) {
-      return;
-    }
-    terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-  }, [events]);
+
 
   const handleSessionCreated = (sessionId: string) => {
     setActiveSessionId(sessionId);
@@ -476,84 +330,14 @@ function App() {
           </button>
         </div>
 
-        {showObserverBanner && (
-          <div className="absolute top-28 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[650px] bg-rose-950/80 border border-rose-500/50 rounded-lg p-3 text-[11px] flex flex-col md:flex-row items-center gap-3 backdrop-blur shadow-2xl">
-            <div className="flex items-start md:items-center gap-3 text-rose-200">
-              <Sparkles className="w-4 h-4 text-rose-400 shrink-0 mt-0.5 md:mt-0" />
-              <div className="flex flex-col">
-                <span className="font-semibold uppercase tracking-wider text-rose-400">Observer Alert</span>
-                <span className="opacity-90 mt-0.5">Architectural anomaly detected in Z7. Awaiting manual routing confirmation.</span>
-              </div>
-            </div>
-            <div className="flex flex-wrap md:flex-nowrap gap-2 md:ml-auto w-full md:w-auto mt-2 md:mt-0 justify-end">
-              <button 
-                onClick={() => setShowObserverBanner(false)}
-                className="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/50 text-rose-200 rounded-md font-semibold transition whitespace-nowrap flex-1 md:flex-none"
-              >
-                Confirm Route
-              </button>
-              <button 
-                onClick={async () => {
-                  try {
-                    const res = await fetch(`${CORE_API_BASE}/nodes/chaos_engine/status`, {
-                      method: 'PATCH',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ status: 'quarantined' })
-                    });
-                    if (!res.ok) throw new Error();
-                    setNotice('Z7 Quarantined successfully');
-                    setShowObserverBanner(false);
-                  } catch (e) {
-                    setNotice('Failed to quarantine Z7');
-                  }
-                }}
-                className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-md font-semibold transition flex items-center justify-center gap-1 whitespace-nowrap flex-1 md:flex-none"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Quarantine
-              </button>
-              <button 
-                onClick={() => setSelectedNodeId('chaos_engine')}
-                className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-md transition"
-                title="Inspect Z7"
-              >
-                Inspect
-              </button>
-            </div>
-          </div>
-        )}
+        <ObserverBanner 
+          visible={showObserverBanner}
+          onClose={() => setShowObserverBanner(false)}
+          onNotice={setNotice}
+          onInspectNode={setSelectedNodeId}
+        />
 
-        {/* Dynamic ZBus Alert */}
-        {activeZBusEvent && (
-          <div className={`absolute top-[200px] left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[650px] border rounded-lg p-3 text-[11px] flex flex-col items-start gap-1 backdrop-blur shadow-2xl transition-colors duration-500
-            ${activeZBusEvent.status === 'degraded' ? 'bg-amber-950/90 border-amber-500/60' : 
-              activeZBusEvent.status === 'failed' ? 'bg-rose-950/90 border-rose-500/60' : 
-              'bg-emerald-950/90 border-emerald-500/60'}`}
-          >
-            <div className={`flex items-start md:items-center gap-3 w-full
-              ${activeZBusEvent.status === 'degraded' ? 'text-amber-200' : 
-                activeZBusEvent.status === 'failed' ? 'text-rose-200' : 
-                'text-emerald-200'}`}
-            >
-              <Activity className="w-4 h-4 shrink-0 mt-0.5 md:mt-0" />
-              <div className="flex flex-col w-full">
-                <div className="flex justify-between items-center w-full">
-                  <span className="font-bold tracking-wider">
-                    {activeZBusEvent.event_type} {activeZBusEvent.simulation ? '(SIMULATION)' : ''}
-                  </span>
-                  <span className="opacity-70 text-[9px]">{activeZBusEvent.node_id}</span>
-                </div>
-                <span className="opacity-90 mt-1">
-                  {activeZBusEvent.event_type === 'NODE_FALLBACK_INIT' && `Provider ${activeZBusEvent.provider} timeout. Falling back to ${activeZBusEvent.fallback_to}.`}
-                  {activeZBusEvent.event_type === 'PROVIDER_TIMEOUT' && `Provider ${activeZBusEvent.provider} timed out. Task: ${activeZBusEvent.payload?.task}`}
-                  {activeZBusEvent.event_type === 'NODE_RECOVERY_SUCCESS' && `Resolved with ${activeZBusEvent.provider}. Status: ${activeZBusEvent.payload?.result}`}
-                  {activeZBusEvent.event_type === 'NODE_START' && `Starting task: ${activeZBusEvent.payload?.task}`}
-                  {activeZBusEvent.event_type === 'PROVIDER_SELECTED' && `Selected provider: ${activeZBusEvent.provider}`}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
+        <ZBusAlert event={activeZBusEvent} />
 
         {activeTab === 'table' ? (
           <div className="h-full pt-24 pb-6 px-3 md:px-6">
@@ -655,73 +439,14 @@ function App() {
         )}
 
         {selectedNode && (
-          <section className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-lg rounded-2xl bg-slate-900/90 border border-white/10 backdrop-blur p-4 shadow-2xl">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 className="font-semibold text-sm">{selectedNode.label}</h2>
-                <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{selectedNode.description ?? 'No summary'}</p>
-              </div>
-              <button
-                onClick={() => setSelectedNodeId(null)}
-                title="Deselect node"
-                className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/10"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="mt-3 grid gap-2">
-              <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                <span>Z{selectedNode.z}</span>
-                <span>•</span>
-                <span>{selectedNode.sector.toUpperCase()}</span>
-                <span>•</span>
-                <span>{selectedNode.kind}</span>
-              </div>
-              <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                <FolderTree className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="truncate">{getProjectPathForNode(selectedNode)}</span>
-              </div>
-              {selectedNodeSessions.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 text-[10px]">
-                  {selectedNodeSessions.slice(0, 4).map((session) => (
-                    <span
-                      key={session.id}
-                      className="px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-slate-300"
-                    >
-                      {session.provider.toUpperCase()} • {session.status}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              <button
-                onClick={() => setShowLauncher(true)}
-                className="flex-1 min-w-[140px] px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold flex items-center justify-center gap-1.5"
-              >
-                <Bot className="w-3.5 h-3.5" />
-                Activate Agent
-              </button>
-              <button
-                onClick={() => {
-                  void handleManifestSelectedNode();
-                }}
-                className="px-3 py-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-[11px] font-semibold flex items-center gap-1.5 border border-amber-500/30"
-              >
-                <Wrench className="w-3.5 h-3.5" />
-                Manifest Node
-              </button>
-              <button
-                onClick={() => setAssistantOpen(true)}
-                className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-[11px] font-semibold flex items-center gap-1.5"
-              >
-                Open Assistant
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </section>
+          <NodeInspector 
+            node={selectedNode}
+            sessions={selectedNodeSessions}
+            onClose={() => setSelectedNodeId(null)}
+            onActivateAgent={() => setShowLauncher(true)}
+            onManifest={() => void handleManifestSelectedNode()}
+            onOpenAssistant={() => setAssistantOpen(true)}
+          />
         )}
 
         {notice && (
@@ -731,27 +456,12 @@ function App() {
           </div>
         )}
 
-        <button
-          onClick={() => setTerminalOpen((value) => !value)}
-          className={`absolute left-4 bottom-4 z-40 p-3 rounded-full border transition-colors ${terminalOpen ? 'bg-emerald-500 border-emerald-400 text-black' : 'bg-slate-900 border-white/10 text-slate-300 hover:bg-slate-800'}`}
-          title="Toggle swarm terminal"
-        >
-          <Terminal className="w-4 h-4" />
-        </button>
-
-        {terminalOpen && (
-          <div className="absolute left-4 bottom-20 z-40 w-[310px] h-[300px] rounded-2xl bg-slate-950 border border-white/10 shadow-2xl overflow-hidden">
-            <div className="px-3 py-2 border-b border-white/10 text-[10px] flex items-center justify-between">
-              <span className="font-semibold tracking-wide">Swarm Stream</span>
-              <span className={`w-2 h-2 rounded-full ${swarmConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-            </div>
-            <div ref={terminalRef} className="h-[258px] overflow-y-auto px-3 py-2 space-y-1.5 font-mono no-scrollbar">
-              {events.map((event) => (
-                <EventRow key={event.id} event={event} />
-              ))}
-            </div>
-          </div>
-        )}
+        <SwarmTerminalPanel 
+          open={terminalOpen}
+          connected={swarmConnected}
+          events={events}
+          onToggle={() => setTerminalOpen(!terminalOpen)}
+        />
       </main>
 
       {assistantOpen && (

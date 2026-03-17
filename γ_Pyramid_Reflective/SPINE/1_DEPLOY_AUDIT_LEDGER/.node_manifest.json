@@ -11,7 +11,7 @@
   "links": ["netlify_deploy_beacon"],
   "metadata": {
     "service": "deploy-audit",
-    "main_script": "joint_sync_z1.py",
+    "main_script": "index.py",
     "owner": "integrations",
     "z_vertical": "continuity"
   }

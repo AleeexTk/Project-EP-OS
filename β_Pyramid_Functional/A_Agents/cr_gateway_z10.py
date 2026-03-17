@@ -1,27 +1,56 @@
-import os
-import sys
-from pathlib import Path
+"""
+CR Gateway Z10 (β_Pyramid_Functional)
+Cognitive Response Gateway. Routes and processes complex reasoning 
+tasks by interfacing with LLMs and the Z8 Agent Bus.
+"""
 
-# Z10: C-R Gateway - Infrastructure Layer (Black Door)
-# Canon-to-Runtime Bridge (Alpha -> Beta)
+import logging
+import asyncio
+from typing import Dict, Any
 
-class CRGatewayZ10:
-    def __init__(self, root_dir: Path):
-        self.root_dir = root_dir
+# Ensure we can import from B1_Kernel and B2_Orchestrator
+from β_Pyramid_Functional.agent_bus_z8 import get_bus
+from β_Pyramid_Functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator
+
+logger = logging.getLogger(__name__)
+
+class CRGateway:
+    def __init__(self):
+        self.bus = get_bus()
+        self.target_name = "cr_gateway"
+        logger.info(f"[Z10] CR Gateway initialized, attaching to AgentBusZ8 target: '{self.target_name}'")
+
+    def start(self):
+        """Attaches to the Z8 event bus."""
+        self.bus.subscribe(self.target_name, self._on_pulse_received)
+        logger.info("[Z10] Gateway Online. Listening on Z8.")
+
+    def _on_pulse_received(self, pulse: Dict[str, Any]):
+        """Callback triggered when Z8 bus routes a pulse to 'cr_gateway'."""
+        source = pulse.get("source", "unknown")
+        payload = pulse.get("payload", {})
+        logger.info(f"[Z10] Received pulse from {source}. Payload: {payload}")
         
-    def authorize_execution(self, pulse_id: str, intent_data: dict):
-        """Проверяет соответствие импульса Канону (Alpha) и разрешает выполнение в Beta"""
-        print(f"🔒 [Z10] C-R Gateway: Authorizing pulse '{pulse_id}' for execution...")
-        # Логика валидации манифеста и правил безопасности
-        is_valid = True # В реальности здесь будет сверка с правилами Z11
+        # In the future, this is where we invoke LLMs via AgentOrchestrator.
+        # For now, we reflect a summary response back to chaos_bus or source.
+        response_payload = {
+            "status": "processed_by_z10",
+            "original_query": payload,
+            "cognitive_result": f"Z10 acknowledged cognition request from {source}"
+        }
         
-        if is_valid:
-            print(f"✅ [Z10] C-R Gateway: Pulse '{pulse_id}' authorized. Bridging to Beta layer.")
-            return True
-        else:
-            print(f"🚫 [Z10] C-R Gateway: Pulse '{pulse_id}' REJECTED by Canon rules.")
-            return False
+        # Send resolution out back to the bus
+        self.bus.transmit(
+            source_agent="CRGateway_Z10",
+            target="chaos_bus",
+            data=response_payload
+        )
+
+def initialize():
+    gateway = CRGateway()
+    gateway.start()
+    return gateway
 
 if __name__ == "__main__":
-    gateway = CRGatewayZ10(Path("."))
-    gateway.authorize_execution("pulse_f1a2b3c4", {"intent": "Re-orchestrate project"})
+    logging.basicConfig(level=logging.INFO)
+    initialize()

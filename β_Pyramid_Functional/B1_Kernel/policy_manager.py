@@ -32,7 +32,7 @@ class SystemPolicyManager:
                 return False
 
         # Basic Security Checks
-        if envelope.action == "filesystem_write" and not self.policy.allow_filesytem_write:
+        if envelope.action == "filesystem_write" and not self.policy.allow_filesystem_write:
             envelope.status = TaskStatus.FAILED
             envelope.metadata["error"] = "PolicyViolation: Filesystem write denied."
             self._log_violation(envelope)

@@ -7,26 +7,6 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-# We assume this is running within the EvoPyramid environment where sys.path is already set up
-# or we can set it up here if needed.
-import sys
-from pathlib import Path
-import logging
-
-# Discovery of pyramid layers
-ROOT_DIR = Path(__file__).resolve().parents[2]
-core_layer = None
-for d in ROOT_DIR.iterdir():
-    if not d.is_dir(): continue
-    if "pyramid_core" in d.name.lower():
-        core_layer = d
-        break
-
-if core_layer is None:
-    core_layer = ROOT_DIR / "α_Pyramid_Core"
-    if not core_layer.exists():
-        core_layer = ROOT_DIR / "\u03b1_Pyramid_Core"
-
 # Inject critical paths
 if core_layer and core_layer.exists():
     path_str = str(core_layer / "B_Structure")
@@ -101,7 +81,7 @@ class PhysicalManifestor:
             # Create a small manifest file in the node
             manifest_path = node_dir / ".node_manifest.json"
             with open(manifest_path, "w", encoding="utf-8") as f:
-                node_data = node.dict()
+                node_data = node.model_dump()
                 node_data["layer_folder"] = layer_folder
                 json.dump(node_data, f, indent=2)
                 

@@ -79,6 +79,10 @@ class Node(BaseModel):
     browser_profile_dir: Optional[str] = None
     orchestrator_state: OrchestratorState = OrchestratorState.UNLINKED
 
+    # Cognitive / SK Engine metrics
+    memory_color: str = "white"
+    gravity: float = 1.0
+
 class Link(BaseModel):
     source_id: str
     target_id: str

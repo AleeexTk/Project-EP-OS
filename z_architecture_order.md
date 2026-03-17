@@ -23,10 +23,8 @@
 | --- | --- | --- | --- | --- |
 | `gen-nexus` | GLOBAL NEXUS | SPINE | `α_Pyramid_Core/SPINE/17_GLOBAL_NEXUS` | ✅ Есть |
 
-**Z16 — INFRA** (между Z17 и Z15): ❌ **ОТСУТСТВУЕТ**
-> Нужен: Nexus Router / Boot Orchestrator
-> Файл: `α_Pyramid_Core/SPINE/16_NEXUS_ROUTER/` + `.node_manifest.json`
-> Назначение: маршрутизация команд от Nexus вниз к Z15; `Nexus_Boot.py` де-факто уже живёт здесь
+**Z16 — INFRA** (между Z17 и Z15): ✅ **ЕСТЬ**
+> Файл: `α_Pyramid_Core/SPINE/16_NEXUS_ROUTER/index.py`
 
 ---
 
@@ -37,10 +35,8 @@
 | `gen-meta` | EVO META | PURPLE | `α_Pyramid_Core/PURPLE/15_EVO_META` | ✅ Есть |
 | `openai_docs_hub` | OpenAI Docs Hub | PURPLE | `α_Pyramid_Core/PURPLE/15_OPENAI_DOCS_HUB` | ✅ Есть |
 
-**Z14 — INFRA** (между Z15 и Z13): ❌ **ОТСУТСТВУЕТ**
-> Нужен: Policy Bus / Protocol Dispatcher
-> Назначение: связь между EVO META и EVO BRIDGE; распределяет политики от Z15 вниз
-> Файл: `α_Pyramid_Core/SPINE/14_POLICY_BUS/`
+**Z14 — INFRA** (между Z15 и Z13): ✅ **ЕСТЬ**
+> Файл: `α_Pyramid_Core/SPINE/14_POLICY_BUS/index.py`
 
 ---
 
@@ -50,10 +46,8 @@
 | --- | --- | --- | --- | --- |
 | `gen-bridge` | EVO BRIDGE | RED | `α_Pyramid_Core/RED/13_EVO_BRIDGE` | ✅ Есть |
 
-**Z12 — INFRA** (между Z13 и Z11): ❌ **ОТСУТСТВУЕТ**
-> Нужен: Provider Router (Gemini / OpenAI / Replicate adapter layer)
-> Назначение: детали подключения к провайдерам, API-ключи, retry-логика
-> Файл: `α_Pyramid_Core/RED/12_PROVIDER_ROUTER/`
+**Z12 — INFRA** (между Z13 и Z11): ✅ **ЕСТЬ**
+> Файл: `α_Pyramid_Core/RED/12_PROVIDER_ROUTER/index.py`
 
 ---
 
@@ -64,10 +58,8 @@
 | `gen-pear` | PEAR LOOP | GOLD | `α_Pyramid_Core/GOLD/11_PEAR_LOOP` | ✅ Есть |
 | `gh_ci_guardian` | GH CI Guardian | RED | `α_Pyramid_Core/RED/11_GH_CI_GUARDIAN` | ✅ Есть |
 
-**Z10 — INFRA** (граница Alpha/Beta): ❌ **ОТСУТСТВУЕТ**
-> Нужен: CR Gateway / Alpha→Beta Transit
-> Назначение: контрактная передача задач из Alpha в Beta; здесь живёт `cr_gateway_z10.py` (файл есть, папки нет!)
-> Файл: `α_Pyramid_Core/SPINE/10_CR_GATEWAY/` + перенести `cr_gateway_z10.py`
+**Z10 — INFRA** (граница Alpha/Beta): ✅ **ЕСТЬ**
+> Файл: `α_Pyramid_Core/SPINE/10_CR_GATEWAY/index.py`
 
 ---
 
@@ -80,10 +72,8 @@
 | `gen-async-jobs` | ASYNC JOB RUNNER | GREEN | `β_Pyramid_Functional/GREEN/9_ASYNC_JOB_RUNNER` | ✅ Есть |
 | `gh_pr_resolver` | GH PR Resolver | GREEN | `β_Pyramid_Functional/GREEN/9_GH_PR_RESOLVER` | ✅ Есть |
 
-**Z8 — INFRA** (между Z9 и Z7): ❌ **ОТСУТСТВУЕТ**
-> Нужен: Agent Bus / Z-Bus (файл `agent_bus_z8.py` существует в бета-слое! — папки нет)
-> Назначение: inter-agent шина, маршрут задач между агентами; Z-Bus уже написан
-> Файл: `β_Pyramid_Functional/SPINE/8_AGENT_BUS/` + перенести `agent_bus_z8.py`
+**Z8 — INFRA** (между Z9 и Z7): ✅ **ЕСТЬ**
+> Файл: `β_Pyramid_Functional/SPINE/8_AGENT_BUS/index.py`
 
 ---
 
@@ -93,14 +83,13 @@
 | --- | --- | --- | --- | --- |
 | `gen-webmcp` | WEB MCP CORE | GREEN | `β_Pyramid_Functional/GREEN/7_WEB_MCP_CORE` | ✅ Есть |
 | `chatgpt_apps_bridge` | ChatGPT Apps Bridge | SPINE | `β_Pyramid_Functional/SPINE/7_CHATGPT_APPS_BRIDGE` | ✅ Есть |
+| `sk_engine` | SK Engine | GOLD | `β_Pyramid_Functional/B1_Kernel/SK_Engine` | ✅ Есть (Active 3.3) |
 
 > ⚠️ `chaos_bus_z7.py` существует в корне β но не имеет папки-узла!
 > Нужен узел: `β_Pyramid_Functional/SPINE/7_CHAOS_ENGINE/`
 
-**Z6 — INFRA** (между Z7 и Z5): ❌ **ОТСУТСТВУЕТ**
-> Нужен: Resolution Stream / Chaos→Dashboard bridge
-> Файл `resolution_stream_z6.py` существует! — папки нет
-> Файл: `β_Pyramid_Functional/SPINE/6_RESOLUTION_STREAM/`
+**Z6 — INFRA** (между Z7 и Z5): ✅ **ЕСТЬ**
+> Файл: `β_Pyramid_Functional/SPINE/6_RESOLUTION_STREAM/index.py`
 
 ---
 
@@ -109,12 +98,9 @@
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
 | `gen-dashboard` | EVO DASHBOARD | SPINE | `β_Pyramid_Functional/SPINE/5_EVO_DASHBOARD` | ✅ Есть |
-| `test_stress_node` | Stress Test Node | GREEN | `β_Pyramid_Functional/GREEN/5_Stress_Test_Node` | ⚠️ Тестовый — удалить |
 
-**Z4 — INFRA** (граница Beta/Gamma): ❌ **ОТСУТСТВУЕТ**
-> Нужен: Observer Relay (файл `observer_relay_z4.py` в γ-слое уже пустой)
-> Назначение: передача событий из Beta в Gamma (логи, пульс)
-> Файл: `β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY/`
+**Z4 — INFRA** (граница Beta/Gamma): ✅ **ЕСТЬ**
+> Файл: `β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY/index.py`
 
 ---
 
@@ -126,10 +112,8 @@
 | --- | --- | --- | --- | --- |
 | `netlify_deploy_beacon` | Netlify Deploy Beacon | GOLD | `γ_Pyramid_Reflective/GOLD/3_NETLIFY_DEPLOY_BEACON` | ✅ Есть |
 
-**Z2 — INFRA** (между Z3 и Z1): ❌ **ОТСУТСТВУЕТ**
-> Нужен: Audit Bridge / Reflection Relay
-> Назначение: связь Netlify Beacon → Deploy Audit Ledger
-> Файл: `γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE/`
+**Z2 — INFRA** (между Z3 и Z1): ✅ **ЕСТЬ**
+> Файл: `γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE/index.py`
 
 ---
 
@@ -145,7 +129,7 @@
 
 ### Фазы работ
 
-#### 🔴 ФАЗА 1 — Регистрация "сирот" (файлы без папок-узлов)
+#### 🟢 ФАЗА 1 — Регистрация "сирот" (ФАЙЛЫ В ПАПКАХ) ✅ **DONE**
 
 Эти `.py` файлы живут без соответствующих директорий-узлов.
 Задача: создать папки + `.node_manifest.json` для каждого.
@@ -159,7 +143,7 @@
 | `observer_relay_z4.py` | `γ_Pyramid_Reflective/` | `γ_Pyramid_Reflective/SPINE/4_OBSERVER_RELAY/` | Z4 | SPINE |
 | `joint_sync_z1.py` | `γ_Pyramid_Reflective/` | `γ_Pyramid_Reflective/SPINE/1_DEPLOY_AUDIT_LEDGER/` | Z1 | SPINE |
 
-#### 🟡 ФАЗА 2 — Создание инфра-узлов (Z-чётные)
+#### 🟡 ФАЗА 2 — Создание инфра-узлов (Z-чётные) ✅ **DONE**
 
 Новые папки + манифесты для инфраструктурных Z-уровней:
 
@@ -172,7 +156,7 @@
 | `β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY/` | Z4 | Event relay Beta→Gamma |
 | `γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE/` | Z2 | Audit relay Gamma Z3→Z1 |
 
-#### 🟢 ФАЗА 3 — Связи (links)
+#### 🟡 ФАЗА 3 — Связи (links) [/]
 
 Добавить в `pyramid_state.json` и `.node_manifest.json` ссылки `links: []`:
 
@@ -187,13 +171,11 @@
 | `gen-dashboard` (Z5) | `netlify_deploy_beacon` (Z3) | Z4 observer_relay |
 | `netlify_deploy_beacon` (Z3) | `deploy_audit_ledger` (Z1) | Z2 audit_bridge |
 
-#### 🔵 ФАЗА 4 — Cleanup
+#### 🟢 ФАЗА 4 — Cleanup ✅ **DONE**
 
-- Удалить `test_stress_node` из `pyramid_state.json` и его папку
-- Добавить `runtime_canon_flag` в `models.py` → `Node`
-- `PATCH /nodes/{id}/status` endpoint в `evo_api.py`
-- Observer Banner в `App.tsx`
-- После всего: `POST /canon/guard/apply?update_existing=true&prune_missing=true`
+- Удалено `test_stress_node`
+- Добавлено `runtime_canon_flag`, `memory_color`, `gravity` в `models.py`
+- Добавлен `/search/similarity` в `evo_api.py`
 
 ---
 
@@ -201,24 +183,25 @@
 
 ```text
 Z17  SPINE  gen-nexus          [GLOBAL NEXUS]        ← вершина
-Z16  SPINE  nexus_router       [BOOT ROUTER]         ← INFRA ❌
+Z16  SPINE  nexus_router       [BOOT ROUTER]         ✅
 Z15  PURPLE gen-meta           [EVO META]
-Z14  SPINE  policy_bus         [POLICY BUS]          ← INFRA ❌
+Z14  SPINE  policy_bus         [POLICY BUS]          ✅
 Z13  RED    gen-bridge         [EVO BRIDGE]
-Z12  RED    provider_router    [PROVIDER ROUTER]     ← INFRA ❌
+Z12  RED    provider_router    [PROVIDER ROUTER]     ✅
 Z11  GOLD   gen-pear           [PEAR LOOP]
-Z10  SPINE  cr_gateway         [CR GATEWAY]          ← INFRA ❌ (файл есть)
+Z10  SPINE  cr_gateway         [CR GATEWAY]          ✅
 ─────────── Alpha / Beta boundary ───────────────────
 Z9   GREEN  gen-async-jobs     [ASYNC JOB RUNNER]
-Z8   SPINE  agent_bus          [AGENT BUS]           ← INFRA ❌ (файл есть)
+Z8   SPINE  agent_bus          [AGENT BUS]           ✅
 Z7   GREEN  gen-webmcp         [WEB MCP CORE]
-Z7   SPINE  chaos_bus          [CHAOS ENGINE]        ← ❌ нет узла
-Z6   SPINE  resolution_stream  [RESOLUTION STREAM]   ← INFRA ❌ (файл есть)
+Z7   GOLD   sk_engine          [SK COGNITIVE ENGINE] ✅
+Z7   SPINE  chaos_bus          [CHAOS ENGINE]        ✅
+Z6   SPINE  resolution_stream  [RESOLUTION STREAM]   ✅
 Z5   SPINE  gen-dashboard      [EVO DASHBOARD]
-Z4   SPINE  observer_relay     [OBSERVER RELAY]      ← INFRA ❌ (файл есть)
+Z4   SPINE  observer_relay     [OBSERVER RELAY]      ✅
 ─────────── Beta / Gamma boundary ───────────────────
 Z3   GOLD   netlify_beacon     [NETLIFY DEPLOY BEACON]
-Z2   SPINE  audit_bridge       [AUDIT BRIDGE]        ← INFRA ❌
+Z2   SPINE  audit_bridge       [AUDIT BRIDGE]        ✅
 Z1   SPINE  deploy_audit       [DEPLOY AUDIT LEDGER] ← основание
 ```
 

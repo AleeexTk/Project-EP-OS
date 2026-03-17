@@ -10,7 +10,7 @@
   "coords": { "x": 9, "y": 9, "z": 8 },
   "links": ["gen-async-jobs", "gen-webmcp", "chaos_engine"],
   "metadata": {
-    "main_script": "agent_bus_z8.py",
+    "main_script": "index.py",
     "core_module": "B2_Orchestrator/zbus.py"
   }
 }

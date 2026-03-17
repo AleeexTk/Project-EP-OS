@@ -1,5 +1,5 @@
 {
-  "id": "observer_relay_z4",
+  "id": "observer_relay",
   "title": "Observer Relay",
   "z_level": 4,
   "sector": "SPINE",
@@ -9,5 +9,8 @@
   "summary": "Beta-to-Gamma boundary relay. Forwards dashboard events and anomaly signals to Gamma reflective layer.",
   "state": "active",
   "links": ["gen-dashboard", "netlify_deploy_beacon"],
-  "runtime_canon_flag": "runtime"
+  "runtime_canon_flag": "runtime",
+  "metadata": {
+    "main_script": "index.py"
+  }
 }

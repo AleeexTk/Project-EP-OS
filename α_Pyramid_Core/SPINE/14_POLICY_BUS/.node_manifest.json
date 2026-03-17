@@ -1,13 +1,15 @@
 {
-  "id": "policy_bus_z14",
+  "id": "policy_bus",
   "title": "Policy Bus",
   "z_level": 14,
   "sector": "SPINE",
-  "coords": { "x": 9, "y": 9, "z": 14 },
   "layer_type": "alpha",
-  "kind": "router",
-  "summary": "Policy dispatcher. Routes EVO META evolution policies and SystemPolicyManager rules down to EVO BRIDGE.",
+  "kind": "bus",
+  "summary": "Distributes high-level policies from Evo Meta to operational layer via Bridge.",
   "state": "active",
+  "coords": { "x": 9, "y": 9, "z": 14 },
   "links": ["gen-meta", "gen-bridge"],
-  "runtime_canon_flag": "canon"
+  "metadata": {
+    "main_script": "index.py"
+  }
 }

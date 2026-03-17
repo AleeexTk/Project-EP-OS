@@ -35,22 +35,33 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
   const z = (node.y - CENTER) * GRID_SPACING;
   const isEmpty = node.kind === 'empty';
   const opacity = isDimmed ? 0.06 : isEmpty ? (node.type === 'link' ? 0.05 : 0.1) : node.type === 'link' ? 0.26 : 0.92;
-  const nodeColor = isEmpty ? '#8fa4bf' : isSelected ? '#3b82f6' : hovered ? '#60a5fa' : SECTOR_COLORS[node.sector];
+  
+  // SK Engine Integration: Blend sector color with memory color if present
+  const baseColor = SECTOR_COLORS[node.sector];
+  const memColor = node.memory_color;
+  const nodeColor = isEmpty ? '#8fa4bf' : isSelected ? '#3b82f6' : hovered ? '#60a5fa' : memColor || baseColor;
 
   useFrame((state) => {
     if (!meshRef.current) {
       return;
     }
+    
+    // SK Engine gravity impact
+    const gScale = node.gravity || 1.0;
+    const baseScale = node.kind === 'empty' ? 1.0 : 0.8 + (gScale * 0.2);
+
     if (isSelected) {
       meshRef.current.rotation.y += 0.02;
+      meshRef.current.scale.setScalar(baseScale * 1.1);
       return;
     }
     if (node.status === 'active' && node.type === 'structural' && !isDimmed) {
-      meshRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 2) * 0.02);
+      const pulseSpeed = 1 + (gScale * 2);
+      meshRef.current.scale.setScalar(baseScale * (1 + Math.sin(state.clock.elapsedTime * pulseSpeed) * 0.02 * gScale));
       return;
     }
     meshRef.current.rotation.y = 0;
-    meshRef.current.scale.setScalar(1);
+    meshRef.current.scale.setScalar(baseScale);
   });
 
   return (
@@ -91,9 +102,10 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
       <meshStandardMaterial
         color={nodeColor}
         transparent
-        opacity={opacity}
-        emissive={isEmpty ? '#000000' : node.status === 'failed' ? '#ef4444' : node.status === 'warning' ? '#f97316' : isSelected ? '#3b82f6' : '#000000'}
-        emissiveIntensity={isEmpty ? 0 : isSelected ? 0.45 : node.status === 'failed' || node.status === 'warning' ? 0.5 : 0}
+        opacity={isEmpty ? 0.3 : opacity}
+        wireframe={isEmpty}
+        emissive={isEmpty ? '#ffffff' : node.status === 'failed' ? '#ef4444' : node.status === 'warning' ? '#f97316' : isSelected ? '#3b82f6' : '#000000'}
+        emissiveIntensity={isEmpty ? 0.1 : isSelected ? 0.45 : node.status === 'failed' || node.status === 'warning' ? 0.5 : 0}
         roughness={0.68}
         metalness={0.1}
       />

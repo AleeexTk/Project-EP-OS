@@ -1,19 +1,49 @@
-from pathlib import Path
-import json
+"""
+Resolution Stream Z6 (β_Pyramid_Functional)
+Streams resolved state and events up from the Exec layer or Orchestrator 
+out to subscribers (e.g. Observer Z4, UI). Subscribes to Z8.
+"""
 
-# Z6: Resolution Stream - Infrastructure Layer (Black Door)
-# Passing synthesized decisions from Z7 to Z5 Action Layer
+import logging
+from typing import Dict, Any
 
-class ResolutionStreamZ6:
-    def __init__(self, root_dir: Path):
-        self.root_dir = root_dir
+from β_Pyramid_Functional.agent_bus_z8 import get_bus
+
+logger = logging.getLogger(__name__)
+
+class ResolutionStream:
+    def __init__(self):
+        self.bus = get_bus()
+        self.target_name = "resolution_stream"
+        logger.info(f"[Z6] Resolution Stream initialized on target: '{self.target_name}'")
+
+    def start(self):
+        self.bus.subscribe(self.target_name, self._on_resolution_pulse)
+        logger.info("[Z6] Stream Online. Routing resolutions...")
+
+    def _on_resolution_pulse(self, pulse: Dict[str, Any]):
+        """Forward executed actions/resolutions into the Reflective (Gamma) layer."""
+        source = pulse.get("source", "unknown")
+        payload = pulse.get("payload", {})
         
-    def stream_action(self, decision: dict):
-        """Передает утвержденное решение (Z7) к Исполнителю (Z5)"""
-        print(f"🌊 [Z6] Stream: Streaming '{decision.get('outcome')}' to the Executioner...")
-        # Логика гарантированной доставки
-        return True
+        logger.info(f"[Z6] Streaming resolution from {source}. Payload: {payload}")
+        
+        # Route logic: If it's an action success, relay to Z4 Observer
+        self.bus.transmit(
+            source_agent="ResolutionStream_Z6",
+            target="observer_relay",
+            data={
+                "streamed_event": "action_completed",
+                "origin_source": source,
+                "data": payload
+            }
+        )
+
+def initialize():
+    stream = ResolutionStream()
+    stream.start()
+    return stream
 
 if __name__ == "__main__":
-    stream = ResolutionStreamZ6(Path("."))
-    stream.stream_action({"outcome": "Evolutionary Progress", "action": "merge"})
+    logging.basicConfig(level=logging.INFO)
+    initialize()

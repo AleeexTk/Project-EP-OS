@@ -73,9 +73,19 @@ class RealityMonitor:
         # 3. Cross-Reference
         state_ids = set(nodes.keys())
         
-        # Verify if state nodes have disk folders
+        # Verify if state nodes have physical counterpart
         for node_id, node_data in nodes.items():
-            # Minimal check: does any folder contain a manifest with this ID?
+            metadata = node_data.get("metadata", {})
+            relative_path = metadata.get("path")
+            
+            if relative_path:
+                physical_path = ROOT_DIR / relative_path
+                if not physical_path.exists():
+                    report["stats"]["missing_folders"] += 1
+                    report["issues"].append(f"Node '{node_id}' ({node_data.get('title')}) path '{relative_path}' not found on disk.")
+                continue
+
+            # Fallback for old discovery logic (searching manifests)
             found = False
             for d in disk_node_dirs:
                 manifest_path = d / ".node_manifest.json"
@@ -90,7 +100,7 @@ class RealityMonitor:
             
             if not found:
                 report["stats"]["missing_folders"] += 1
-                report["issues"].append(f"Node '{node_id}' ({node_data.get('title')}) has no folder on disk.")
+                report["issues"].append(f"Node '{node_id}' ({node_data.get('title')}) has no detectable folder or path record.")
 
         if report["issues"]:
             report["status"] = "DEGRADED"

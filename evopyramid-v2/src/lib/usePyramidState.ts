@@ -113,21 +113,23 @@ const toNode = (id: string, value: any): EvoNode => {
 
 const coordKey = (node: { z: number; x: number; y: number }) => `${node.z}:${node.x}:${node.y}`;
 
-const buildNodesFromBackend = (backendNodes: Record<string, any>, prevNodes: EvoNode[]): EvoNode[] => {
-  const nextNodes = generateEmptyGridNodes();
-  const indexByCoord = new Map<string, number>();
-  const prevById = new Map(prevNodes.map((node) => [node.id, node]));
+// Cache the empty grid at module level — ~1400 nodes, created only once
+const EMPTY_GRID_CACHE = generateEmptyGridNodes();
+const EMPTY_GRID_INDEX = new Map<string, number>();
+EMPTY_GRID_CACHE.forEach((node, index) => {
+  EMPTY_GRID_INDEX.set(coordKey(node), index);
+});
 
-  nextNodes.forEach((node, index) => {
-    indexByCoord.set(coordKey(node), index);
-  });
+const buildNodesFromBackend = (backendNodes: Record<string, any>, prevNodes: EvoNode[]): EvoNode[] => {
+  const nextNodes = EMPTY_GRID_CACHE.map((node) => ({ ...node }));
+  const prevById = new Map(prevNodes.map((node) => [node.id, node]));
 
   Object.entries(backendNodes).forEach(([id, raw]) => {
     const mapped = toNode(id, raw);
     const prev = prevById.get(mapped.id);
     const merged = prev?.activeAgents ? { ...mapped, activeAgents: prev.activeAgents } : mapped;
 
-    const index = indexByCoord.get(coordKey(merged));
+    const index = EMPTY_GRID_INDEX.get(coordKey(merged));
     if (index !== undefined) {
       nextNodes[index] = { ...nextNodes[index], ...merged };
       return;

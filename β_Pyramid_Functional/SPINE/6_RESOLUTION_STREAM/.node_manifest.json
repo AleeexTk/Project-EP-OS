@@ -10,6 +10,6 @@
   "coords": { "x": 9, "y": 9, "z": 6 },
   "links": ["chaos_engine", "gen-dashboard"],
   "metadata": {
-    "main_script": "resolution_stream_z6.py"
+    "main_script": "index.py"
   }
 }
