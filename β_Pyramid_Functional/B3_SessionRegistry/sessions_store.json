@@ -12,7 +12,7 @@
       "task_context": null,
       "status": "waiting",
       "created_at": "2026-03-09T15:44:25.722299+00:00",
-      "updated_at": "2026-03-14T22:22:26.971972+00:00",
+      "updated_at": "2026-03-17T00:17:00.401868+00:00",
       "messages": [
         {
           "id": "12cc9c02-2c91-434d-b33b-a33aeb0e7143",
@@ -26,6 +26,20 @@
           "role": "assistant",
           "content": "[SYSTEM QUOTA] Gemini API quota is disabled for this project (limit=0). Session moved to WAITING for 300s. Enable billing/quota in Google AI Studio for this key/project, then retry. Use 'Open' to continue externally (GEMINI).",
           "ts": "2026-03-14T22:22:26.970170+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "188ef8fa-9a78-4301-a1db-2adaa6b8a55f",
+          "role": "user",
+          "content": "status",
+          "ts": "2026-03-17T00:16:59.293761+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "810b5a9a-1225-4263-b313-200a39c18219",
+          "role": "assistant",
+          "content": "[SYSTEM QUOTA] Gemini API quota is disabled for this project (limit=0). Session moved to WAITING for 300s. Enable billing/quota in Google AI Studio for this key/project, then retry. Use 'Open' to continue externally (GEMINI).",
+          "ts": "2026-03-17T00:17:00.399974+00:00",
           "agent_ref": null
         }
       ],
@@ -444,7 +458,7 @@
       "task_context": "Navigator smoke no model_hint",
       "status": "active",
       "created_at": "2026-03-12T20:33:45.180506+00:00",
-      "updated_at": "2026-03-12T20:34:19.967830+00:00",
+      "updated_at": "2026-03-17T02:56:20.998170+00:00",
       "messages": [
         {
           "id": "e909c2be-d936-416d-884e-dbe3864f0a50",
@@ -458,6 +472,20 @@
           "role": "assistant",
           "content": "Navigator-OK, I am functioning as expected on NODE: 'alexcreator_navigator' at Z-LEVEL: 17. I am not currently utilizing a model hint. My primary duty is to navigate through the EvoPyramid OS architecture and provide efficient routes for data and resource allocation. I am ready for further commands or instructions.",
           "ts": "2026-03-12T20:34:19.967810+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "0462b4f8-fabb-4192-84c3-72423f321551",
+          "role": "user",
+          "content": "статус",
+          "ts": "2026-03-17T02:54:52.867241+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "31d31e85-d6d8-451e-b1a8-0054e7382877",
+          "role": "assistant",
+          "content": "Статус: ОLLAMA на NODE 'alexcreator_navigator' на уровне Z-LEVEL 17. На данный момент я не использую модельное подсказку. Моя основная задача - обеспечивать эффективное перемещение по EvoPyramid OS архитектуре и регулировать распределение данных и ресурсов. Я готов к дальнейшим командам или инструкциям.",
+          "ts": "2026-03-17T02:56:20.998046+00:00",
           "agent_ref": null
         }
       ],

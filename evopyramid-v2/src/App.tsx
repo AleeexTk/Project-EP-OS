@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Bot, ChevronRight, FolderTree, Layers3, PanelRightOpen, Radar, RefreshCw, ShieldCheck, Sparkles, Table2, Terminal, Wrench, X } from 'lucide-react';
+import { Activity, Bot, ChevronRight, FolderTree, Layers3, PanelRightOpen, Radar, RefreshCw, ShieldCheck, Sparkles, Table2, Terminal, Wrench, X } from 'lucide-react';
 import EvoPyramid from './components/EvoPyramid';
 import ArchitectTable from './components/ArchitectTable';
 import SessionLauncher from './components/SessionLauncher';
@@ -81,7 +81,7 @@ function EventRow({ event }: { event: SwarmEvent }) {
 }
 
 function App() {
-  const { nodes: coreNodes, isConnected } = usePyramidState();
+  const { nodes: coreNodes, isConnected, latestZBusEvent } = usePyramidState();
   const { events, connected: swarmConnected } = useSwarmTerminal();
   const { sessions, loadSessions } = useSessionRegistry();
 
@@ -321,6 +321,18 @@ function App() {
     return () => clearTimeout(timer);
   }, [notice]);
 
+  const [activeZBusEvent, setActiveZBusEvent] = useState<any>(null);
+
+  useEffect(() => {
+    if (latestZBusEvent) {
+      setActiveZBusEvent(latestZBusEvent);
+      const timer = window.setTimeout(() => {
+        setActiveZBusEvent(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [latestZBusEvent]);
+
   useEffect(() => {
     if (!terminalRef.current) {
       return;
@@ -507,6 +519,38 @@ function App() {
               >
                 Inspect
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic ZBus Alert */}
+        {activeZBusEvent && (
+          <div className={`absolute top-[200px] left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[650px] border rounded-lg p-3 text-[11px] flex flex-col items-start gap-1 backdrop-blur shadow-2xl transition-colors duration-500
+            ${activeZBusEvent.status === 'degraded' ? 'bg-amber-950/90 border-amber-500/60' : 
+              activeZBusEvent.status === 'failed' ? 'bg-rose-950/90 border-rose-500/60' : 
+              'bg-emerald-950/90 border-emerald-500/60'}`}
+          >
+            <div className={`flex items-start md:items-center gap-3 w-full
+              ${activeZBusEvent.status === 'degraded' ? 'text-amber-200' : 
+                activeZBusEvent.status === 'failed' ? 'text-rose-200' : 
+                'text-emerald-200'}`}
+            >
+              <Activity className="w-4 h-4 shrink-0 mt-0.5 md:mt-0" />
+              <div className="flex flex-col w-full">
+                <div className="flex justify-between items-center w-full">
+                  <span className="font-bold tracking-wider">
+                    {activeZBusEvent.event_type} {activeZBusEvent.simulation ? '(SIMULATION)' : ''}
+                  </span>
+                  <span className="opacity-70 text-[9px]">{activeZBusEvent.node_id}</span>
+                </div>
+                <span className="opacity-90 mt-1">
+                  {activeZBusEvent.event_type === 'NODE_FALLBACK_INIT' && `Provider ${activeZBusEvent.provider} timeout. Falling back to ${activeZBusEvent.fallback_to}.`}
+                  {activeZBusEvent.event_type === 'PROVIDER_TIMEOUT' && `Provider ${activeZBusEvent.provider} timed out. Task: ${activeZBusEvent.payload?.task}`}
+                  {activeZBusEvent.event_type === 'NODE_RECOVERY_SUCCESS' && `Resolved with ${activeZBusEvent.provider}. Status: ${activeZBusEvent.payload?.result}`}
+                  {activeZBusEvent.event_type === 'NODE_START' && `Starting task: ${activeZBusEvent.payload?.task}`}
+                  {activeZBusEvent.event_type === 'PROVIDER_SELECTED' && `Selected provider: ${activeZBusEvent.provider}`}
+                </span>
+              </div>
             </div>
           </div>
         )}

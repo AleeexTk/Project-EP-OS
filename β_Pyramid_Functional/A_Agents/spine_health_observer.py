@@ -9,31 +9,57 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, Literal
 
+# Configure logging (Bootstrap early so functions can use it)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+logger = logging.getLogger("Spine_Health_Observer")
+
 # --- Path discovery to import core modules ---
 def setup_sys_path():
     current_dir = Path(__file__).resolve().parent
-    base_repo_dir = current_dir.parent.parent
-    if str(base_repo_dir) not in sys.path:
-        sys.path.insert(0, str(base_repo_dir))
+    # Root: EvoPyramid OS
+    root_dir = current_dir.parent.parent
     
-    # Also add functional layer directly for easier imports
-    functional_dir = base_repo_dir / "β_Pyramid_Functional"
-    if str(functional_dir) not in sys.path:
-        sys.path.insert(0, str(functional_dir))
+    # Explicitly add module directories to sys.path
+    functional_dir = root_dir / "β_Pyramid_Functional"
+    sub_modules = [
+        "B1_Kernel",
+        "B2_Orchestrator",
+        "B2_ProviderMatrix",
+        "B3_SessionRegistry",
+        "D_Interface"
+    ]
+    
+    for sub in sub_modules:
+        p = str(functional_dir / sub)
+        if p not in sys.path:
+            sys.path.insert(0, p)
+            
+    try:
+        from path_discovery import initialize_kernel_paths
+        initialize_kernel_paths()
+        logger.info("[Spine_Health_Observer] Kernel paths initialized.")
+    except ImportError:
+        logger.warning("[Spine_Health_Observer] path_discovery failed. Proceeding with manual paths.")
 
 setup_sys_path()
 
 try:
-    from B2_ProviderMatrix.provider_matrix import ProviderMatrix, ProviderConfig
-    from B3_SessionRegistry.session_models import Provider
-    from B2_Orchestrator.zbus import zbus  # Assuming zbus is a global instance
+    from provider_matrix import ProviderMatrix, ProviderConfig
+    from session_models import Provider
+    from zbus import zbus
 except ImportError as e:
-    logging.error(f"Failed to import core modules: {e}")
-    # Will define fallbacks later if needed to run standalone
+    logger.error(f"Failed to import core modules: {e}")
+    from enum import Enum
+    class Provider(str, Enum):
+        UNKNOWN = "unknown"
+        GPT = "gpt"
+        GEMINI = "gemini"
+        OLLAMA = "ollama"
+    ProviderMatrix = None
+    zbus = None
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
-logger = logging.getLogger("Spine_Health_Observer")
+# Configure logging (moved down to ensure logger exists)
+# (Done above line 36)
 
 # ─────────────────────────────────────────
 #  Event Schemas (ZBus Events)
@@ -80,11 +106,41 @@ class SpineHealthObserver:
         """Simulate publishing to ZBus (or actually publish if WS context exists)"""
         event_dict = event.model_dump()
         logger.info(f"==> ZBUS EVENT: {event.event_type} | Provider: {event.provider} | Status: {event.status}")
-        logger.debug(f"Payload: {json.dumps(event_dict, indent=2)}")
         
-        # If zbus had a generic emit/broadcast, we'd call it here:
-        # await zbus.broadcast_event(event_dict)
-        # For now, we print it beautifully. Return the event dict for usage.
+        # 1. Try internal memory broadcast (works only if running inside the same process as API)
+        try:
+            if zbus and hasattr(zbus, 'manager') and zbus.manager:
+                await zbus.broadcast_event(event_dict)
+                return event_dict
+        except Exception:
+            pass
+
+        # 2. HTTP Fallback (for standalone mode)
+        # We use a simple HTTP POST to the local core engine bridge
+        try:
+            import httpx
+            async with httpx.AsyncClient() as client:
+                await client.post("http://127.0.0.1:8000/zbus/publish", json=event_dict, timeout=1.0)
+        except ImportError:
+            # Fallback to sync urllib if httpx is missing
+            import urllib.request
+            import json
+            def sync_post():
+                try:
+                    req = urllib.request.Request(
+                        "http://127.0.0.1:8000/zbus/publish",
+                        data=json.dumps(event_dict).encode('utf-8'),
+                        headers={'Content-Type': 'application/json'},
+                        method='POST'
+                    )
+                    with urllib.request.urlopen(req, timeout=1) as f:
+                        pass
+                except:
+                    pass
+            await asyncio.get_event_loop().run_in_executor(None, sync_post)
+        except Exception as e:
+            logger.debug(f"HTTP Peer broadcast failed (is Core Engine running?): {e}")
+
         return event_dict
 
     def scan_for_manifests(self) -> int:

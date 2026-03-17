@@ -142,6 +142,7 @@ const buildNodesFromBackend = (backendNodes: Record<string, any>, prevNodes: Evo
 export function usePyramidState() {
   const [nodes, setNodes] = useState<EvoNode[]>(generateEmptyGridNodes());
   const [isConnected, setIsConnected] = useState(false);
+  const [latestZBusEvent, setLatestZBusEvent] = useState<any>(null); // To store the latest ZBus event
   const backendNodesRef = useRef<Record<string, any>>({});
 
   useEffect(() => {
@@ -182,6 +183,8 @@ export function usePyramidState() {
               [message.data.id]: message.data,
             };
             applySnapshot(nextSnapshot);
+          } else if (message.type === 'zbus_event') {
+            setLatestZBusEvent(message.data);
           }
         } catch {
           // Keep current visual state if payload is malformed.
@@ -212,7 +215,7 @@ export function usePyramidState() {
     };
   }, []);
 
-  return { nodes, isConnected };
+  return { nodes, isConnected, latestZBusEvent };
 }
 
 

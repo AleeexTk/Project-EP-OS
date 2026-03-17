@@ -3,31 +3,22 @@
   "title": "Chaos Engine",
   "z_level": 7,
   "sector": "SPINE",
+  "layer_type": "beta",
+  "kind": "service",
+  "summary": "Core orchestration service for monitoring provider health and managing fallbacks (Z-Bus integration).",
+  "state": "active",
   "coords": {
-    "x": 10,
+    "x": 9,
     "y": 9,
     "z": 7
   },
-  "layer_type": "beta",
-  "kind": "service",
-  "summary": "Chaos bus Z7 \u2014 detects anomalies, triggers quarantine, emits Observer events upstream.",
-  "state": "active",
-  "canon_status": "runtime",
-  "artifacts": [],
   "links": [
-    "agent_bus_z8",
-    "resolution_stream_z6"
+    "gen-webmcp",
+    "gen-dashboard",
+    "resolution_stream"
   ],
-  "children": [],
-  "source_refs": [],
   "metadata": {
-    "source": "filesystem-discovery",
-    "path": "\u03b2_Pyramid_Functional/SPINE/7_CHAOS_ENGINE",
-    "layer_folder": "\u03b2_Pyramid_Functional"
-  },
-  "runtime_canon_flag": "runtime",
-  "session_url": null,
-  "browser_profile_dir": null,
-  "orchestrator_state": "unlinked",
-  "layer_folder": "\u03b2_Pyramid_Functional"
+    "main_script": "chaos_bus_z7.py",
+    "observer_script": "A_Agents/spine_health_observer.py"
+  }
 }

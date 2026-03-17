@@ -22,6 +22,7 @@ class ZBus:
 
     async def run_worker(self, websocket_manager, current_state):
         self.running = True
+        self.manager = websocket_manager # Store manager for broadcasting events
         logging.info("[Z-Bus] Async worker initialized. Listening for tasks...")
         while self.running:
             try:
@@ -49,5 +50,15 @@ class ZBus:
                 break
             except Exception as e:
                 logging.error(f"[Z-Bus] Worker error: {e}")
+
+    async def broadcast_event(self, event_data: Dict[str, Any]):
+        """Broadcast a node event (e.g. from SpineHealthObserver) to all connected clients."""
+        if hasattr(self, 'manager') and self.manager:
+            await self.manager.broadcast({
+                "type": "zbus_event",
+                "data": event_data
+            })
+        else:
+            logging.warning("[Z-Bus] Manager not initialized. Dropping event.")
 
 zbus = ZBus()

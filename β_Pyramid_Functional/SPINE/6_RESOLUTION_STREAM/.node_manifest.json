@@ -1,13 +1,15 @@
 {
-  "id": "resolution_stream_z6",
+  "id": "resolution_stream",
   "title": "Resolution Stream",
   "z_level": 6,
   "sector": "SPINE",
-  "coords": { "x": 9, "y": 9, "z": 6 },
   "layer_type": "beta",
-  "kind": "router",
-  "summary": "Resolution and event stream — collects outputs from Z7 runtime, relays to Z5 dashboard and Z4 observer.",
+  "kind": "bus",
+  "summary": "Routes synthesized resolutions from Chaos Engine to the Dashboard and action layers.",
   "state": "active",
-  "links": ["gen-webmcp", "gen-dashboard"],
-  "runtime_canon_flag": "runtime"
+  "coords": { "x": 9, "y": 9, "z": 6 },
+  "links": ["chaos_engine", "gen-dashboard"],
+  "metadata": {
+    "main_script": "resolution_stream_z6.py"
+  }
 }

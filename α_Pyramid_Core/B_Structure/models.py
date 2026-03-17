@@ -17,6 +17,7 @@ class NodeKind(str, Enum):
     CANON = "canon"
     RUNTIME = "runtime"
     ROUTER = "router"
+    BUS = "bus"
 
 class NodeState(str, Enum):
     ACTIVE = "active"

@@ -50,7 +50,7 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.FileHandler(LOG_DIR / "core_engine.log"), logging.StreamHandler()]
+    handlers=[logging.FileHandler(LOG_DIR / "core_engine.log", encoding="utf-8"), logging.StreamHandler()]
 )
 
 STATE_DIR = ROOT_DIR / "state"
@@ -410,6 +410,19 @@ async def add_link(link: Link):
     save_state(current_state)
     await manager.broadcast({"type": "link_added", "data": link.model_dump()})
     return {"status": "ok"}
+
+@app.post("/zbus/publish")
+async def zbus_publish(event: dict):
+    """
+    HTTP Bridge for standalone nodes to publish events to the UI.
+    Calls the internal zbus broadcast mechanism.
+    """
+    try:
+        from zbus import zbus
+        await zbus.broadcast_event(event)
+        return {"status": "event_broadcasted"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):

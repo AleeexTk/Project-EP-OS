@@ -7,7 +7,7 @@
 ## Принцип чётности
 
 | Тип | Z-уровни | Назначение |
-|---|---|---|
+| --- | --- | --- |
 | 🦴 **Structural** (Кости) | Z17, Z15, Z13, Z11, Z9, Z7, Z5, Z3, Z1 | Модули, агенты, сервисы — видимые узлы силы |
 | 🩸 **Infra / Transit** (Кровь) | Z16, Z14, Z12, Z10, Z8, Z6, Z4, Z2 | Роутеры, шины, зависимости, стэк, связи |
 
@@ -20,7 +20,7 @@
 ### Z17 — SPINE · Вершина системы (Structural ✅)
 
 | Node ID | Title | Sector | Файл/Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `gen-nexus` | GLOBAL NEXUS | SPINE | `α_Pyramid_Core/SPINE/17_GLOBAL_NEXUS` | ✅ Есть |
 
 **Z16 — INFRA** (между Z17 и Z15): ❌ **ОТСУТСТВУЕТ**
@@ -33,7 +33,7 @@
 ### Z15 — PURPLE / RED · Управляющие протоколы (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `gen-meta` | EVO META | PURPLE | `α_Pyramid_Core/PURPLE/15_EVO_META` | ✅ Есть |
 | `openai_docs_hub` | OpenAI Docs Hub | PURPLE | `α_Pyramid_Core/PURPLE/15_OPENAI_DOCS_HUB` | ✅ Есть |
 
@@ -47,7 +47,7 @@
 ### Z13 — RED · Мост в AI-провайдеры (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `gen-bridge` | EVO BRIDGE | RED | `α_Pyramid_Core/RED/13_EVO_BRIDGE` | ✅ Есть |
 
 **Z12 — INFRA** (между Z13 и Z11): ❌ **ОТСУТСТВУЕТ**
@@ -60,7 +60,7 @@
 ### Z11 — GOLD · Governance & CI (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `gen-pear` | PEAR LOOP | GOLD | `α_Pyramid_Core/GOLD/11_PEAR_LOOP` | ✅ Есть |
 | `gh_ci_guardian` | GH CI Guardian | RED | `α_Pyramid_Core/RED/11_GH_CI_GUARDIAN` | ✅ Есть |
 
@@ -76,7 +76,7 @@
 ### Z9 — GREEN · Агенты и раннеры (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `gen-async-jobs` | ASYNC JOB RUNNER | GREEN | `β_Pyramid_Functional/GREEN/9_ASYNC_JOB_RUNNER` | ✅ Есть |
 | `gh_pr_resolver` | GH PR Resolver | GREEN | `β_Pyramid_Functional/GREEN/9_GH_PR_RESOLVER` | ✅ Есть |
 
@@ -90,7 +90,7 @@
 ### Z7 — GREEN / SPINE · Runtime Engine (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `gen-webmcp` | WEB MCP CORE | GREEN | `β_Pyramid_Functional/GREEN/7_WEB_MCP_CORE` | ✅ Есть |
 | `chatgpt_apps_bridge` | ChatGPT Apps Bridge | SPINE | `β_Pyramid_Functional/SPINE/7_CHATGPT_APPS_BRIDGE` | ✅ Есть |
 
@@ -107,7 +107,7 @@
 ### Z5 — SPINE · Dashboard / Action (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `gen-dashboard` | EVO DASHBOARD | SPINE | `β_Pyramid_Functional/SPINE/5_EVO_DASHBOARD` | ✅ Есть |
 | `test_stress_node` | Stress Test Node | GREEN | `β_Pyramid_Functional/GREEN/5_Stress_Test_Node` | ⚠️ Тестовый — удалить |
 
@@ -123,7 +123,7 @@
 ### Z3 — GOLD · Reflective Checkpoints (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `netlify_deploy_beacon` | Netlify Deploy Beacon | GOLD | `γ_Pyramid_Reflective/GOLD/3_NETLIFY_DEPLOY_BEACON` | ✅ Есть |
 
 **Z2 — INFRA** (между Z3 и Z1): ❌ **ОТСУТСТВУЕТ**
@@ -136,7 +136,7 @@
 ### Z1 — SPINE · База памяти (Structural ✅)
 
 | Node ID | Title | Sector | Папка | Статус |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `deploy_audit_ledger` | Deploy Audit Ledger | SPINE | `γ_Pyramid_Reflective/SPINE/1_DEPLOY_AUDIT_LEDGER` | ✅ Есть |
 
 ---
@@ -151,7 +151,7 @@
 Задача: создать папки + `.node_manifest.json` для каждого.
 
 | Файл | Текущее место | Нужная папка-узел | Z | Sector |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `cr_gateway_z10.py` | `β_Pyramid_Functional/` | `α_Pyramid_Core/SPINE/10_CR_GATEWAY/` | Z10 | SPINE |
 | `agent_bus_z8.py` | `β_Pyramid_Functional/` | `β_Pyramid_Functional/SPINE/8_AGENT_BUS/` | Z8 | SPINE |
 | `chaos_bus_z7.py` | `β_Pyramid_Functional/` | `β_Pyramid_Functional/SPINE/7_CHAOS_ENGINE/` | Z7 | SPINE |
@@ -164,7 +164,7 @@
 Новые папки + манифесты для инфраструктурных Z-уровней:
 
 | Папка | Z | Назначение |
-|---|---|---|
+| --- | --- | --- |
 | `α_Pyramid_Core/SPINE/16_NEXUS_ROUTER/` | Z16 | Boot routing, Nexus_Boot.py wrapper |
 | `α_Pyramid_Core/SPINE/14_POLICY_BUS/` | Z14 | Policy dispatching Alpha→Beta |
 | `α_Pyramid_Core/RED/12_PROVIDER_ROUTER/` | Z12 | AI provider adapters (Gemini/OpenAI/Replicate) |
@@ -177,7 +177,7 @@
 Добавить в `pyramid_state.json` и `.node_manifest.json` ссылки `links: []`:
 
 | От | К | Через |
-|---|---|---|
+| --- | --- | --- |
 | `gen-nexus` (Z17) | `gen-meta` (Z15) | Z16 nexus_router |
 | `gen-meta` (Z15) | `gen-bridge` (Z13) | Z14 policy_bus |
 | `gen-bridge` (Z13) | `gh_ci_guardian` (Z11) | Z12 provider_router |
@@ -199,7 +199,7 @@
 
 ## Карта Z-Spine (вертикаль)
 
-```
+```text
 Z17  SPINE  gen-nexus          [GLOBAL NEXUS]        ← вершина
 Z16  SPINE  nexus_router       [BOOT ROUTER]         ← INFRA ❌
 Z15  PURPLE gen-meta           [EVO META]

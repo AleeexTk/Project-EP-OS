@@ -1,0 +1,15 @@
+{
+  "id": "observer_relay",
+  "title": "Observer Relay",
+  "z_level": 4,
+  "sector": "SPINE",
+  "layer_type": "beta",
+  "kind": "router",
+  "summary": "Transmits event heartbeats and logs from functional layer to reflective archival layer.",
+  "state": "active",
+  "coords": { "x": 9, "y": 9, "z": 4 },
+  "links": ["gen-dashboard", "netlify_deploy_beacon"],
+  "metadata": {
+    "main_script": "observer_relay_z4.py"
+  }
+}
