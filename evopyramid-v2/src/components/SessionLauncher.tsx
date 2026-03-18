@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bot, Loader2, X, Zap } from 'lucide-react';
 import { EvoNode } from '../lib/evo';
 import { Provider, SessionCreatePayload, useSessionRegistry } from '../lib/useSessionRegistry';
@@ -94,7 +94,7 @@ function SessionLauncher({ node, onClose, onCreated }: SessionLauncherProps) {
                     className={`px-3 py-2 rounded-lg border text-[12px] transition-colors ${active ? 'border-emerald-400 bg-emerald-500/10 text-emerald-100' : 'border-white/10 bg-black/20 text-slate-300 hover:bg-white/5'}`}
                   >
                     <span className="inline-flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: providerColor }} />
+                      <span className={`provider-dot provider-dot-${id}`} />
                       {PROVIDER_LABELS[id]}
                     </span>
                   </button>
@@ -143,7 +143,7 @@ function SessionLauncher({ node, onClose, onCreated }: SessionLauncherProps) {
               className="mt-2 w-full rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm outline-none focus:border-emerald-400"
             />
             <p className="mt-1 text-[10px] text-slate-500">
-              Optional. Paste an existing chat URL (for example a chatgpt.com/c/... link) to attach it to this session.
+              Optional. Paste an existing chat URL (e.g., from Gemini or ChatGPT) to attach it to this session.
             </p>
           </div>
         </div>

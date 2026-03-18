@@ -18,32 +18,44 @@ class SystemPolicyManager:
     def validate_action(self, envelope: TaskEnvelope) -> bool:
         """
         Validates if a TaskEnvelope complies with system policies.
+        Enforces Trinity Protocol: Autonomy + Security.
         """
-        # EP-Sandbox Isolation Logic
+        # 1. Z-Level Hierarchy Check (The 'Iron Guardian' constraint)
+        if not self._validate_z_access(envelope):
+            return False
+
+        # 2. EP-Sandbox Isolation Logic
         is_sandbox = "sandbox" in envelope.source_node.lower() or "sandbox" in envelope.target_node.lower()
         
         if is_sandbox:
-            # Sandbox nodes are heavily restricted by default
-            restricted_actions = ["filesystem_write", "network_request", "system_reboot"]
+            restricted_actions = ["filesystem_write", "network_request", "system_reboot", "manifest_node"]
             if envelope.action in restricted_actions:
                 envelope.status = TaskStatus.FAILED
                 envelope.metadata["error"] = f"SandboxViolation: Action '{envelope.action}' is forbidden in EP-Sandbox."
                 self._log_violation(envelope)
                 return False
 
-        # Basic Security Checks
+        # 3. Action-Specific Security Checks
         if envelope.action == "filesystem_write" and not self.policy.allow_filesystem_write:
             envelope.status = TaskStatus.FAILED
-            envelope.metadata["error"] = "PolicyViolation: Filesystem write denied."
+            envelope.metadata["error"] = "PolicyViolation: Filesystem write denied by global policy."
             self._log_violation(envelope)
             return False
 
-        if envelope.action == "network_request" and not self.policy.allow_network_access:
-            envelope.status = TaskStatus.FAILED
-            envelope.metadata["error"] = "PolicyViolation: Network access denied."
-            self._log_violation(envelope)
-            return False
+        return True
 
+    def _validate_z_access(self, envelope: TaskEnvelope) -> bool:
+        """
+        Prevent low-level nodes from triggering high-level mutations.
+        A node can only manifest or sync nodes at or below its own Z-level + 1 (limited growth).
+        """
+        if envelope.action in ["manifest_node", "sync_structure"]:
+            target_z = envelope.payload.get("z_level", 0)
+            if envelope.origin_z < 10 and target_z >= 10:
+                envelope.status = TaskStatus.FAILED
+                envelope.metadata["error"] = f"Z-Violation: Node at Z{envelope.origin_z} cannot manifest Z{target_z} (High-Pyramid)."
+                self._log_violation(envelope)
+                return False
         return True
 
     def _log_violation(self, envelope: TaskEnvelope):

@@ -21,6 +21,7 @@ class TaskEnvelope(BaseModel):
     action: str
     payload: Dict[str, Any] = Field(default_factory=dict)
     status: TaskStatus = TaskStatus.PENDING
+    origin_z: int = 1   # Z-level of the source node
     metadata: Dict[str, Any] = Field(default_factory=dict)
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
 

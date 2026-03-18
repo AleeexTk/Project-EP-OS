@@ -1,4 +1,4 @@
-﻿import { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { SESSION_API_BASE } from './config';
 
 export type Provider = 'gpt' | 'gemini' | 'claude' | 'copilot' | 'ollama';
@@ -27,6 +27,12 @@ export interface AgentSession {
   updated_at: string;
   messages: Message[];
   external_url?: string;
+  external_origin?: string;
+  external_title?: string;
+  bridge_mode?: 'linked_tab' | 'hybrid' | 'managed';
+  bridge_status?: 'connected' | 'lost' | 'reattach' | 'detached';
+  supervisor_enabled?: boolean;
+  focusable?: boolean;
 }
 
 export interface SessionCreatePayload {
@@ -39,6 +45,7 @@ export interface SessionCreatePayload {
   task_title: string;
   task_context?: string;
   external_url?: string;
+  bridge_mode?: 'linked_tab' | 'hybrid' | 'managed';
 }
 
 export interface ProviderInfo {

@@ -39,8 +39,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             promptArea.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
-        // Find the submit button, usually next to the textarea
-        let submitBtn = document.querySelector('button[aria-label="Send"], button[data-testid="send-button"]');
+        // Find the submit button (ChatGPT: Send, Gemini: Specific path or text)
+        let submitBtn = document.querySelector('button[aria-label="Send"], button[data-testid="send-button"], button.send-button, [aria-label="Submit"]');
         
         if (submitBtn && !submitBtn.disabled) {
             submitBtn.click();
@@ -60,7 +60,7 @@ function observeResponseCompletion(node_id) {
     
     // For now, simulate delay and read
     setTimeout(() => {
-        let responses = document.querySelectorAll('.agent-message, .result-text, [data-message-author-role="assistant"]');
+        let responses = document.querySelectorAll('.agent-message, .result-text, [data-message-author-role="assistant"], .model-response, .conversation-content');
         let latestResponse = responses[responses.length - 1];
         
         if (latestResponse) {

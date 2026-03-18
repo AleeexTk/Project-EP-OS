@@ -14,14 +14,20 @@
     "https://chatgpt.com/*",
     "https://grok.com/*",
     "https://*.anthropic.com/*",
-    "https://docs.google.com/*"
+    "https://aistudio.google.com/*",
+    "https://gemini.google.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://chatgpt.com/*", "https://grok.com/*"],
+      "matches": [
+        "https://chatgpt.com/*", 
+        "https://grok.com/*", 
+        "https://aistudio.google.com/*",
+        "https://gemini.google.com/*"
+      ],
       "js": ["content.js"],
       "run_at": "document_idle"
     }

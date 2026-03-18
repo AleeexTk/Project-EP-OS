@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import time
+from pathlib import Path
 from typing import Any, List, Optional
 from urllib import error as urlerror
 from urllib import request as urlrequest
@@ -280,6 +281,10 @@ def _quota_cooldown_message(
 
 def _session_routing_policy(session: AgentSession) -> dict:
     linked_external = bool(str(session.external_url or "").strip())
+    
+    # Check for global Gemini quota block
+    now = time.time()
+    gemini_blocked = _GEMINI_QUOTA_BLOCK_UNTIL > now
 
     if session.provider == Provider.OLLAMA:
         return {
@@ -287,6 +292,14 @@ def _session_routing_policy(session: AgentSession) -> dict:
             "reason": "provider_ollama",
             "linked_external": linked_external,
             "provider": session.provider,
+        }
+
+    if gemini_blocked and session.provider == Provider.GEMINI:
+        return {
+            "mode": "local_ollama",
+            "reason": "gemini_quota_fallback",
+            "linked_external": linked_external,
+            "provider": Provider.OLLAMA, # Force Ollama for fallback
         }
 
     if linked_external:
@@ -313,12 +326,94 @@ def _session_routing_policy(session: AgentSession) -> dict:
     }
 
 
+class OllamaSupervisor:
+    """
+    Local supervisor that analyzes tasks and evaluates responses.
+    Component of the Hybrid Supervised Agent Mesh.
+    """
+    @staticmethod
+    async def analyze_task(session: AgentSession) -> dict:
+        """
+        [SUPERVISOR MESH] Pre-processes the task using local Ollama.
+        Determines the technical goal and prepares a structured plan.
+        """
+        try:
+            prompt = (
+                f"You are the EvoPyramid Supervisor. Analyze this task for a {session.provider} session.\n"
+                f"NODE: {session.node_id} (Z{session.node_z})\n"
+                f"GOAL: {session.task_title}\n"
+                f"CONTEXT: {session.task_context or 'None'}\n\n"
+                "Return a 1-sentence summary of the architectural goal."
+            )
+            messages = [{"role": "user", "content": prompt}]
+            
+            # Use the orchestrator's internal helper to call Ollama
+            model_name = await _resolve_ollama_model("llama3.2:3b")
+            analysis_text = await asyncio.to_thread(AgentOrchestrator._send_ollama_sync, model_name, messages)
+            
+            return {
+                "task_goal": session.task_title,
+                "prepared_prompt": analysis_text.strip(),
+                "supervised": True
+            }
+        except Exception as e:
+            logger.warning(f"Ollama Supervisor pre-processing failed: {e}")
+            return {
+                "task_goal": session.task_title,
+                "prepared_prompt": f"Architecture context: {session.task_context or 'General assistance.'}",
+                "supervised": False
+            }
+
+    @staticmethod
+    async def evaluate_response(response_text: str) -> dict:
+        """
+        [SUPERVISOR MESH] Evaluates the response quality using local Ollama.
+        """
+        try:
+            prompt = (
+                "You are the EvoPyramid Evaluator. Rate this AI response for technical accuracy and depth.\n\n"
+                f"RESPONSE: {response_text[:1000]}\n\n"
+                "Return exactly 1 OR 0 (1 for valid/deep, 0 for failed/shallow)."
+            )
+            messages = [{"role": "user", "content": prompt}]
+            model_name = await _resolve_ollama_model("llama3.2:3b")
+            score_text = await asyncio.to_thread(AgentOrchestrator._send_ollama_sync, model_name, messages)
+            
+            is_valid = "1" in score_text
+            return {
+                "quality_score": 1.0 if is_valid else 0.1,
+                "valid": is_valid,
+                "actions": ["LOG_INVENTORY"] if "node" in response_text.lower() else []
+            }
+        except Exception as e:
+            logger.warning(f"Ollama Supervisor evaluation failed: {e}")
+            return {"quality_score": 0.5, "valid": len(response_text) > 20, "actions": []}
+
+class SupervisedTaskRouter:
+    """
+    Business logic for routing tasks between providers based on Z-level and quota status.
+    """
+    @staticmethod
+    def resolve_provider(session: AgentSession, policy: dict) -> Provider:
+        # Priority 1: Manual Override
+        if session.provider == Provider.OLLAMA:
+            return Provider.OLLAMA
+            
+        # Priority 2: Quota Fallback
+        if policy.get("reason") == "gemini_quota_fallback":
+            return Provider.OLLAMA
+            
+        # Priority 3: External URL Bridge (if attached, we prefer Gemini/External)
+        if policy.get("linked_external"):
+            return Provider.GEMINI
+            
+        return Provider.GEMINI
+
 class AgentOrchestrator:
     """
     Handles internal LLM logic for sessions.
     Connects nodes to local/cloud providers (Ollama/Gemini).
     """
-
     @staticmethod
     def _system_context(session: AgentSession) -> str:
         # Load real-time state insight
@@ -333,34 +428,40 @@ class AgentOrchestrator:
                     active_nodes = [n["title"] for n in nodes.values() if n.get("state") == "active"]
                     idle_nodes = [n["title"] for n in nodes.values() if n.get("state") == "idle"]
                     state_summary = (
-                        f"Pyramid Context: {len(nodes)} nodes total. "
-                        f"ACTIVE: {', '.join(active_nodes[:5])}... "
-                        f"IDLE: {', '.join(idle_nodes[:5])}... "
+                        f"Pyramid Nodes: {len(nodes)} total. "
+                        f"ACTIVE: {', '.join(active_nodes[:5])}. "
+                        f"IDLE: {', '.join(idle_nodes[:5])}. "
                     )
                     # Specific check for common queries
                     if "observer_relay" in nodes:
                         obs = nodes["observer_relay"]
-                        state_summary += f" NODE 'Observer Relay' (Z4) is {obs.get('state','unknown')}."
+                        state_summary += f" NODE 'Observer Relay' (Z4) status is CURRENTLY {obs.get('state','unknown').upper()}."
         except Exception as e:
             state_summary = f"State insight error: {e}"
 
+        ctx = ""
         is_genesis = session.node_id and session.node_id.startswith("gen-")
         if is_genesis:
-            return (
+            ctx = (
                 "You are an EvoGenesis Architect Agent. You operate under the GLOBAL NEXUS master-orchestration layer. "
                 "Principles: PEAR loop (Perception, Evolution, Action, Reflection). "
                 f"Binding: NODE '{session.node_id}' (EvoGenesis Child Pyramid). "
-                f"SYSTEM STATE: {state_summary} "
+                f"ACTUAL SYSTEM STATE: {state_summary} "
                 "Current Goal: Develop a professional architecture for an asynchronous GCP-hosted backend. "
                 "Provide highly technical, structured advice aligned with evopyramid-ai."
             )
-        return (
-            f"You are an EvoPyramid OS Agent. Role: {session.provider.upper()}. "
-            f"You are bound to NODE: '{session.node_id}' at Z-LEVEL: {session.node_z}. "
-            f"SYSTEM STATE: {state_summary} "
-            f"Task Context: {session.task_context or 'General assistance.'}. "
-            "Keep responses professional, factual, and based on the provided SYSTEM STATE."
-        )
+        else:
+            ctx = (
+                f"You are an EvoPyramid OS Agent. Role: {session.provider.upper()}. "
+                f"You are bound to NODE: '{session.node_id}' at Z-LEVEL: {session.node_z}. "
+                f"ACTUAL SYSTEM STATE: {state_summary} "
+                f"Task Context: {session.task_context or 'General assistance.'}. "
+                "Keep responses professional, factual, and based EXCLUSIVELY on the provided ACTUAL SYSTEM STATE."
+            )
+        
+        # Log context for debugging
+        print(f"\n[ORCHESTRATOR DEBUG] Generated System Context for {session.node_id}:\n{ctx}\n")
+        return ctx
 
     @staticmethod
     def _history(session: AgentSession) -> List[dict]:
@@ -410,7 +511,7 @@ class AgentOrchestrator:
         }
 
         try:
-            chat_data = _ollama_request("POST", "/api/chat", payload=payload, timeout=90)
+            chat_data = _ollama_request("POST", "/api/chat", payload=payload, timeout=180)
             message = chat_data.get("message") if isinstance(chat_data, dict) else None
             text = str((message or {}).get("content", "")).strip()
             if text:
@@ -431,7 +532,7 @@ class AgentOrchestrator:
                 "prompt": prompt,
                 "stream": False,
             },
-            timeout=90,
+            timeout=180,
         )
         generated_text = str(generate_data.get("response", "")).strip()
         if generated_text:
@@ -452,71 +553,59 @@ class AgentOrchestrator:
         system_ctx = AgentOrchestrator._system_context(session)
 
         policy = _session_routing_policy(session)
+        provider = SupervisedTaskRouter.resolve_provider(session, policy)
 
-        if policy["mode"] == "local_ollama":
-            try:
-                model_hint = session.model_hint if session.provider == Provider.OLLAMA else None
+        try:
+            # All paths now go through Supervisor Pre-analysis
+            analysis = await OllamaSupervisor.analyze_task(session)
+            logger.info(f"Ollama Supervisor (Z{session.node_z}) analysis: {analysis.get('prepared_prompt', 'None')[:50]}...")
+
+            response_text = ""
+            
+            if provider == Provider.OLLAMA:
+                # LOCAL OLLAMA PATH
+                model_hint = session.model_hint if session.provider == Provider.OLLAMA else "llama3.2:3b"
                 model_name = await _resolve_ollama_model(model_hint)
                 messages = AgentOrchestrator._build_ollama_messages(session, system_ctx)
-                return await AgentOrchestrator._send_ollama(model_name, messages)
-            except Exception as exc:
-                if policy.get("reason") == "external_url_attached":
-                    return (
-                        "[SYSTEM LINKED] This session is attached to an external browser chat. "
-                        "Use 'Open' to continue directly there. "
-                        f"Local bridge unavailable: {exc}"
-                    )
-                return f"[SYSTEM OLLAMA] {exc}"
+                response_text = await AgentOrchestrator._send_ollama(model_name, messages)
+            else:
+                # CLOUD GEMINI PATH (w/ Potential Bridge fallback handled in UI)
+                api_key = os.getenv("GEMINI_API_KEY", "").strip()
+                if not api_key:
+                    return f"[SYSTEM DEBUG] GEMINI_API_KEY not found. Node {session.node_id} offline."
 
-        api_key = os.getenv("GEMINI_API_KEY", "").strip()
-        if not api_key:
-            return f"[SYSTEM DEBUG] GEMINI_API_KEY not found. Static simulation only node {session.node_id} (Z{session.node_z})."
+                now = time.time()
+                if _GEMINI_QUOTA_BLOCK_UNTIL > now:
+                    # Logic should have routed to OLLAMA, but in case of race:
+                    retry_seconds = max(1, int(_GEMINI_QUOTA_BLOCK_UNTIL - now))
+                    return _quota_cooldown_message(session, retry_seconds, _GEMINI_QUOTA_BLOCK_REASON)
 
-        now = time.time()
-        if _GEMINI_QUOTA_BLOCK_UNTIL > now:
-            retry_seconds = max(1, int(_GEMINI_QUOTA_BLOCK_UNTIL - now))
-            return _quota_cooldown_message(session, retry_seconds, _GEMINI_QUOTA_BLOCK_REASON)
+                genai.configure(api_key=api_key)
+                history = AgentOrchestrator._history(session)
+                last_msg = session.messages[-1].content
+                model_name = await _resolve_gemini_model(session.model_hint)
+                response_text = await AgentOrchestrator._send(model_name, system_ctx, history, last_msg)
 
-        genai.configure(api_key=api_key)
+            # Unified Post-processing Evaluation
+            evaluation = await OllamaSupervisor.evaluate_response(response_text)
+            if not evaluation["valid"]:
+                return f"[SUPERVISOR CAUTION] Response rejected by local mesh for low quality. Detail: {response_text}"
+            
+            return response_text
 
-        history = AgentOrchestrator._history(session)
-        last_msg = session.messages[-1].content
-
-        model_name = "unknown"
-        try:
-            model_name = await _resolve_gemini_model(session.model_hint)
-            text = await AgentOrchestrator._send(model_name, system_ctx, history, last_msg)
-            _GEMINI_QUOTA_BLOCK_UNTIL = 0.0
-            _GEMINI_QUOTA_BLOCK_REASON = ""
-            return text
         except Exception as exc:
             error_text = str(exc)
-            lowered = error_text.lower()
-
+            
+            # Handle Quota Block Globally if it happened during the call
             if _is_quota_error(error_text):
-                retry_seconds = _extract_retry_seconds(error_text)
-                block_reason = "limit_zero" if _is_hard_quota_lock(error_text) else ""
-                if block_reason == "limit_zero":
-                    retry_seconds = max(retry_seconds, 300)
+                _GEMINI_QUOTA_BLOCK_UNTIL = time.time() + 60 # Cooldown
+                _GEMINI_QUOTA_BLOCK_REASON = "unexpected_quota_hit"
+                return f"[SYSTEM FALLBACK] Gemini quota exhausted. Please try again (Ollama will take over)."
 
-                _GEMINI_QUOTA_BLOCK_REASON = block_reason
-                _GEMINI_QUOTA_BLOCK_UNTIL = max(_GEMINI_QUOTA_BLOCK_UNTIL, now + retry_seconds)
-                logger.warning(
-                    "Gemini quota exceeded for session %s (node=%s, model=%s). cooldown=%ss reason=%s",
-                    session.id,
-                    session.node_id,
-                    model_name,
-                    retry_seconds,
-                    _GEMINI_QUOTA_BLOCK_REASON or "temporary",
+            if policy.get("reason") == "external_url_attached":
+                 return (
+                    "[SYSTEM LINKED] Session attached to external browser chat. "
+                    "Use 'Open' to continue. "
+                    f"Bridge status: {error_text}"
                 )
-                return _quota_cooldown_message(session, retry_seconds, _GEMINI_QUOTA_BLOCK_REASON)
-
-            if ("not found" in lowered or "not supported" in lowered) and not session.model_hint:
-                try:
-                    fallback_model = await _resolve_gemini_model(None, force_refresh=True)
-                    if fallback_model != model_name:
-                        return await AgentOrchestrator._send(fallback_model, system_ctx, history, last_msg)
-                except Exception as retry_exc:
-                    return f"⚠ AI Orchestration Error: {retry_exc}"
-
             return f"⚠ AI Orchestration Error: {error_text}"

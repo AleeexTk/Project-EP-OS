@@ -46,12 +46,10 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 
 | Component | Status | Health | Audit Notes |
 | :--- | :--- | :--- | :--- |
-| **Data Models** | ✅ Stable | 100% | `models.py` updated with `OrchestratorState`. |
-| **Communication** | 🟨 Functional | 85% | Z-Bus (zbus.py) implemented; requires real-world stress test. |
-| **Bridge (Chrome Ext)** | 🟨 Beta | 70% | Manifest V3 ready; REQ: User manual authentication/login. |
-| **Security Policy** | ✅ Verified | 100% | `policy_manager.py` enforced via `/kernel/dispatch`. |
-| **API Server** | ✅ Protected | 100% | Integrated with Spine-Kernel; stress tested. |
-| **Reality Anchor** | 🟨 Monitoring | 65% | Heartbeat includes Policy & Violation checks. |
+| **Hybrid Runtime** | ✅ Active | 100% | `SupervisedTaskRouter` implemented with real-time Ollama fallback. |
+| **Workspace Tabs** | ✅ Premium | 100% | Agent Windows evolved into 'Attached Workspace Tabs' with bridge metadata. |
+| **Z7 Stability** | ✅ Healthy | 100% | Ghost node '8-9-13' pruned; structural integrity verified. |
+| **Supervisor** | ✅ Functional | 90% | Local pre/post-analysis active; requires further model fine-tuning. |
 
 ---
 
@@ -73,6 +71,14 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 
 ### 5. ARCHITECTURAL CONCLUSION
 
-The project has successfully moved from a "File Visualization Tool" to a **"Distributed AI Orchestrator"**. The foundation is solid. The next evolutionary trigger is the **First Successful Autonomous Loop** (Prompt -> Extension -> LLM -> Result -> Z-Bus -> Node Update).
+The project has successfully moved from a "File Visualization Tool" to a **"Distributed AI Orchestrator"**.
+
+**Key Milestones [v1.2]:**
+
+- [x] **Hybrid Agent Mesh**: Automated routing between Cloud (Gemini) and Local (Ollama) reasoning.
+- [x] **Trinity Protocol Hardening**: Z-Level security enforced at the Spine Dispatcher with persistent 'Evolution Journal'.
+- [x] **Attached Workspace Tabs**: Embedded WebView support in `AgentWorkspace.tsx` for seamless web-session integration.
+
+The foundation is solid. The next evolutionary trigger is the **First Successful Autonomous PEAR Loop** (Plan -> Execute -> Audit -> Reflect).
 
 **Ready for Deployment.**

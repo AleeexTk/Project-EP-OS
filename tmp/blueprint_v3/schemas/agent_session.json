@@ -1,0 +1,12 @@
+
+{
+  "id": "sess_xxxx",
+  "provider": "GPT|Gemini|Claude|Ollama",
+  "mode": "local|web|hybrid",
+  "node_id": "observer_z4",
+  "node_z": "Z4",
+  "task_context": "Architecture improvement",
+  "status": "active",
+  "external_session_id": "thread_xxx",
+  "external_url": "https://chat.openai.com/..."
+}

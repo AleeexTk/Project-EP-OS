@@ -16,7 +16,7 @@
 | GH PR Resolver | gh_pr_resolver | Z9 | Beta | GREEN | β_Pyramid_Functional/GREEN/9_GH_PR_RESOLVER |
 | Web MCP Core | gen-webmcp | Z7 | Beta | GREEN | β_Pyramid_Functional/GREEN/7_WEB_MCP_CORE |
 | Chaos Engine | chaos_engine | Z7 | Beta | SPINE | β_Pyramid_Functional/SPINE/7_CHAOS_ENGINE |
-| ChatGPT Apps Bridge | chatgpt_apps_bridge | Z7 | Beta | SPINE | β_Pyramid_Functional/SPINE/7_CHATGPT_APPS_BRIDGE |
+| Trinity Agent Bridge | trinity_agent_bridge | Z7 | Beta | SPINE | β_Pyramid_Functional/SPINE/7_TRINITY_AGENT_BRIDGE |
 | Evo Dashboard | gen-dashboard | Z5 | Beta | SPINE | β_Pyramid_Functional/SPINE/5_EVO_DASHBOARD |
 | Netlify Deploy Beacon | netlify_deploy_beacon | Z3 | Gamma | GOLD | γ_Pyramid_Reflective/GOLD/3_NETLIFY_DEPLOY_BEACON |
 | Deploy Audit Ledger | deploy_audit_ledger | Z1 | Gamma | SPINE | γ_Pyramid_Reflective/SPINE/1_DEPLOY_AUDIT_LEDGER |

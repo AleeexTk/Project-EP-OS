@@ -256,3 +256,205 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-03-17 16:29:42,088 [INFO] SK Memory initialized with 25 nodes.
 2026-03-17 16:29:42,089 [INFO] [PULSER] Engine started.
 2026-03-17 16:29:51,167 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-17 16:41:22,460 [INFO] Initializing SK Memory from current state...
+2026-03-17 16:41:22,487 [INFO] SK Memory initialized with 25 nodes.
+2026-03-17 16:41:22,488 [INFO] [PULSER] Engine started.
+2026-03-17 16:41:28,147 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-17 16:41:30,372 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-17 16:41:30,414 [WARNING] Failed to broadcast to client: 
+2026-03-17 16:42:38,819 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-17 18:22:46,550 [INFO] Initializing SK Memory from current state...
+2026-03-17 18:39:07,865 [INFO] Initializing SK Memory from current state...
+2026-03-17 18:41:38,158 [INFO] Initializing SK Memory from current state...
+2026-03-17 18:41:38,165 [INFO] SK Memory initialized with 25 nodes.
+2026-03-17 18:41:38,165 [INFO] [PULSER] Engine started.
+2026-03-17 18:41:40,353 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-17 18:42:28,760 [INFO] Initializing SK Memory from current state...
+2026-03-17 18:42:28,766 [INFO] SK Memory initialized with 25 nodes.
+2026-03-17 18:42:28,767 [INFO] [PULSER] Engine started.
+2026-03-17 18:42:30,990 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-17 18:42:37,856 [WARNING] Failed to broadcast to client: 
+2026-03-17 21:33:32,928 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-17 22:02:30,348 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-17 23:18:30,112 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-17 23:24:45,631 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-17 23:25:12,487 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-17 23:28:30,159 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-17 23:33:30,169 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-17 23:38:30,186 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-17 23:43:30,196 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-17 23:48:30,213 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-17 23:53:30,263 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-17 23:58:30,275 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:03:30,294 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:08:30,306 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:13:31,997 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:18:32,005 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:23:32,022 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:28:32,035 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:33:32,747 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:38:32,766 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:43:32,785 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:48:32,801 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:53:33,060 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 00:58:34,109 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:03:39,691 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:08:39,717 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:13:42,716 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:18:42,727 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:23:42,735 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:28:42,757 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:33:42,776 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:38:42,791 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:43:45,008 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:48:45,127 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:53:46,709 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 01:58:46,731 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:03:46,753 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:08:47,120 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:13:47,133 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:18:47,155 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:23:47,314 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:28:47,340 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:33:47,351 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:38:47,378 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:43:47,399 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:48:47,417 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:53:47,438 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 02:58:47,468 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:03:47,492 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:08:48,704 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:13:48,715 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:18:48,742 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:23:48,774 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:28:48,790 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:33:48,816 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:38:48,849 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:43:50,749 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:48:50,771 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:53:50,804 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 03:58:52,242 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:03:52,273 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:08:52,300 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:13:52,319 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:18:52,351 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:23:52,380 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:28:52,400 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:33:52,429 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:38:52,457 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:43:52,480 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:48:52,506 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:53:52,525 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 04:58:53,630 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:03:53,649 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:08:53,665 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:13:55,633 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:18:55,662 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:23:55,692 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:28:57,632 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:33:57,650 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:38:57,681 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:43:57,709 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:48:57,741 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:53:57,764 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 05:58:57,787 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:03:57,818 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:08:58,290 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:13:58,317 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:18:58,340 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:23:58,354 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:28:58,382 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:33:58,642 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:38:58,662 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:43:58,682 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:49:00,455 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:54:00,488 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 06:59:00,507 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:04:01,737 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:09:01,755 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:14:01,780 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:19:01,803 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:24:01,833 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:29:02,097 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:34:02,121 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:39:02,147 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:44:02,182 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:49:02,212 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:54:02,376 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 07:59:02,395 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:04:02,415 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:09:03,842 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:14:03,854 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:19:03,879 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:24:03,911 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:29:03,955 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:34:04,932 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:39:04,964 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:44:05,001 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:49:05,020 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:54:05,050 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 08:59:05,493 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:04:05,509 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:09:05,536 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:14:05,558 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:19:05,580 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:24:06,029 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:29:06,053 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:34:06,082 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:39:06,114 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:43:01,643 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-18 09:43:01,651 [WARNING] Failed to broadcast to client: 
+2026-03-18 09:43:03,208 [WARNING] Failed to broadcast to client: 
+2026-03-18 09:44:06,140 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:49:06,153 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:54:06,174 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 09:59:06,185 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:04:06,206 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:09:06,225 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:14:08,090 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:19:08,111 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:24:10,419 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:29:10,434 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:34:10,452 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:39:10,472 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:44:12,960 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:49:12,993 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:54:13,010 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 10:59:13,026 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:04:13,427 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:09:13,448 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:14:13,470 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:19:13,502 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:24:14,724 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:29:14,744 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:34:14,754 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:39:14,770 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:44:14,791 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:49:14,830 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:50:26,603 [INFO] Initializing SK Memory from current state...
+2026-03-18 11:50:26,621 [INFO] SK Memory initialized with 25 nodes.
+2026-03-18 11:50:26,621 [INFO] [PULSER] Engine started.
+2026-03-18 11:50:30,263 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:50:30,264 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-18 11:50:30,265 [INFO] [PULSER] Engine stopped.
+2026-03-18 11:54:14,869 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 11:59:14,914 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 12:03:57,470 [INFO] Initializing SK Memory from current state...
+2026-03-18 12:03:57,477 [INFO] SK Memory initialized with 27 nodes.
+2026-03-18 12:03:57,477 [INFO] [PULSER] Engine started.
+2026-03-18 12:04:01,021 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 12:04:01,021 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-18 12:09:01,560 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 12:11:55,086 [INFO] Initializing SK Memory from current state...
+2026-03-18 12:11:55,093 [INFO] SK Memory initialized with 27 nodes.
+2026-03-18 12:11:55,093 [INFO] [PULSER] Engine started.
+2026-03-18 12:11:58,070 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 12:11:58,070 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-18 12:16:58,089 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 12:21:58,106 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 12:26:58,125 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 12:31:59,101 [WARNING] [PULSER] [HEALER] Integrity issues found: 2
+2026-03-18 12:36:59,119 [WARNING] [PULSER] [HEALER] Integrity issues found: 2
+2026-03-18 12:41:59,655 [WARNING] [PULSER] [HEALER] Integrity issues found: 2
+2026-03-18 12:46:59,668 [WARNING] [PULSER] [HEALER] Integrity issues found: 2
+2026-03-18 12:51:59,681 [WARNING] [PULSER] [HEALER] Integrity issues found: 2

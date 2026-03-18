@@ -1,4 +1,4 @@
-﻿"""
+"""
 Session Registry вЂ” Z9 В· ОІ_Pyramid_Functional В· GREEN sector
 Core service for managing agent session lifecycle.
 """
@@ -75,8 +75,15 @@ class AgentSession(BaseModel):
     updated_at:    str           = Field(default_factory=lambda: _now())
     # Communication
     messages:      List[Message] = Field(default_factory=list)
-    # External URL to open this session in a browser tab
-    external_url:  Optional[str] = None
+    
+    # --- [v1.1] Attached Workspace Tab Metadata ---
+    external_url:         Optional[str] = None
+    external_origin:      Optional[str] = None   # e.g. "gemini.google.com"
+    external_title:       Optional[str] = None   # e.g. "Gemini - Z13 Status"
+    bridge_mode:          str           = "hybrid" # linked_tab | hybrid | managed
+    bridge_status:        str           = "connected" # connected | lost | reattach | detached
+    supervisor_enabled:   bool          = True
+    focusable:            bool          = True
 
 
 class SessionCreateRequest(BaseModel):
@@ -89,6 +96,7 @@ class SessionCreateRequest(BaseModel):
     task_title:   str
     task_context: Optional[str] = None
     external_url: Optional[str] = None
+    bridge_mode:  Optional[str] = "hybrid"
 
 
 class MessageCreateRequest(BaseModel):
@@ -148,12 +156,23 @@ class SessionRegistry:
             task_title=req.task_title,
             task_context=req.task_context,
             external_url=req.external_url,
+            bridge_mode=req.bridge_mode or "hybrid",
+            external_origin=SessionRegistry._extract_origin(req.external_url),
             status=SessionStatus.ACTIVE,
         )
         store = _load_store()
         store["sessions"][session.id] = session.model_dump()
         _save_store(store)
         return session
+
+    @staticmethod
+    def _extract_origin(url: Optional[str]) -> Optional[str]:
+        if not url: return None
+        try:
+            from urllib.parse import urlparse
+            return urlparse(url).netloc
+        except:
+            return None
 
     @staticmethod
     def get(session_id: str) -> Optional[AgentSession]:

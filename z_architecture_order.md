@@ -82,7 +82,7 @@
 | Node ID | Title | Sector | Папка | Статус |
 | --- | --- | --- | --- | --- |
 | `gen-webmcp` | WEB MCP CORE | GREEN | `beta_pyramid_functional/GREEN/7_WEB_MCP_CORE` | ✅ Есть |
-| `chatgpt_apps_bridge` | ChatGPT Apps Bridge | SPINE | `beta_pyramid_functional/SPINE/7_CHATGPT_APPS_BRIDGE` | ✅ Есть |
+| `trinity_agent_bridge` | Trinity Agent Bridge | SPINE | `beta_pyramid_functional/SPINE/7_TRINITY_AGENT_BRIDGE` | ✅ Есть (Hardened Spine Entry) |
 | `sk_engine` | SK Engine | GOLD | `beta_pyramid_functional/B1_Kernel/SK_Engine` | ✅ Есть (Active 3.3) |
 
 > ⚠️ `chaos_bus_z7.py` существует в корне β но не имеет папки-узла!

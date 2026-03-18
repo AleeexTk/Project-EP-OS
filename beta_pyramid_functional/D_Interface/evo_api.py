@@ -38,6 +38,7 @@ from pydantic import BaseModel
 
 from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeState, NodeKind, LayerType, OrchestratorState
 from beta_pyramid_functional.B1_Kernel.ws_manager import ConnectionManager
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
 from beta_pyramid_functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
 from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
 from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
@@ -73,6 +74,29 @@ def load_state() -> PyramidState:
     except Exception as e:
         logging.error(f"State load error: {e}")
     return PyramidState()
+
+EVOLUTION_JOURNAL_PATH = Path(__file__).parent / "evolution_journal.json"
+
+def _log_to_journal(envelope: TaskEnvelope, status: str, result: Any):
+    try:
+        if not EVOLUTION_JOURNAL_PATH.exists():
+            data = {"protocol": "Trinity-Soft-Lang", "version": "1.0", "journal": []}
+        else:
+            data = json.loads(EVOLUTION_JOURNAL_PATH.read_text(encoding="utf-8"))
+        
+        entry = {
+            "task_id": envelope.task_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "source": envelope.source_node,
+            "origin_z": envelope.origin_z,
+            "action": envelope.action,
+            "result_summary": str(result)[:500], # Keep it brief
+            "status": status
+        }
+        data["journal"].append(entry)
+        EVOLUTION_JOURNAL_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    except Exception as e:
+        logging.error(f"Journal logging failed: {e}")
 
 def save_state(state: PyramidState):
     """Atomic state persistence using SK Engine utility."""
@@ -110,7 +134,7 @@ async def lifespan(app: FastAPI):
         block = QuantumBlock(
             id=node_id,
             content=f"{node.title} {node.summary}",
-            color=m_color,
+            base_color=m_color,
             metadata={"path": node.metadata.get("path")}
         )
         await sk_memory.add_block(block, persist=False)
@@ -308,7 +332,6 @@ async def kernel_dispatch(envelope: TaskEnvelope):
     """
     try:
         from policy_manager import SystemPolicyManager
-        # Initialize policy manager (in a real scenario, this would be a singleton)
         policy_mgr = SystemPolicyManager()
         
         if not policy_mgr.validate_action(envelope):
@@ -340,11 +363,14 @@ async def kernel_dispatch(envelope: TaskEnvelope):
             prune_missing = envelope.payload.get("prune_missing", False)
             guard_res = await guard_apply(update_existing=update_existing, prune_missing=prune_missing)
             result = guard_res
+        
+        # Log to Evolution Journal
+        _log_to_journal(envelope, status="ACCEPTED", result=result)
 
         return {
             "status": "ACCEPTED",
             "task_id": envelope.task_id,
-            "orchestrator": "Spine-V2",
+            "orchestrator": "Spine-V2-Hardened",
             "result": result
         }
     except Exception as e:
