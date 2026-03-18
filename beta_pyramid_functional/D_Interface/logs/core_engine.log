@@ -461,3 +461,5 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-03-18 12:56:59,694 [WARNING] [PULSER] [HEALER] Integrity issues found: 2
 2026-03-18 13:02:02,156 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
 2026-03-18 13:07:02,179 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 13:12:02,201 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-18 13:17:03,951 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
