@@ -39,13 +39,13 @@ if core_layer is None:
     core_layer = PROJECT_ROOT / "alpha_pyramid_core"
 
 # Inject critical paths
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 sys.path.insert(0, str(THIS_DIR))
 if core_layer and core_layer.exists():
     sys.path.insert(0, str(core_layer / "B_Structure"))
 sys.path.insert(0, str(THIS_DIR.parent / "B2_ProviderMatrix"))
-
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.append(str(PROJECT_ROOT))
 
 load_dotenv(dotenv_path=PROJECT_ROOT / ".env", override=False)
 load_dotenv(dotenv_path=THIS_DIR / ".env", override=False)

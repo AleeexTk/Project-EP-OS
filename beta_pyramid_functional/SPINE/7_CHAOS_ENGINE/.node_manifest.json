@@ -11,7 +11,7 @@
   "layer_type": "beta",
   "kind": "service",
   "summary": "Core orchestration service for monitoring provider health and managing fallbacks (Z-Bus integration).",
-  "state": "quarantined",
+  "state": "active",
   "canon_status": "runtime",
   "artifacts": [],
   "links": [
