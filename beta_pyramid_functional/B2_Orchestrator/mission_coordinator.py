@@ -1,31 +1,8 @@
-import asyncio
-import uuid
 from typing import List, Dict, Any, Optional
-from enum import Enum
-from pydantic import BaseModel, Field
 from beta_pyramid_functional.B3_SessionRegistry.session_models import AgentSession, Provider
 from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator
-
-class MissionStatus(str, Enum):
-    DRAFT = "draft"
-    ACTIVE = "active"
-    BLOCKED = "blocked"
-    COMPLETED = "completed"
-
-class MissionTask(BaseModel):
-    task_id: str = Field(default_factory=lambda: f"task_{uuid.uuid4().hex[:6]}")
-    assigned_role: str
-    z_level: int
-    intent: str
-    status: str = "pending"
-    result_ref: Optional[str] = None
-
-class Mission(BaseModel):
-    id: str = Field(default_factory=lambda: f"miss_{uuid.uuid4().hex[:8]}")
-    title: str
-    objective: str
-    tasks: List[MissionTask] = []
-    status: MissionStatus = MissionStatus.DRAFT
+from beta_pyramid_functional.B2_Orchestrator.mission_registry import MissionRegistry
+from beta_pyramid_functional.B2_Orchestrator.mission_models import Mission, MissionTask, MissionStatus
 
 class MissionCoordinator:
     """
@@ -34,11 +11,16 @@ class MissionCoordinator:
     """
     
     def __init__(self):
-        self.active_missions: Dict[str, Mission] = {}
         self.orchestrator = AgentOrchestrator()
+        self.registry: Optional[MissionRegistry] = None
+
+    async def _ensure_registry(self):
+        if not self.registry:
+            self.registry = await MissionRegistry.get_instance()
 
     async def create_mission(self, title: str, objective: str) -> Mission:
         """Phase 1: Decompose objective into a strategic plan."""
+        await self._ensure_registry()
         # In a real scenario, we would use an LLM (Architect Role) to decompose.
         # For the V6.0 MVP, we implement a strategic template engine.
         
@@ -57,12 +39,13 @@ class MissionCoordinator:
             ]
         
         mission.status = MissionStatus.ACTIVE
-        self.active_missions[mission.id] = mission
+        await self.registry.save_mission(mission)
         return mission
 
     async def execute_mission(self, mission_id: str):
         """Phase 2: Dispatch tasks to the swarm."""
-        mission = self.active_missions.get(mission_id)
+        await self._ensure_registry()
+        mission = self.registry.get_mission(mission_id)
         if not mission:
             return
         
@@ -94,5 +77,6 @@ class MissionCoordinator:
             print(f"[MISSION] Task Completed by {task.assigned_role}.")
 
         mission.status = MissionStatus.COMPLETED
+        await self.registry.save_mission(mission)
         print(f"[MISSION] Completed: {mission.title}")
         return mission

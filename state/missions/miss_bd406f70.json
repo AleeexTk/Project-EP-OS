@@ -1,0 +1,24 @@
+{
+  "id": "miss_bd406f70",
+  "title": "Z-Bus Hardening",
+  "objective": "Deep Code Audit for memory leaks and a Security Fix for the Z-Bus dispatcher.",
+  "tasks": [
+    {
+      "task_id": "task_7e40e7",
+      "assigned_role": "Auditor",
+      "z_level": 7,
+      "intent": "Perform deep code audit for: Deep Code Audit for memory leaks and a Security Fix for the Z-Bus dispatcher.",
+      "status": "pending",
+      "result_ref": null
+    },
+    {
+      "task_id": "task_29b4e3",
+      "assigned_role": "Engineer",
+      "z_level": 5,
+      "intent": "Implement fixes based on audit findings for: Deep Code Audit for memory leaks and a Security Fix for the Z-Bus dispatcher.",
+      "status": "pending",
+      "result_ref": null
+    }
+  ],
+  "status": "active"
+}
