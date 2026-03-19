@@ -1,4 +1,5 @@
 import asyncio
+import json
 import uuid
 import time
 import logging
@@ -11,7 +12,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(ROOT_DIR))
 
 try:
-    from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import CortexMemory
+    from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import CortexMemory, ProjectCortex
     from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock, MemoryColor, MethodMode
     from beta_pyramid_functional.B1_Kernel.events import EventType, create_event
     from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator, Provider, AgentSession
@@ -33,29 +34,43 @@ class PEARAgent:
         self.memory = CortexMemory(data_dir=ROOT_DIR / "state" / "agent_memory" / role.lower())
         
     async def perceive(self, pulse_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Phase 1: Perception - Gather context and similar past experiences."""
+        """Phase 1: Perception - Gather context from role-specific and global project memory."""
         intent = pulse_data.get("intent", "")
+        
+        # 1. Role-specific memories
         past_blocks = await self.memory.find_similar(intent)
-        context = [b.to_dict() for b in past_blocks[:3]]
+        role_context = [b.to_dict() for b in past_blocks[:3]]
+        
+        # 2. Global Project Cortex memories
+        project_cortex = await ProjectCortex.get_instance()
+        global_blocks = await project_cortex.find_similar(intent)
+        global_context = [b.to_dict() for b in global_blocks[:3]]
         
         return {
             "perceived_intent": intent,
-            "relevant_past": context,
+            "role_context": role_context,
+            "global_context": global_context,
             "pulse_id": pulse_data.get("pulse_id")
         }
 
     async def evolve(self, perception: Dict[str, Any]) -> Dict[str, Any]:
         """Phase 2: Evolution - Logic to transform perception into a proposal."""
         intent = perception["perceived_intent"]
-        mem_context = json.dumps(perception["relevant_past"])
+        role_mem = json.dumps(perception["role_context"])
+        glob_mem = json.dumps(perception["global_context"])
         
         try:
             # Create a session to talk through the orchestrator
             session = AgentSession(
                 node_id=f"z{self.z_level}-{self.role.lower()}",
                 node_z=self.z_level,
+                task_title=f"{self.role} Evolution: {intent[:30]}",
                 provider=Provider.OLLAMA if self.provider == "ollama" else Provider.GEMINI,
-                task_context=f"PEAR Evolution Cycle. History: {mem_context}"
+                task_context=(
+                    f"PEAR Evolution Cycle. "
+                    f"Role History: {role_mem} | "
+                    f"Global Project Memory: {glob_mem}"
+                )
             )
             session.add_user_message(f"Evolve the following intent based on your architecture role as {self.role}: {intent}")
             
@@ -77,15 +92,21 @@ class PEARAgent:
         return action_result
 
     async def reflect(self, result: Dict[str, Any], original_pulse: Dict[str, Any]):
-        """Phase 4: Reflection - Store result in SK_Engine for future Perception."""
+        """Phase 4: Reflection - Store result in both role-memory and Global Project Cortex."""
         block = QuantumBlock(
             id=f"ref_{uuid.uuid4().hex[:8]}",
             base_color=self.color,
             content=f"Task: {original_pulse.get('intent')} | Result: {result['output']}",
             method=MethodMode.SK2_FUNDAMENTAL
         )
+        # Save to local agent memory
         await self.memory.add_block(block)
-        print(f"[RECALL] [{self.role}] Reflected and stored experience.")
+        
+        # Save to global Project Cortex
+        project_cortex = await ProjectCortex.get_instance()
+        await project_cortex.add_block(block)
+        
+        print(f"[RECALL] [{self.role}] Reflected and stored experience in global cortex.")
 
 class ZLevelOrchestrator:
     """Manages protocol-based interaction between agents on different Z-Levels."""

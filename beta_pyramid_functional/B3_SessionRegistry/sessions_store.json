@@ -12,7 +12,7 @@
       "task_context": null,
       "status": "waiting",
       "created_at": "2026-03-09T15:45:18.296929+00:00",
-      "updated_at": "2026-03-17T15:45:06.294641+00:00",
+      "updated_at": "2026-03-19T16:19:03.126649+00:00",
       "messages": [
         {
           "id": "109c4a1a-12bd-4098-afb5-88f8a774c330",
@@ -55,9 +55,22 @@
           "content": "[SYSTEM QUOTA] Gemini API quota is disabled for this project (limit=0). Session moved to WAITING for 300s. Enable billing/quota in Google AI Studio for this key/project, then retry. Use 'Open' to continue externally (GEMINI).",
           "ts": "2026-03-17T15:45:06.287445+00:00",
           "agent_ref": null
+        },
+        {
+          "id": "53013168-36c5-44e3-a89a-969279bd8e37",
+          "role": "user",
+          "content": "Привет",
+          "ts": "2026-03-19T16:19:03.126612+00:00",
+          "agent_ref": null
         }
       ],
-      "external_url": null
+      "external_url": null,
+      "external_origin": null,
+      "external_title": null,
+      "bridge_mode": "hybrid",
+      "bridge_status": "connected",
+      "supervisor_enabled": true,
+      "focusable": true
     },
     "sess_afe574b4": {
       "id": "sess_afe574b4",

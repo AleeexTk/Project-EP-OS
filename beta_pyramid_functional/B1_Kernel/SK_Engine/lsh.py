@@ -29,7 +29,7 @@ class MinHash:
                     signature[i] = val
         return signature
 
-    def _get_shingles(self, text: str, k: int = 3) -> Set[str]:
+    def _get_shingles(self, text: str, k: int = 1) -> Set[str]:
         text = text.lower().strip()
         words = text.split()
         if len(words) < k:

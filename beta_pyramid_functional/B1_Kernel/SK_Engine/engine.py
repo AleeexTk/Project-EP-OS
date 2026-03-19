@@ -137,3 +137,24 @@ def write_atomic(file_path: Path, data: Any):
         if os.path.exists(temp_path):
             os.remove(temp_path)
         raise e
+
+class ProjectCortex:
+    """
+    Singleton Project-wide Semantic Memory.
+    Provides a shared CortexMemory instance for all system components.
+    """
+    _instance: Optional[CortexMemory] = None
+
+    @classmethod
+    async def get_instance(cls) -> CortexMemory:
+        """Get the shared project-wide memory cortex."""
+        if cls._instance is None:
+            # Default root-level project cortex path
+            root = Path(__file__).resolve().parent.parent.parent.parent
+            path = root / "state" / "project_cortex"
+            
+            cls._instance = CortexMemory(data_dir=path)
+            await cls._instance.load_all()
+            logger.info(f"ProjectCortex initialized at {path}")
+            
+        return cls._instance

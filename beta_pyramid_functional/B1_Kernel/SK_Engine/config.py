@@ -28,8 +28,8 @@ class SystemConfig:
     MINHASH_PRIME = 2**31 - 1
     MINHASH_SEED = 42
     MINHASH_COUNT = 128
-    LSH_BANDS = 16
-    LSH_ROWS = 8
+    LSH_BANDS = 128
+    LSH_ROWS = 1
     DATA_DIR = Path("state/evo_data")
     BACKUP_DIR = Path("state/evo_backups")
     SK1_SIMILARITY_THRESHOLD = 0.1

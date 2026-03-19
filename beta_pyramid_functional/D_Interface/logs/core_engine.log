@@ -463,3 +463,15 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-03-18 13:07:02,179 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
 2026-03-18 13:12:02,201 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
 2026-03-18 13:17:03,951 [WARNING] [PULSER] [HEALER] Integrity issues found: 1
+2026-03-19 17:51:41,382 [INFO] Initializing SK Memory from current state...
+2026-03-19 17:51:41,390 [INFO] SK Memory initialized with 26 nodes.
+2026-03-19 17:51:41,390 [INFO] [PULSER] Engine started.
+2026-03-19 17:51:44,624 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-19 17:51:50,209 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-19 18:07:26,808 [INFO] Initializing SK Memory from current state...
+2026-03-19 18:07:26,830 [INFO] SK Memory initialized with 27 nodes.
+2026-03-19 18:07:26,830 [INFO] [PULSER] Engine started.
+2026-03-19 18:07:30,603 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-19 18:07:34,817 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-19 18:17:46,420 [WARNING] Failed to broadcast to client: 
+2026-03-19 18:18:40,002 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.

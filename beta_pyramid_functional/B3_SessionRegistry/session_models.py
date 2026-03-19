@@ -84,6 +84,16 @@ class AgentSession(BaseModel):
     bridge_status:        str           = "connected" # connected | lost | reattach | detached
     supervisor_enabled:   bool          = True
     focusable:            bool          = True
+    
+    def add_user_message(self, content: str):
+        """Helper to append a user message to the session history."""
+        self.messages.append(Message(role=MessageRole.USER, content=content))
+        self.updated_at = _now()
+
+    def add_assistant_message(self, content: str, agent_ref: Optional[str] = None):
+        """Helper to append an assistant message to the session history."""
+        self.messages.append(Message(role=MessageRole.ASSISTANT, content=content, agent_ref=agent_ref))
+        self.updated_at = _now()
 
 
 class SessionCreateRequest(BaseModel):

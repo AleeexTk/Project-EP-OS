@@ -11,6 +11,7 @@ from urllib import request as urlrequest
 
 import google.generativeai as genai
 
+from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex
 from beta_pyramid_functional.B3_SessionRegistry.session_models import AgentSession, Provider
 
 logger = logging.getLogger("llm_orchestrator")
@@ -415,9 +416,11 @@ class AgentOrchestrator:
     Connects nodes to local/cloud providers (Ollama/Gemini).
     """
     @staticmethod
-    def _system_context(session: AgentSession) -> str:
+    async def _system_context(session: AgentSession) -> str:
         # Load real-time state insight
         state_summary = "State context unavailable."
+        memory_context = "No relevant project memories found."
+        
         try:
             root_dir = Path(__file__).resolve().parents[2]
             state_path = root_dir / "state" / "pyramid_state.json"
@@ -432,10 +435,22 @@ class AgentOrchestrator:
                         f"ACTIVE: {', '.join(active_nodes[:5])}. "
                         f"IDLE: {', '.join(idle_nodes[:5])}. "
                     )
-                    # Specific check for common queries
-                    if "observer_relay" in nodes:
-                        obs = nodes["observer_relay"]
-                        state_summary += f" NODE 'Observer Relay' (Z4) status is CURRENTLY {obs.get('state','unknown').upper()}."
+            
+            # --- SEMANTIC MEMORY INJECTION ---
+            try:
+                cortex = await ProjectCortex.get_instance()
+                # Query based on task context or last message
+                query_text = session.task_context or ""
+                if session.messages:
+                    query_text += f" | {session.messages[-1].content}"
+                
+                similar_blocks = await cortex.find_similar(query_text, threshold=0.01)
+                if similar_blocks:
+                    mem_strings = [f"[{b.id}] {b.content[:200]}..." for b in similar_blocks[:2]]
+                    memory_context = " | ".join(mem_strings)
+            except Exception as e:
+                logger.warning(f"ProjectCortex retrieval failed: {e}")
+
         except Exception as e:
             state_summary = f"State insight error: {e}"
 
@@ -447,6 +462,7 @@ class AgentOrchestrator:
                 "Principles: PEAR loop (Perception, Evolution, Action, Reflection). "
                 f"Binding: NODE '{session.node_id}' (EvoGenesis Child Pyramid). "
                 f"ACTUAL SYSTEM STATE: {state_summary} "
+                f"PROJECT RECOLLECTION: {memory_context} "
                 "Current Goal: Develop a professional architecture for an asynchronous GCP-hosted backend. "
                 "Provide highly technical, structured advice aligned with evopyramid-ai."
             )
@@ -455,8 +471,9 @@ class AgentOrchestrator:
                 f"You are an EvoPyramid OS Agent. Role: {session.provider.upper()}. "
                 f"You are bound to NODE: '{session.node_id}' at Z-LEVEL: {session.node_z}. "
                 f"ACTUAL SYSTEM STATE: {state_summary} "
+                f"PROJECT RECOLLECTION: {memory_context} "
                 f"Task Context: {session.task_context or 'General assistance.'}. "
-                "Keep responses professional, factual, and based EXCLUSIVELY on the provided ACTUAL SYSTEM STATE."
+                "Keep responses professional, factual, and based EXCLUSIVELY on the provided ACTUAL SYSTEM STATE and SHARED MEMORY."
             )
         
         # Log context for debugging
@@ -550,7 +567,7 @@ class AgentOrchestrator:
         if not session.messages:
             return "[SYSTEM DEBUG] Session has no user message yet."
 
-        system_ctx = AgentOrchestrator._system_context(session)
+        system_ctx = await AgentOrchestrator._system_context(session)
 
         policy = _session_routing_policy(session)
         provider = SupervisedTaskRouter.resolve_provider(session, policy)
