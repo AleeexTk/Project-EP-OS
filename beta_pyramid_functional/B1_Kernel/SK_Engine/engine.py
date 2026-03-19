@@ -100,6 +100,10 @@ class CortexMemory:
         matches = sum(1 for a, b in zip(sig1, sig2) if a == b)
         return matches / len(sig1)
 
+    def get_all_sigs(self) -> Dict[str, List[int]]:
+        """Return all block IDs and their MinHash signatures for meta-analysis."""
+        return {bid: block.minhash for bid, block in self.blocks.items() if block.minhash}
+
     async def save_index(self):
         """Persist the LSH index (rebuildable, but cacheable)"""
         async with self.lock:
