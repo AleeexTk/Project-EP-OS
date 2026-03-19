@@ -5,7 +5,7 @@ import os
 import re
 import time
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Dict
 from urllib import error as urlerror
 from urllib import request as urlrequest
 
@@ -589,19 +589,23 @@ class AgentOrchestrator:
                 # CLOUD GEMINI PATH (w/ Potential Bridge fallback handled in UI)
                 api_key = os.getenv("GEMINI_API_KEY", "").strip()
                 if not api_key:
-                    return f"[SYSTEM DEBUG] GEMINI_API_KEY not found. Node {session.node_id} offline."
+                    logger.warning(f"GEMINI_API_KEY not found for node {session.node_id}. Falling back to OLLAMA.")
+                    # Force local execution
+                    model_name = await _resolve_ollama_model("llama3.2:3b")
+                    messages = AgentOrchestrator._build_ollama_messages(session, system_ctx)
+                    response_text = await AgentOrchestrator._send_ollama(model_name, messages)
+                else:
+                    now = time.time()
+                    if _GEMINI_QUOTA_BLOCK_UNTIL > now:
+                        # Logic should have routed to OLLAMA, but in case of race:
+                        retry_seconds = max(1, int(_GEMINI_QUOTA_BLOCK_UNTIL - now))
+                        return _quota_cooldown_message(session, retry_seconds, _GEMINI_QUOTA_BLOCK_REASON)
 
-                now = time.time()
-                if _GEMINI_QUOTA_BLOCK_UNTIL > now:
-                    # Logic should have routed to OLLAMA, but in case of race:
-                    retry_seconds = max(1, int(_GEMINI_QUOTA_BLOCK_UNTIL - now))
-                    return _quota_cooldown_message(session, retry_seconds, _GEMINI_QUOTA_BLOCK_REASON)
-
-                genai.configure(api_key=api_key)
-                history = AgentOrchestrator._history(session)
-                last_msg = session.messages[-1].content
-                model_name = await _resolve_gemini_model(session.model_hint)
-                response_text = await AgentOrchestrator._send(model_name, system_ctx, history, last_msg)
+                    genai.configure(api_key=api_key)
+                    history = AgentOrchestrator._history(session)
+                    last_msg = session.messages[-1].content
+                    model_name = await _resolve_gemini_model(session.model_hint)
+                    response_text = await AgentOrchestrator._send(model_name, system_ctx, history, last_msg)
 
             # Unified Post-processing Evaluation
             evaluation = await OllamaSupervisor.evaluate_response(response_text)
@@ -626,3 +630,44 @@ class AgentOrchestrator:
                     f"Bridge status: {error_text}"
                 )
             return f"⚠ AI Orchestration Error: {error_text}"
+
+    @staticmethod
+    async def plan_mission(objective: str) -> List[Dict[str, Any]]:
+        """
+        [STRATEGIC MESH] Decomposes a global objective into a multi-agent plan.
+        Returns a list of task definitions: [{"role": str, "z_level": int, "intent": str}]
+        """
+        prompt = (
+            "You are the EvoPyramid Architect (Z17). Decompose the following objective into a structured, multi-agent mission plan. "
+            "For each task, specify a specialized role (e.g., Auditor, Engineer, Researcher, SecurityGuardian), "
+            "a target Z-Level (1-17), and a specific task intent.\n\n"
+            f"OBJECTIVE: {objective}\n\n"
+            "Return EXCLUSIVELY a JSON array of objects. Example:\n"
+            '[{"role": "Auditor", "z_level": 7, "intent": "Analyze code for vulnerabilities"}, {"role": "Engineer", "z_level": 5, "intent": "Fix identified issues"}]\n'
+            "Ensure the plan is logical, specialized, and follows EvoPyramid standards."
+        )
+        
+        # Create a dummy session for the planning call
+        session = AgentSession(
+            node_id="strategic-planner",
+            node_z=17,
+            task_title="Strategic Mission Planning",
+            provider=Provider.GEMINI, # Prefer cloud for complex planning
+            task_context="Architecture Mode"
+        )
+        session.add_user_message(prompt)
+        
+        response = await AgentOrchestrator.get_response(session)
+        
+        # Parse JSON from response (handle markdown fences if present)
+        try:
+            json_match = re.search(r"(\[.*\])", response, re.DOTALL)
+            if json_match:
+                plan = json.loads(json_match.group(1))
+                if isinstance(plan, list):
+                    return plan
+        except Exception as e:
+            logger.warning(f"Failed to parse LLM mission plan: {e}. Raw response: {response}")
+            
+        # Fallback to a single-agent plan if parsing fails
+        return [{"role": "Generalist", "z_level": 5, "intent": objective}]

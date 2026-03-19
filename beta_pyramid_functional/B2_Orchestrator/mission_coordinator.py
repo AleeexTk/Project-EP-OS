@@ -19,27 +19,26 @@ class MissionCoordinator:
             self.registry = await MissionRegistry.get_instance()
 
     async def create_mission(self, title: str, objective: str) -> Mission:
-        """Phase 1: Decompose objective into a strategic plan."""
+        """Phase 1: Decompose objective into a strategic plan using LLM Architect."""
         await self._ensure_registry()
-        # In a real scenario, we would use an LLM (Architect Role) to decompose.
-        # For the V6.0 MVP, we implement a strategic template engine.
         
         mission = Mission(title=title, objective=objective)
+        print(f"[MISSION] Planning strategic decomposition for: {title}")
         
-        # Simple heuristic decomposition based on keywords
-        if "audit" in objective.lower() and "fix" in objective.lower():
-            mission.tasks = [
-                MissionTask(assigned_role="Auditor", z_level=7, intent=f"Perform deep code audit for: {objective}"),
-                MissionTask(assigned_role="Engineer", z_level=5, intent=f"Implement fixes based on audit findings for: {objective}")
-            ]
-        else:
-            # Default single-agent fallback
-            mission.tasks = [
-                MissionTask(assigned_role="Generalist", z_level=5, intent=objective)
-            ]
+        # Dynamically plan the mission using the Architect persona
+        plan = await self.orchestrator.plan_mission(objective)
+        
+        mission.tasks = []
+        for task_def in plan:
+            mission.tasks.append(MissionTask(
+                assigned_role=task_def.get("role", "Generalist"),
+                z_level=task_def.get("z_level", 5),
+                intent=task_def.get("intent", objective)
+            ))
         
         mission.status = MissionStatus.ACTIVE
         await self.registry.save_mission(mission)
+        print(f"[MISSION] Strategic Plan Created: {len(mission.tasks)} tasks assigned.")
         return mission
 
     async def execute_mission(self, mission_id: str):

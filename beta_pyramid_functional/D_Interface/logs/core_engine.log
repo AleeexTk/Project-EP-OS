@@ -475,3 +475,14 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-03-19 18:07:34,817 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
 2026-03-19 18:17:46,420 [WARNING] Failed to broadcast to client: 
 2026-03-19 18:18:40,002 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-19 18:30:35,359 [ERROR] Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Users\Alex Bear\AppData\Roaming\uv\python\cpython-3.14.2-windows-x86_64-none\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Alex Bear\AppData\Roaming\uv\python\cpython-3.14.2-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2026-03-19 18:53:26,698 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
