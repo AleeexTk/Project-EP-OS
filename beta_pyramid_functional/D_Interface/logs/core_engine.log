@@ -486,3 +486,8 @@ Traceback (most recent call last):
     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
 ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
 2026-03-19 18:53:26,698 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.
+2026-03-19 21:04:40,964 [INFO] Initializing SK Memory from current state...
+2026-03-19 21:04:40,974 [INFO] SK Memory initialized with 27 nodes.
+2026-03-19 21:04:40,974 [INFO] [PULSER] Engine started.
+2026-03-19 21:04:43,734 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-19 21:04:50,096 [WARNING] Failed to broadcast to client: Cannot call "send" once a close message has been sent.

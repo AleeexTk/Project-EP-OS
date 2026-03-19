@@ -414,9 +414,9 @@
       "model_hint": "llama3.2:3b",
       "task_title": "AlexCreator Navigator",
       "task_context": "Navigator smoke test",
-      "status": "active",
+      "status": "done",
       "created_at": "2026-03-12T20:32:22.642107+00:00",
-      "updated_at": "2026-03-19T19:12:55.527875+00:00",
+      "updated_at": "2026-03-19T20:23:04.949511+00:00",
       "messages": [
         {
           "id": "b5729422-67d3-44c9-8fc3-80c864a40d6a",

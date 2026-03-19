@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 from .llm_orchestrator import AgentOrchestrator
 from .synthesis_agent import SynthesisProposal, ProposalType
+from beta_pyramid_functional.B3_SessionRegistry.session_models import AgentSession, Provider
 
 logger = logging.getLogger("AutoCorrector")
 
@@ -74,12 +75,17 @@ Explain WHY this fix works.
 """
         logger.info(f"Requesting autonomous fix for {file_path.name}...")
         
-        response = await self.orchestrator.get_response(
+        # Create a proper AgentSession for the correction task
+        session = AgentSession(
             node_id="auto-corrector",
-            prompt=prompt,
-            persona="Auto-Correction Expert (Z12)",
-            z_level=12
+            node_z=12,
+            task_title=f"Self-Healing: {file_path.name}",
+            provider=Provider.GEMINI, # Orchestrator will handle fallback to OLLAMA
+            task_context=f"Repairing {diag['message']} in {diag['file']}"
         )
+        session.add_user_message(prompt)
+        
+        response = await self.orchestrator.get_response(session)
 
         # Create structured proposal
         return SynthesisProposal(

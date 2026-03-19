@@ -15,6 +15,8 @@ from beta_pyramid_functional.B2_Orchestrator.auto_corrector import AutoCorrector
 from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex
 from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock
 
+from datetime import datetime, timedelta, timezone
+
 logger = logging.getLogger("AutoCorrectorNode")
 logging.basicConfig(level=logging.INFO)
 
@@ -23,7 +25,8 @@ class AutoCorrectorNode:
         self.root = project_root
         self.journal_path = project_root / "beta_pyramid_functional" / "D_Interface" / "evolution_journal.json"
         self.corrector = AutoCorrector()
-        self.last_check = datetime.now()
+        # Look back 1 hour on first scan, using UTC
+        self.last_check = datetime.now(timezone.utc) - timedelta(hours=1)
 
     async def scan_for_failures(self):
         """Scan the Evolution Journal for recent task failures."""
@@ -34,11 +37,14 @@ class AutoCorrectorNode:
             with open(self.journal_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             
-            entries = data.get("entries", [])
+            entries = data.get("journal", [])
             failures = []
             
             for entry in entries:
-                ts = datetime.fromisoformat(entry["timestamp"])
+                # Ensure we handle Z or +00:00 correctly
+                ts_str = entry["timestamp"].replace("Z", "+00:00")
+                ts = datetime.fromisoformat(ts_str)
+                
                 # Only check new entries
                 if ts > self.last_check:
                     res = entry.get("result_summary", "")

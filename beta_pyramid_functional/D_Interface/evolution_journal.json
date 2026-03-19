@@ -136,6 +136,15 @@
       "action": "manifest_node",
       "result_summary": "{'path': 'C:\\\\Users\\\\Alex Bear\\\\Desktop\\\\EvoPyramid OS\\\\beta_pyramid_functional\\\\GREEN\\\\9_GH_PR_Resolver'}",
       "status": "ACCEPTED"
+    },
+    {
+      "task_id": "test-heal-999",
+      "timestamp": "2026-03-19T19:50:00.000000+00:00",
+      "source": "tester_z13",
+      "origin_z": 13,
+      "action": "execute_node",
+      "result_summary": "[AUTORUN FAILED] Traceback (most recent call last):\n  File \"c:\\Users\\Alex Bear\\Desktop\\EvoPyramid OS\\tmp\\broken_node.py\", line 7, in <module>\n    from non_existent_package.module import Something\nModuleNotFoundError: No module named 'non_existent_package'",
+      "status": "FAILED"
     }
   ]
 }
