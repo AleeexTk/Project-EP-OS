@@ -1,8 +1,17 @@
 import asyncio
 import json
 import logging
+import sys
+import os
 from pathlib import Path
 from datetime import datetime
+
+# --- EMERGENCY PATH INJECTION ---
+# Ensures the node can find the root package even if run directly
+root_dir = Path(__file__).resolve().parents[3]
+if str(root_dir) not in sys.path:
+    sys.path.append(str(root_dir))
+
 from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex
 from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock
 
