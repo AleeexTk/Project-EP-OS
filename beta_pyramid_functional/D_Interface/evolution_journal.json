@@ -109,6 +109,15 @@
       "action": "sync_structure",
       "result_summary": "{'status': 'ok', 'added': 0, 'updated': 25, 'layers': 5, 'scanned_dirs': 26, 'discovered': 25}",
       "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1773939198252",
+      "timestamp": "2026-03-19T16:53:26.700410+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 0, 'updated': 25, 'layers': 5, 'scanned_dirs': 26, 'discovered': 25}",
+      "status": "ACCEPTED"
     }
   ]
 }
