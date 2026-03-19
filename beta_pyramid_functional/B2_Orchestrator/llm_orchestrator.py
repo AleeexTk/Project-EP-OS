@@ -659,9 +659,12 @@ class AgentOrchestrator:
         
         response = await AgentOrchestrator.get_response(session)
         
-        # Parse JSON from response (handle markdown fences if present)
+        # Parse JSON from response (robust cleaning)
         try:
-            json_match = re.search(r"(\[.*\])", response, re.DOTALL)
+            # Strip markdown fences if present
+            clean_response = re.sub(r"```json|```", "", response).strip()
+            # Find the first '[' and last ']' to isolate the array
+            json_match = re.search(r"(\[.*\])", clean_response, re.DOTALL)
             if json_match:
                 plan = json.loads(json_match.group(1))
                 if isinstance(plan, list):

@@ -89,7 +89,7 @@ Explain WHY this fix works.
 
         # Create structured proposal
         return SynthesisProposal(
-            proposal_type=ProposalType.PATCH,
+            type=ProposalType.PATCH,
             target_node=diag['file'],
             rationale=f"Self-healing fix for: {diag['message']}",
             suggested_action=response,

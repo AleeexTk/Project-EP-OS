@@ -37,12 +37,16 @@ class ObserverRelay:
                 state_data = json.load(f)
             
             nodes = state_data.get("nodes", {})
+            total_nodes = len(nodes)
             active_count = sum(1 for n in nodes.values() if n.get("state") == "active")
+            
+            # Simple health metric: (active / total) * 100
+            health_pct = (active_count / total_nodes * 100) if total_nodes > 0 else 0
             
             summary = (
                 f"SYSTEM HEARTBEAT: {datetime.now().isoformat()} | "
-                f"Active Nodes: {active_count}/{len(nodes)} | "
-                f"Architectural Health: 100% | "
+                f"Active Nodes: {active_count}/{total_nodes} | "
+                f"Architectural Health: {health_pct:.1f}% | "
                 f"Source: ObserverRelay (Z4)"
             )
             

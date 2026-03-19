@@ -78,7 +78,7 @@ class AutoCorrectorNode:
                     )
                     await cortex.add_block(block)
                 
-            self.last_check = datetime.now()
+            self.last_check = datetime.now(timezone.utc)
             await asyncio.sleep(60) # Scan every minute
 
 if __name__ == "__main__":
