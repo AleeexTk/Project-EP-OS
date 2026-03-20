@@ -231,6 +231,18 @@ app.add_middleware(
 )
 
 # ─────────────────────────────────────────
+#  Mount Session Registry Router
+# ─────────────────────────────────────────
+try:
+    from beta_pyramid_functional.B3_SessionRegistry.session_api import router as session_router
+    app.include_router(session_router)
+    logging.info("Mounted Evo API v1 Session Router (/v1/sessions, /v1/providers)")
+except ImportError as e:
+    logging.warning(f"Could not load session router: {e}")
+
+
+
+# ─────────────────────────────────────────
 #  Discovery Utilities
 # ─────────────────────────────────────────
 SCAN_SECTORS = {"SPINE", "PURPLE", "RED", "GOLD", "GREEN", "SANDBOX"}
@@ -533,21 +545,72 @@ async def zbus_publish(event: dict):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
+class PromptRequest(BaseModel):
+    prompt: str
+    session_ids: List[str]
+    routing: str = "single"
+    context_pack_id: Optional[str] = None
+
+@app.post("/v1/prompt")
+async def trigger_prompt(req: PromptRequest):
+    """Evo API v1: Unified prompt routing dispatch."""
+    import uuid
+    try:
+        from zbus import zbus
+    except ImportError:
+        return {"status": "error", "message": "Z-Bus not available"}
+        
+    task_id = str(uuid.uuid4())
+    
+    # Broadcast to requested sessions
+    for sid in req.session_ids:
+        try:
+            from beta_pyramid_functional.B3_SessionRegistry.session_api import SessionRegistry
+            session = SessionRegistry.get(sid)
+            provider = session.provider if session else "unknown"
+            url = session.external_url if session and hasattr(session, "external_url") else ""
+            
+            await zbus.dispatch_llm_task(
+                task_id=task_id,
+                session_id=sid,
+                provider=provider,
+                prompt=req.prompt,
+                target_url=url or ""
+            )
+        except Exception as e:
+            logging.error(f"Failed to dispatch prompt for session {sid}: {e}")
+            
+    return {
+        "status": "dispatched",
+        "task_id": task_id,
+        "routing": req.routing,
+        "sessions": req.session_ids
+    }
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    """Enhanced Z-Bus WebSocket Gateway."""
     await manager.connect(websocket)
     await websocket.send_json({"type": "full_state", "data": current_state.model_dump()})
     try:
+        from zbus import zbus
         while True:
             data = await websocket.receive_text()
             try:
                 msg = json.loads(data)
-                if msg.get("type") == "LLM_RESPONSE":
+                
+                # 1. Z-Bus Event ingestion from clients (Extension/UI)
+                if "topic" in msg:
+                    await zbus.publish(msg)
+                    
+                # 2. Legacy LLM Response handling
+                elif msg.get("type") == "LLM_RESPONSE":
                     node_id = msg.get("node_id")
-                    if node_id in current_state.nodes:
+                    if node_id and node_id in current_state.nodes:
                         current_state.nodes[node_id].orchestrator_state = "ready"
                         await manager.broadcast({"type": "node_update", "data": current_state.nodes[node_id].model_dump()})
-            except: pass
+            except Exception as e:
+                logging.error(f"WS Parse error: {e}")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
 

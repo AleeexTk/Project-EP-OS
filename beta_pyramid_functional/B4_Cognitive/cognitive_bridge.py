@@ -137,6 +137,20 @@ class CognitiveBridge:
         )
         return block
 
+    async def recall_healing_pattern(self, error_signature: str) -> Optional[dict]:
+        """
+        Search memory for a past successful healing pattern matching this error signature.
+        """
+        blocks = await self._cortex.find_similar(error_signature)
+        for b in blocks:
+            tags = b.metadata.get("tags", [])
+            if "heal" in tags or "resolution" in tags:
+                # Exact heuristic for V13: Does the topic/content explicitly contain the signature?
+                if error_signature in b.content:
+                    logger.info(f"[CognitiveBridge] Exact heal pattern recalled for '{error_signature}'!")
+                    return {"id": b.id, "content": b.content}
+        return None
+
     async def health_summary(self) -> dict:
         """Return a summary of what's currently in long-term memory."""
         total = len(self._cortex.blocks)

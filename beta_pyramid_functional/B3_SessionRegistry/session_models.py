@@ -19,6 +19,24 @@ from pydantic import BaseModel, Field
 #  Domain Enums
 # в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
+class ZBusTopic(str, Enum):
+    PROMPT_DISPATCH = "prompt.dispatch"
+    PROMPT_STREAM_START = "prompt.stream.start"
+    TOKEN = "prompt.token"
+    RESPONSE_COMPLETE = "prompt.complete"
+    BRIDGE_EVENT = "bridge.event"
+    BRIDGE_HEARTBEAT = "bridge.heartbeat"
+    TASK_STATUS = "task.status"
+
+class MemoryBlockType(str, Enum):
+    FACT = "fact"
+    SUMMARY = "summary"
+    CONTEXT = "context"
+
+class PromptRoutingStrategy(str, Enum):
+    SINGLE = "single"
+    BROADCAST = "broadcast"
+
 class Provider(str, Enum):
     GPT       = "gpt"
     GEMINI    = "gemini"
@@ -107,6 +125,48 @@ class SessionCreateRequest(BaseModel):
     task_context: Optional[str] = None
     external_url: Optional[str] = None
     bridge_mode:  Optional[str] = "hybrid"
+
+
+class MemoryBlock(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    type: MemoryBlockType
+    content: str
+    embedding: Optional[List[float]] = None
+    source_session: Optional[str] = None
+
+class ContextPack(BaseModel):
+    memory_blocks: List[MemoryBlock] = Field(default_factory=list)
+    summaries: List[str] = Field(default_factory=list)
+    task_history: List[str] = Field(default_factory=list)
+
+class ProviderExecution(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    provider: Provider
+    status: str = "pending" # pending | running | completed | failed
+
+class BroadcastTask(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    session_id: str
+    prompt: str
+    context_pack: Optional[ContextPack] = None
+    routing_strategy: PromptRoutingStrategy = PromptRoutingStrategy.SINGLE
+    executions: List[ProviderExecution] = Field(default_factory=list)
+    status: str = "pending"
+
+class ResponseArtifact(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    task_id: str
+    provider: Provider
+    content: str
+    tokens: int = 0
+    latency_ms: float = 0.0
+
+class ZBusEvent(BaseModel):
+    topic: str
+    session_id: Optional[str] = None
+    task_id: Optional[str] = None
+    payload: dict
+    timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
 class MessageCreateRequest(BaseModel):

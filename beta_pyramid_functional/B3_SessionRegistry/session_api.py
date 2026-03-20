@@ -19,8 +19,7 @@ from urllib import request as urlrequest
 
 import google.generativeai as genai
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
 # Allow sibling and workspace imports
@@ -68,23 +67,7 @@ from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrches
 from alpha_pyramid_core.B_Structure.models import NodeState
 
 
-app = FastAPI(
-    title="EvoPyramid OS - Session Registry",
-    description="Z9 - Beta layer - Agent session lifecycle management",
-    version="1.0.0",
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173", 
-        "http://127.0.0.1:5173", 
-        "http://localhost:3000",
-        "http://127.0.0.1:3000"
-    ],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+router = APIRouter(prefix="/v1", tags=["sessions"])
 
 
 manager = ConnectionManager()
@@ -93,7 +76,7 @@ manager = ConnectionManager()
 
 
 
-@app.post("/sessions", response_model=AgentSession, summary="Create a new agent session")
+@router.post("/sessions", response_model=AgentSession, summary="Create a new agent session")
 async def create_session(req: SessionCreateRequest):
     """
     Creates a new agent session bound to a pyramid node.
@@ -120,14 +103,14 @@ async def create_session(req: SessionCreateRequest):
     return session
 
 
-@app.get("/sessions", response_model=List[AgentSession], summary="List all sessions")
+@router.get("/sessions", response_model=List[AgentSession], summary="List all sessions")
 def list_sessions(node_id: Optional[str] = None):
     if node_id:
         return SessionRegistry.list_by_node(node_id)
     return SessionRegistry.list_all()
 
 
-@app.get("/sessions/{session_id}", response_model=AgentSession, summary="Get session by ID")
+@router.get("/sessions/{session_id}", response_model=AgentSession, summary="Get session by ID")
 def get_session(session_id: str):
     session = SessionRegistry.get(session_id)
     if not session:
@@ -135,7 +118,7 @@ def get_session(session_id: str):
     return session
 
 
-@app.get("/sessions/{session_id}/routing", summary="Inspect routing policy for a session")
+@router.get("/sessions/{session_id}/routing", summary="Inspect routing policy for a session")
 def get_session_routing(session_id: str):
     session = SessionRegistry.get(session_id)
     if not session:
@@ -143,7 +126,7 @@ def get_session_routing(session_id: str):
     return _session_routing_policy(session)
 
 
-@app.post(
+@router.post(
     "/sessions/{session_id}/messages",
     response_model=AgentSession,
     summary="Add a message to session history",
@@ -212,7 +195,7 @@ async def add_message(session_id: str, req: MessageCreateRequest, ai: bool = Fal
     return session
 
 
-@app.patch(
+@router.patch(
     "/sessions/{session_id}/status",
     response_model=AgentSession,
     summary="Update session status",
@@ -235,7 +218,7 @@ async def update_status(session_id: str, req: StatusUpdateRequest):
     return session
 
 
-@app.delete("/sessions/{session_id}", summary="Delete session")
+@router.delete("/sessions/{session_id}", summary="Delete session")
 def delete_session(session_id: str):
     ok = SessionRegistry.delete(session_id)
     if not ok:
@@ -243,12 +226,12 @@ def delete_session(session_id: str):
     return {"deleted": session_id}
 
 
-@app.get("/providers", summary="List all provider configs with visual identity")
+@router.get("/providers", summary="List all provider configs with visual identity")
 def list_providers():
     return ProviderMatrix.all_configs()
 
 
-@app.get("/providers/{provider}/url", summary="Generate session URL for provider")
+@router.get("/providers/{provider}/url", summary="Generate session URL for provider")
 def provider_url(provider: Provider, task_title: Optional[str] = None, node_id: Optional[str] = None):
     url = ProviderMatrix.generate_session_url(provider, task_title, node_id)
     cfg = ProviderMatrix.get_config(provider)
@@ -261,7 +244,7 @@ def provider_url(provider: Provider, task_title: Optional[str] = None, node_id: 
     }
 
 
-@app.websocket("/ws/swarm")
+@router.websocket("/ws/swarm")
 async def swarm_terminal(ws: WebSocket):
     """
     Swarm terminal websocket:
@@ -285,7 +268,7 @@ async def swarm_terminal(ws: WebSocket):
         manager.disconnect(ws)
         logger.info(f"Swarm client left. Active connections: {len(manager.active_connections)}")
 
-@app.get("/health", summary="Health check")
+@router.get("/health", summary="Health check")
 def health():
     sessions = SessionRegistry.list_all()
     return {

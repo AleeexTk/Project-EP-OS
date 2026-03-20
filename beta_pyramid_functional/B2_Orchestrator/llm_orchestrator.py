@@ -424,17 +424,52 @@ class AgentOrchestrator:
         try:
             root_dir = Path(__file__).resolve().parents[2]
             state_path = root_dir / "state" / "pyramid_state.json"
+            pulse_path = root_dir / "state" / "pulse.json"
+            
+            # 1. State metrics (from UI/V11)
+            sys_health = "UNKNOWN"
+            sys_eng = "UNKNOWN"
+            total_nodes = 0
+            active_nodes = []
+            idle_nodes = []
+            
             if state_path.exists():
                 with open(state_path, "r", encoding="utf-8") as f:
                     state_data = json.load(f)
+                    metrics = state_data.get("system_metrics", {})
+                    sys_health = metrics.get("health_pct", "UNKNOWN")
+                    sys_eng = metrics.get("cognitive_memory_size", "UNKNOWN")
+                    
                     nodes = state_data.get("nodes", {})
+                    total_nodes = len(nodes)
                     active_nodes = [n["title"] for n in nodes.values() if n.get("state") == "active"]
                     idle_nodes = [n["title"] for n in nodes.values() if n.get("state") == "idle"]
-                    state_summary = (
-                        f"Pyramid Nodes: {len(nodes)} total. "
-                        f"ACTIVE: {', '.join(active_nodes[:5])}. "
-                        f"IDLE: {', '.join(idle_nodes[:5])}. "
-                    )
+
+            # 2. Pulse metrics (ObserverRelay)
+            pulse_msg = "No pulse data."
+            if pulse_path.exists():
+                with open(pulse_path, "r", encoding="utf-8") as f:
+                    pulse_data = json.load(f)
+                    obs = pulse_data.get("observer_report", {})
+                    if obs:
+                        nodes_online = len(obs.get("active_nodes", []))
+                        last_updated = obs.get("last_updated", "UNKNOWN")
+                        pulse_msg = f"Last heartbeat at {last_updated}. Observer saw {nodes_online} nodes online."
+
+            # 3. Session Registry
+            from beta_pyramid_functional.B3_SessionRegistry.session_models import SessionRegistry, SessionStatus
+            sessions = SessionRegistry.list_all()
+            active_sessions = sum(1 for s in sessions if s.status == SessionStatus.ACTIVE)
+            
+            state_summary = (
+                f"--- LIVE TELEMETRY ---\n"
+                f"Health: {sys_health}% | Cognitive Cortex: {sys_eng} ENG blocks\n"
+                f"Nodes: {total_nodes} registered. "
+                f"ACTIVE sample: {', '.join(active_nodes[:5])}. IDLE sample: {', '.join(idle_nodes[:5])}.\n"
+                f"Swarm Terminals: {active_sessions} active sessions out of {len(sessions)} total.\n"
+                f"Pulse: {pulse_msg}\n"
+                f"----------------------\n"
+            )
             
             # --- SEMANTIC MEMORY INJECTION ---
             try:
@@ -468,12 +503,15 @@ class AgentOrchestrator:
             )
         else:
             ctx = (
-                f"You are an EvoPyramid OS Agent. Role: {session.provider.upper()}. "
+                f"You are the Truth-Channel Assistant of EvoPyramid OS. Role: {session.provider.upper()}. "
                 f"You are bound to NODE: '{session.node_id}' at Z-LEVEL: {session.node_z}. "
-                f"ACTUAL SYSTEM STATE: {state_summary} "
-                f"PROJECT RECOLLECTION: {memory_context} "
-                f"Task Context: {session.task_context or 'General assistance.'}. "
-                "Keep responses professional, factual, and based EXCLUSIVELY on the provided ACTUAL SYSTEM STATE and SHARED MEMORY."
+                f"ACTUAL SYSTEM STATE:\n{state_summary}\n"
+                f"PROJECT RECOLLECTION: {memory_context}\n"
+                f"Task Context: {session.task_context or 'General assistance.'}.\n"
+                "CRITICAL DIRECTIVES:\n"
+                "1. If asked about system health, memory size, or connected nodes, respond EXCLUSIVELY using the LIVE TELEMETRY numbers provided above.\n"
+                "2. Do NOT invent capabilities or guess statuses. If a metric says UNKNOWN, state that it is unknown.\n"
+                "3. Keep responses professional, factual, and deeply rooted in the actual state."
             )
         
         # Log context for debugging

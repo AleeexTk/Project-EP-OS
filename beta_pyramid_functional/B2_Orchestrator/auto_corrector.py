@@ -44,10 +44,8 @@ class AutoCorrector:
     async def propose_fix(self, error_text: str) -> Optional[SynthesisProposal]:
         """
         Generate a structured SynthesisProposal to fix the detected error.
-
-        Strategy:
-        - If the file exists locally → read context and ask LLM for a PATCH.
-        - If the file is missing → emit a POLICY proposal recommending node creation.
+        Strategy: Check Cognitive Memory first. If bypassed, return instantly.
+        Otherwise synthesize and store.
         """
         diag = self.parse_error(error_text)
         if not diag:
@@ -55,10 +53,54 @@ class AutoCorrector:
             return None
 
         file_path = Path(diag["file"])
+        error_sig = f"{file_path.name}:{diag['line']} - {diag['message']}"
+
+        # ── 0. COGNITIVE RECALL (Memory Bypass) ──
+        memory_context = ""
+        try:
+            from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
+            bridge = await CognitiveBridge.get_instance()
+            recalled = await bridge.recall_healing_pattern(error_sig)
+            if recalled:
+                logger.info(f"[AutoCorrector] Cognitive Recall successful! Bypassing LLM for {error_sig}")
+                content = recalled["content"]
+                if "[OUTCOME] " in content:
+                    import json
+                    outcome_str = content.split("[OUTCOME] ", 1)[-1]
+                    data = json.loads(outcome_str)
+                    proposal = SynthesisProposal(**data)
+                    proposal.rationale = f"[MEMORY BYPASS {recalled['id']}] " + proposal.rationale
+                    return proposal
+            
+            # If no exact bypass, fetch semantic context for LLM prompt
+            similar = await bridge.retrieve_session_context(error_sig, top_k=2, tag_filter="heal")
+            if similar:
+                memory_context = "\nPAST SIMILAR HEALING PATTERNS (For reference):\n"
+                for idx, b in enumerate(similar):
+                    memory_context += f"--- Pattern {idx+1} ---\n{b.content[:400]}...\n"
+                    
+        except Exception as e:
+            logger.warning(f"[AutoCorrector] Cognitive recall failed/skipped: {e}")
 
         # ── Case 1: File exists — ask LLM for a surgical PATCH ──
+        proposal = None
         if file_path.exists():
-            return await self._propose_patch(diag, file_path)
+            proposal = await self._propose_patch(diag, file_path, memory_context)
+            
+            # Store the proposed fix to memory for future bypass
+            if proposal and proposal.type == ProposalType.PATCH:
+                try:
+                    p_data = proposal.model_dump_json()
+                    await bridge.store_decision(
+                        topic=error_sig,
+                        outcome=p_data,
+                        tags=["heal", "resolution"],
+                        z_level=12
+                    )
+                except Exception as e:
+                    logger.error(f"[AutoCorrector] Failed to cache fix in memory: {e}")
+                    
+            return proposal
 
         # ── Case 2: File missing — architectural POLICY recommendation ──
         logger.warning(
@@ -82,7 +124,7 @@ class AutoCorrector:
         )
 
     async def _propose_patch(
-        self, diag: Dict[str, Any], file_path: Path
+        self, diag: Dict[str, Any], file_path: Path, memory_context: str = ""
     ) -> Optional[SynthesisProposal]:
         """Read existing file content and ask LLM for a targeted PATCH."""
         try:
@@ -96,7 +138,7 @@ class AutoCorrector:
 File: {diag['file']}
 Line: {diag['line']}
 Error: {diag['message']}
-
+{memory_context}
 CONTENT OF FAILED MODULE:
 ```python
 {content}

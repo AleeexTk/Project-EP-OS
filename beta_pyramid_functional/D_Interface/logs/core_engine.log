@@ -512,3 +512,10 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-03-20 03:30:16,263 [INFO] Loaded 19 memory blocks.
 2026-03-20 03:30:16,263 [INFO] ProjectCortex initialized at C:\Users\Alex Bear\Desktop\EvoPyramid OS\state\project_cortex
 2026-03-20 03:30:16,263 [INFO] [CognitiveBridge] Initialized with 19 blocks from long-term memory.
+2026-03-20 03:31:12,910 [INFO] Initializing SK Memory from current state...
+2026-03-20 03:31:12,920 [INFO] SK Memory initialized with 27 nodes.
+2026-03-20 03:31:12,920 [INFO] [PULSER] Engine started.
+2026-03-20 03:31:15,974 [INFO] [Z-Bus] Async worker initialized. Listening for tasks...
+2026-03-20 03:31:15,982 [INFO] Loaded 19 memory blocks.
+2026-03-20 03:31:15,983 [INFO] ProjectCortex initialized at C:\Users\Alex Bear\Desktop\EvoPyramid OS\state\project_cortex
+2026-03-20 03:31:15,983 [INFO] [CognitiveBridge] Initialized with 19 blocks from long-term memory.
