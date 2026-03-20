@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Bot, ExternalLink, PauseCircle, PlayCircle, Send, Terminal, Trash2, User, X, Zap, Ghost, Link2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Activity, AlertTriangle, CheckCircle, Database, Shield, Zap, X, Terminal, Clock, Send, Bot } from 'lucide-react';
 import { CORE_API_BASE } from '../lib/config';
-import { AgentSession, SessionStatus, useSessionRegistry } from '../lib/useSessionRegistry';
+import { useSessionRegistry } from '../lib/useSessionRegistry';
+import { usePyramidState } from '../lib/usePyramidState';
 
 interface AgentWorkspaceProps {
   sessionId: string | null;
@@ -9,467 +10,239 @@ interface AgentWorkspaceProps {
   onSessionChange?: (sessionId: string) => void;
 }
 
-const STATUS_STYLE: Record<AgentSession['status'], string> = {
-  pending: 'bg-slate-500/20 text-slate-300',
-  active: 'bg-emerald-500/20 text-emerald-300',
-  waiting: 'bg-amber-500/20 text-amber-300',
-  review: 'bg-violet-500/20 text-violet-300',
-  done: 'bg-blue-500/20 text-blue-300',
-  paused: 'bg-slate-500/20 text-slate-300',
-  conflict: 'bg-rose-500/20 text-rose-300',
-};
+export default function AgentWorkspace({ sessionId, onClose, onSessionChange }: AgentWorkspaceProps) {
+  const { sessions, loadSessions } = useSessionRegistry();
+  const { latestZBusEvent } = usePyramidState();
 
-const NAVIGATOR_NODE_ID = 'alexcreator_navigator';
-const NAVIGATOR_TASK_TITLE = 'AlexCreator Navigator';
-const NAVIGATOR_CONTEXT =
-  'You are AlexCreator personal navigator for EvoPyramid OS. Help with onboarding, controls, architecture navigation, and practical next steps inside this UI.';
+  // Truth Layer States
+  const [bridgeHealth, setBridgeHealth] = useState({
+    status: 'WAITING FOR HEARTBEAT',
+    provider: 'Unknown',
+    tabAttached: false,
+    authOk: false, // Assume false until proven
+    lastHeartbeat: null as string | null,
+    lastError: null as string | null,
+    severity: 'info'
+  });
 
-const getDomain = (url?: string) => {
-  if (!url) return null;
-  try {
-    const domain = new URL(url).hostname;
-    return domain.replace('www.', '');
-  } catch {
-    return url.length > 20 ? url.substring(0, 20) + '...' : url;
-  }
-};
+  const [streamData, setStreamData] = useState({
+    active: false,
+    content: '',
+    latency: 0,
+    startTime: 0,
+    status: 'idle', // idle | running | completed | failed
+  });
 
-const getFavicon = (url?: string) => {
-  if (!url) return null;
-  try {
-    const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
-  } catch {
-    return null;
-  }
-};
+  const [promptDraft, setPromptDraft] = useState('');
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(sessionId || (sessions.length > 0 ? sessions[0].id : null));
 
-function AgentWorkspace({ sessionId, onClose, onSessionChange }: AgentWorkspaceProps) {
-  const { sessions, loading, error, addMessage, loadSessions, updateStatus, deleteSession, openInBrowser, createSession } = useSessionRegistry();
-  const [draft, setDraft] = useState('');
-  const [currentSessionId, setCurrentSessionId] = useState<string | null>(sessionId);
-  const [showWeb, setShowWeb] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const sortedSessions = useMemo(
-    () => [...sessions].sort((a, b) => b.updated_at.localeCompare(a.updated_at)),
-    [sessions],
-  );
-
-  const activeSession = useMemo(
-    () => (currentSessionId ? sortedSessions.find((session) => session.id === currentSessionId) ?? null : null),
-    [currentSessionId, sortedSessions],
-  );
-
+  // Initialize and auto-refresh sessions
   useEffect(() => {
-    if (sessionId) {
-      setCurrentSessionId(sessionId);
+    loadSessions();
+  }, []);
+
+  // Update active session selection
+  useEffect(() => {
+    if (sessionId && sessionId !== activeSessionId) {
+      setActiveSessionId(sessionId);
     }
   }, [sessionId]);
 
+  // Handle incoming Z-Bus Truth
   useEffect(() => {
-    void loadSessions();
-    const poll = window.setInterval(() => {
-      void loadSessions();
-    }, 2000);
-    return () => clearInterval(poll);
-  }, [loadSessions]);
+    if (!latestZBusEvent) return;
+    const { topic, payload, severity } = latestZBusEvent;
+    const timeStr = new Date().toLocaleTimeString();
 
-  useEffect(() => {
-    if (!currentSessionId && sortedSessions.length > 0) {
-      const nextId = sortedSessions[0].id;
-      setCurrentSessionId(nextId);
-      onSessionChange?.(nextId);
+    // 1. Bridge Health Updates
+    if (topic === 'BRIDGE_HEARTBEAT') {
+      setBridgeHealth(prev => ({ 
+        ...prev, 
+        status: 'CONNECTED', 
+        lastHeartbeat: timeStr, 
+        provider: payload?.provider || payload?.provider_id || 'ChatGPT', // Updated provider logic
+        severity: 'info' 
+      }));
+    } else if (topic === 'SESSION_ATTACHED' || topic === 'TAB_DISCOVERED') {
+      setBridgeHealth(prev => ({ 
+        ...prev, 
+        tabAttached: true, 
+        provider: payload?.provider_id || 'ChatGPT',
+        status: 'TAB BOUND'
+      }));
+    } else if (topic === 'BRIDGE_ERROR' || topic === 'DOM_ERROR') {
+      setBridgeHealth(prev => ({ 
+        ...prev, 
+        lastError: payload?.detail || 'DOM/Bridge Error',
+        severity: 'error'
+      }));
+      if (streamData.active) {
+        setStreamData(prev => ({ ...prev, status: 'failed', active: false }));
+      }
+    } 
+    // 2. Stream Updates
+    else if (topic === 'PROMPT_ACCEPTED') {
+      setStreamData({
+        active: true,
+        content: 'Waiting for tokens...',
+        latency: 0,
+        startTime: Date.now(),
+        status: 'running'
+      });
+    } else if (topic === 'TOKEN_STREAM') {
+      setStreamData(prev => ({
+        ...prev,
+        content: payload?.content || prev.content
+      }));
+    } else if (topic === 'RESPONSE_COMPLETE') {
+      setStreamData(prev => {
+        const lat = prev.startTime > 0 ? Date.now() - prev.startTime : 0;
+        return {
+          ...prev,
+          active: false,
+          content: payload?.content || prev.content,
+          status: 'completed',
+          latency: lat
+        };
+      });
     }
-  }, [currentSessionId, onSessionChange, sortedSessions]);
+  }, [latestZBusEvent]);
 
-  useEffect(() => {
-    if (!activeSession && currentSessionId && sortedSessions.length > 0) {
-      const fallback = sortedSessions[0].id;
-      setCurrentSessionId(fallback);
-      onSessionChange?.(fallback);
-    }
-  }, [activeSession, currentSessionId, onSessionChange, sortedSessions]);
+  // Dispatch Prompt
+  const handleDispatch = async () => {
+    if (!promptDraft.trim() || !activeSessionId) return;
 
-  useEffect(() => {
-    if (!scrollRef.current) {
-      return;
-    }
-    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [activeSession?.messages.length]);
+    setStreamData({ active: false, content: 'Dispatching...', latency: 0, startTime: 0, status: 'idle' });
 
-  const selectSession = (id: string) => {
-    setCurrentSessionId(id);
-    onSessionChange?.(id);
-  };
-
-  const send = async () => {
-    if (!draft.trim() || !activeSession) {
-      return;
-    }
-    const content = draft.trim();
-    setDraft('');
-    await addMessage(activeSession.id, content, 'user', true);
-    window.setTimeout(() => {
-      void loadSessions();
-    }, 650);
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    await send();
-  };
-
-  const handleAutorun = async () => {
-    if (!activeSession?.node_id) {
-      return;
-    }
-    const response = await fetch(`${CORE_API_BASE}/node/${activeSession.node_id}/run`, { method: 'POST' });
-    const data = await response.json();
-    const text =
-      data.status === 'success'
-        ? `[AUTORUN SUCCESS]\n${data.output ?? ''}`
-        : `[AUTORUN FAILED]\n${data.message ?? data.output ?? 'No output'}`;
-    await addMessage(activeSession.id, text, 'assistant', false);
-  };
-
-  const setStatus = async (status: SessionStatus) => {
-    if (!activeSession) {
-      return;
-    }
-    await updateStatus(activeSession.id, status);
-    window.setTimeout(() => {
-      void loadSessions();
-    }, 300);
-  };
-
-  const removeSession = async () => {
-    if (!activeSession) {
-      return;
-    }
-    const approved = window.confirm(`Delete session ${activeSession.id}?`);
-    if (!approved) {
-      return;
-    }
-    await deleteSession(activeSession.id);
-    const next = sortedSessions.find((session) => session.id !== activeSession.id);
-    const nextId = next?.id ?? null;
-    setCurrentSessionId(nextId);
-    if (nextId) {
-      onSessionChange?.(nextId);
+    try {
+      const response = await fetch(`${CORE_API_BASE}/v1/prompt`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: promptDraft,
+          session_ids: [activeSessionId],
+          routing: 'single'
+        })
+      });
+      const data = await response.json();
+      if (data.status === 'dispatched') {
+        setPromptDraft('');
+      } else {
+        setBridgeHealth(prev => ({ ...prev, lastError: 'API Dispatch Failed', severity: 'error' }));
+      }
+    } catch (e: any) {
+      setBridgeHealth(prev => ({ ...prev, lastError: e.message, severity: 'error' }));
     }
   };
 
-  const openNavigator = async () => {
-    const existing = sortedSessions.find(
-      (session) => session.node_id === NAVIGATOR_NODE_ID && session.provider === 'ollama',
-    );
-    if (existing) {
-      selectSession(existing.id);
-      return;
-    }
-
-    const created = await createSession({
-      node_id: NAVIGATOR_NODE_ID,
-      node_z: 17,
-      node_sector: 'SPINE',
-      provider: 'ollama',
-      task_title: NAVIGATOR_TASK_TITLE,
-      task_context: NAVIGATOR_CONTEXT,
-      account_hint: 'AlexCreator',
-
-    });
-
-    if (created) {
-      selectSession(created.id);
-      await addMessage(
-        created.id,
-        'Start as my project navigator. Give me a compact onboarding: what to click first, how to create sessions, and how to sync structure.',
-        'user',
-        true,
-      );
-    }
-  };
-
-  if (sortedSessions.length === 0) {
-    return (
-      <section className="h-full bg-slate-950 text-slate-200 flex flex-col">
-        <header className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bot className="w-4 h-4 text-emerald-400" />
-            <h2 className="text-sm font-semibold">Assistant</h2>
-          </div>
-          <button onClick={onClose} className="p-1.5 rounded-md hover:bg-white/10" title="Close">
-            <X className="w-4 h-4 text-slate-400" />
-          </button>
-        </header>
-        <div className="flex-1 flex flex-col items-center justify-center text-sm text-slate-400 p-8 text-center gap-4">
-          <p>Create an agent session from a node card, or start a global AI navigator for AlexCreator.</p>
-          <button
-            onClick={() => {
-              void openNavigator();
-            }}
-            className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold"
-          >
-            Start AlexCreator Navigator
-          </button>
-        </div>
-      </section>
-    );
-  }
+  const selectedSession = sessions.find(s => s.id === activeSessionId) || null;
 
   return (
-    <section className="h-full bg-slate-950 text-slate-200 flex flex-col shadow-2xl">
-      <header className="border-b border-white/10 bg-black/40">
-        <div className="px-4 py-2.5 flex items-center justify-between gap-2 border-b border-white/5 bg-slate-900/50">
-          <div className="flex items-center gap-2 min-w-0">
-            <Bot className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <h2 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] truncate">Assistant Control</h2>
-          </div>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-white/10 group" title="Close">
-            <X className="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-300 transition-colors" />
-          </button>
+    <section className="h-full bg-slate-950 text-slate-200 flex flex-col shadow-2xl overflow-y-auto no-scrollbar">
+      {/* Header */}
+      <header className="px-4 py-3 flex items-center justify-between border-b border-white/10 bg-black/40">
+        <div className="flex items-center gap-2">
+          <Terminal className="w-4 h-4 text-emerald-400" />
+          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400">Z-Bus Truth Layer</h2>
         </div>
-
-        {activeSession?.external_url && (
-          <div
-            className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 cursor-pointer transition-all border-b border-white/5 group bg-slate-900/40 relative overflow-hidden"
-            onClick={() => setShowWeb(!showWeb)}
-            title={showWeb ? "Switch to Messages" : "Switch to Web View"}
-          >
-            {/* Status indicator bar */}
-            <div className={`absolute left-0 top-0 bottom-0 w-1 ${
-              activeSession.bridge_status === 'connected' ? 'bg-emerald-500' : 'bg-amber-500'
-            }`} />
-
-            <div className="flex-1 min-w-0 flex flex-col justify-center">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-slate-100 uppercase tracking-tight truncate">
-                  {showWeb ? 'Embedded Web View' : `${activeSession.provider} Workspace`}
-                </span>
-                <div className="h-2 w-[1px] bg-white/10" />
-                <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">
-                  {activeSession.bridge_mode?.replace('_', ' ') || 'Hybrid'}
-                </span>
-              </div>
-              <div className="text-[9px] text-slate-400 truncate opacity-70 font-mono">
-                {activeSession.external_origin || getDomain(activeSession.external_url)}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
-              {activeSession.supervisor_enabled && (
-                 <div title="Ollama Supervisor Active" className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[8px] font-bold border border-emerald-500/20">
-                    <Ghost className="w-2.5 h-2.5" />
-                    SUPERVISED
-                 </div>
-              )}
-              <div className={`p-1 rounded hover:bg-white/10 ${showWeb ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-400'}`}>
-                <ExternalLink className="w-3 h-3" />
-              </div>
-            </div>
-            <div className="text-[9px] text-slate-600 font-mono group-hover:text-slate-400 transition-colors bg-white/5 px-1.5 py-0.5 rounded border border-white/5 uppercase">
-              Z{activeSession.node_z}
-            </div>
-          </div>
-        )}
-
-        <div className="px-4 py-3">
-          <div className="relative">
-            <select
-              title="Select agent session"
-              value={activeSession?.id ?? ''}
-              onChange={(event) => selectSession(event.target.value)}
-              className="w-full appearance-none rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-[11px] font-medium text-slate-300 outline-none focus:border-emerald-500/50 transition-colors cursor-pointer"
-            >
-              {sortedSessions.map((session) => (
-                <option key={session.id} value={session.id}>
-                  {session.provider.toUpperCase()} вЂў {session.task_title}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
-               в–ѕ
-            </div>
-          </div>
-
-          <div className="mt-3 flex items-center justify-between gap-2">
-            <button
-              onClick={() => {
-                void openNavigator();
-              }}
-              className="group relative flex items-center gap-2 py-1 px-2.5 rounded-md border border-emerald-500/30 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10 transition-all text-[10px] font-bold overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-emerald-400/10 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
-              <Ghost className="w-3 h-3 relative z-10" />
-              <span className="relative z-10">GENESIS NAVIGATOR</span>
-            </button>
-            <span className="text-[10px] text-slate-600 font-mono italic">Global help (Ollama)</span>
-          </div>
-        </div>
-
-        {activeSession && (
-          <div className="mt-2 flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-mono text-slate-400">{activeSession.id}</span>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${STATUS_STYLE[activeSession.status]}`}>{activeSession.status}</span>
-            <button
-              onClick={() => {
-                void setStatus('active');
-              }}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 inline-flex items-center gap-1"
-            >
-              <PlayCircle className="w-3 h-3" />
-              Active
-            </button>
-            <button
-              onClick={() => {
-                void setStatus('paused');
-              }}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-white/20 text-slate-300 hover:bg-white/10 inline-flex items-center gap-1"
-            >
-              <PauseCircle className="w-3 h-3" />
-              Pause
-            </button>
-            <button
-              onClick={() => {
-                void setStatus('done');
-              }}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-blue-500/40 text-blue-300 hover:bg-blue-500/20"
-            >
-              Done
-            </button>
-            <button
-              onClick={removeSession}
-              className="ml-auto text-[10px] px-1.5 py-0.5 rounded border border-rose-500/40 text-rose-300 hover:bg-rose-500/20 inline-flex items-center gap-1"
-            >
-              <Trash2 className="w-3 h-3" />
-              Delete
-            </button>
-          </div>
-        )}
+        <button onClick={onClose} className="p-1 hover:bg-white/10 rounded" title="Close Workspace"><X className="w-4 h-4 text-slate-500"/></button>
       </header>
 
-      {activeSession && (
-        <>
-          {showWeb && activeSession.external_url ? (
-            <div className="flex-1 bg-white relative overflow-hidden">
-               <iframe 
-                src={activeSession.external_url} 
-                className="w-full h-full border-none shadow-inner"
-                title="Workspace WebView"
-                sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-               />
-               <div className="absolute top-2 right-2 flex gap-2">
-                  <button 
-                    onClick={() => setShowWeb(false)}
-                    className="p-1 px-2 rounded bg-slate-900/80 text-white text-[9px] font-bold border border-white/10 backdrop-blur hover:bg-slate-800 transition-colors"
-                  >
-                    CLOSE WEB VIEW
-                  </button>
-               </div>
-            </div>
-          ) : (
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
-              {activeSession.task_context && (
-                <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-xs text-amber-100">
-                  {activeSession.task_context}
-                </div>
-              )}
-
-              {activeSession.messages.map((message) => (
-                <div key={message.id} className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  {message.role !== 'user' && (
-                    <div className="w-7 h-7 rounded-lg border border-white/10 bg-slate-900 flex items-center justify-center shrink-0">
-                      <Bot className="w-3.5 h-3.5 text-emerald-300" />
-                    </div>
-                  )}
-
-                  <div
-                    className={`max-w-[80%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap ${
-                      message.role === 'user'
-                        ? 'bg-emerald-600 text-white'
-                        : message.role === 'assistant'
-                          ? 'bg-slate-900 border border-white/10 text-slate-100'
-                          : 'bg-slate-800 text-slate-300'
-                    }`}
-                  >
-                    {message.content}
-                  </div>
-
-                  {message.role === 'user' && (
-                    <div className="w-7 h-7 rounded-lg border border-emerald-500/30 bg-emerald-500/20 flex items-center justify-center shrink-0">
-                      <User className="w-3.5 h-3.5 text-emerald-200" />
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              {loading && <div className="text-[11px] text-slate-400 animate-pulse">Loading session updates...</div>}
-              {error && <div className="text-[11px] text-rose-300">{error}</div>}
+      <div className="p-4 space-y-4">
+        
+        {/* PANEL 1: BRIDGE HEALTH */}
+        <div className={`p-3 rounded-lg border ${bridgeHealth.severity === 'error' ? 'border-rose-500/50 bg-rose-500/10' : 'border-emerald-500/30 bg-emerald-500/5'}`}>
+          <div className="flex items-center gap-2 mb-2">
+            <Activity className={`w-4 h-4 ${bridgeHealth.severity === 'error' ? 'text-rose-400' : 'text-emerald-400'}`} />
+            <h3 className="text-xs font-bold uppercase tracking-wider">Bridge Health</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
+            <div className="text-slate-400">Status: <span className={bridgeHealth.status === 'CONNECTED' ? 'text-emerald-400' : 'text-amber-400'}>{bridgeHealth.status}</span></div>
+            <div className="text-slate-400">Provider: <span className="text-slate-200">{bridgeHealth.provider}</span></div>
+            <div className="text-slate-400">Tab Attached: {bridgeHealth.tabAttached ? <span className="text-emerald-400">YES</span> : <span className="text-rose-400">NO</span>}</div>
+            <div className="text-slate-400">Last Ping: <span className="text-slate-200">{bridgeHealth.lastHeartbeat || 'Never'}</span></div>
+          </div>
+          {bridgeHealth.lastError && (
+            <div className="mt-2 text-[10px] text-rose-300 bg-rose-950/50 p-1.5 rounded border border-rose-500/20 font-mono">
+              ERR: {bridgeHealth.lastError}
             </div>
           )}
+        </div>
 
-          <div className="border-t border-white/10 p-3">
-            <form onSubmit={handleSubmit} className="relative">
-              <textarea
-                value={draft}
-                onChange={(event) => setDraft(event.target.value)}
-                placeholder={activeSession.node_id === NAVIGATOR_NODE_ID ? 'Ask AlexCreator Navigator...' : `Message ${activeSession.provider}...`}
-                rows={2}
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 pr-12 text-sm outline-none resize-none focus:border-emerald-400"
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' && !event.shiftKey) {
-                    event.preventDefault();
-                    void send();
-                  }
-                }}
-              />
-              <button
-                type="submit"
-                disabled={!draft.trim() || loading}
-                className="absolute right-2 bottom-2 p-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-500"
-                title="Send"
-              >
-                <Send className="w-3.5 h-3.5" />
-              </button>
-            </form>
-
-            <div className="mt-2 flex items-center gap-2">
-              <span className="text-[10px] text-slate-400 inline-flex items-center gap-1">
-                <Terminal className="w-3 h-3" />
-                Local agent bridge
-              </span>
-              <button
-                onClick={handleAutorun}
-                className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-amber-500/20 text-amber-200 border border-amber-500/30 hover:bg-amber-500/30 inline-flex items-center gap-1"
-              >
-                <Zap className="w-3 h-3" />
-                Autorun
-              </button>
-              <button
-                onClick={() => {
-                  void openInBrowser(
-                    activeSession.provider,
-                    activeSession.task_title,
-                    activeSession.node_id,
-                    activeSession.external_url,
-                  );
-                }}
-                className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-white/10 text-slate-200 border border-white/20 hover:bg-white/15 inline-flex items-center gap-1"
-              >
-                <ExternalLink className="w-3 h-3" />
-                Open
-              </button>
-            </div>
+        {/* PANEL 2: SESSIONS */}
+        <div className="p-3 rounded-lg border border-white/10 bg-black/30">
+          <div className="flex items-center gap-2 mb-2">
+            <Database className="w-4 h-4 text-blue-400" />
+            <h3 className="text-xs font-bold uppercase tracking-wider">Active Sessions</h3>
           </div>
-        </>
-      )}
+          <select 
+            className="w-full bg-slate-900 border border-white/10 rounded p-1.5 text-xs text-slate-300 outline-none"
+            value={activeSessionId || ''}
+            title="Select Active Agent Session"
+            onChange={(e) => {
+              setActiveSessionId(e.target.value);
+              if (onSessionChange) onSessionChange(e.target.value);
+            }}
+          >
+            {sessions.map(s => (
+              <option key={s.id} value={s.id}>{s.provider.toUpperCase()} - {s.task_title} [{s.status}]</option>
+            ))}
+          </select>
+          {selectedSession && (
+            <div className="mt-2 text-[10px] font-mono text-slate-500">
+              ID: {selectedSession.id}<br/>
+              Bridge Mode: {selectedSession.bridge_mode}<br/>
+              Status: {selectedSession.status}
+            </div>
+          )}
+        </div>
+
+        {/* PANEL 3: RESPONSE STREAM VIEW */}
+        <div className="p-3 rounded-lg border border-white/10 bg-black/30 flex-1 min-h-[150px] flex flex-col">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Zap className={`w-4 h-4 ${streamData.active ? 'text-amber-400 animate-pulse' : 'text-slate-400'}`} />
+              <h3 className="text-xs font-bold uppercase tracking-wider">Live Stream</h3>
+            </div>
+            {streamData.status !== 'idle' && (
+              <div className="flex items-center gap-2 text-[9px] font-mono">
+                <span className={`${streamData.status === 'completed' ? 'text-emerald-400' : streamData.status === 'failed' ? 'text-rose-400' : 'text-amber-400'}`}>
+                  [{streamData.status.toUpperCase()}]
+                </span>
+                {streamData.latency > 0 && <span className="text-slate-500">{streamData.latency}ms</span>}
+              </div>
+            )}
+          </div>
+          <div className="flex-1 bg-slate-950 rounded border border-white/5 p-2 overflow-y-auto text-xs whitespace-pre-wrap text-slate-300 font-sans">
+            {streamData.content || (
+              <span className="text-slate-600 italic">No active stream...</span>
+            )}
+          </div>
+        </div>
+
+        {/* PANEL 4: PROMPT CONSOLE */}
+        <div className="border border-white/10 rounded-lg bg-black/40 p-2">
+          <textarea
+            value={promptDraft}
+            onChange={(e) => setPromptDraft(e.target.value)}
+            placeholder="Initialize Z-Bus Prompt Dispatch..."
+            className="w-full bg-transparent text-sm text-slate-200 outline-none resize-none p-1"
+            rows={3}
+          />
+          <div className="flex justify-between items-center mt-2 border-t border-white/10 pt-2">
+            <span className="text-[10px] text-slate-500 font-mono">Target: {selectedSession?.provider || 'none'}</span>
+            <button 
+              onClick={handleDispatch}
+              disabled={!promptDraft.trim() || !activeSessionId || streamData.active}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-500 rounded text-[11px] font-bold transition-colors"
+            >
+              <Send className="w-3 h-3" />
+              DISPATCH
+            </button>
+          </div>
+        </div>
+
+      </div>
     </section>
   );
 }
-
-export default AgentWorkspace;
-
-
-
-

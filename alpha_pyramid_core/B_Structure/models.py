@@ -93,4 +93,6 @@ class PyramidState(BaseModel):
     nodes: Dict[str, Node] = {}
     links: List[Link] = []
     system_metrics: Dict[str, Any] = {}
+    bridge_health: str = "offline"
+    latest_bridge_event: Optional[Dict[str, Any]] = None
 

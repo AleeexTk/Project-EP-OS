@@ -37,8 +37,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeState, NodeKind, LayerType, OrchestratorState
-from beta_pyramid_functional.B1_Kernel.ws_manager import ConnectionManager
-from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
+from beta_pyramid_functional.B1_Kernel.ws_manager import manager
+from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
 from beta_pyramid_functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
 from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
 from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
@@ -110,7 +110,7 @@ current_state = load_state()
 # ─────────────────────────────────────────
 #  Communication Manager
 # ─────────────────────────────────────────
-manager = ConnectionManager()
+# manager = ConnectionManager() - Now using singleton export from B1_Kernel.ws_manager
 sk_memory = CortexMemory()
 
 # ─────────────────────────────────────────
@@ -153,7 +153,35 @@ async def lifespan(app: FastAPI):
     zbus_task = None
     try:
         from zbus import zbus
-        zbus_task = asyncio.create_task(zbus.run_worker(manager, current_state))
+        from beta_pyramid_functional.B1_Kernel.ws_manager import manager as global_manager
+        zbus_task = asyncio.create_task(zbus.run_worker(global_manager, current_state))
+        
+        # --- Z-Bus Truth Layer Sync ---
+        async def zbus_truth_sync_handler(event_dict):
+            try:
+                topic = event_dict.get("topic")
+                payload = event_dict.get("payload", {})
+                
+                # 1. Update State Heartbeat
+                if topic == "BRIDGE_HEARTBEAT":
+                    current_state.bridge_health = "online"
+                    logging.info("[Truth Sync] Bridge Heartbeat Received. System State -> ONLINE.")
+                
+                # 2. Phase 4: Memory Writeback
+                elif topic == "RESPONSE_COMPLETE":
+                    from beta_pyramid_functional.B3_SessionRegistry.session_models import SessionRegistry, MessageCreateRequest
+                    session_id = event_dict.get("session_id")
+                    content = payload.get("content", "")
+                    if session_id and content:
+                        SessionRegistry.add_message(session_id, MessageCreateRequest(role="assistant", content=content))
+                        logging.info(f"[Memory Writeback] Saved Artifact to session {session_id}")
+            except Exception as e:
+                logging.error(f"[Z-Bus Sync Error] {e}")
+
+        zbus.subscribe("BRIDGE_HEARTBEAT", zbus_truth_sync_handler)
+        zbus.subscribe("RESPONSE_COMPLETE", zbus_truth_sync_handler)
+        logging.info("Z-Bus Truth Layer Sync subscribers registered.")
+        
     except ImportError:
         logging.warning("Z-Bus module not found. Orchestrator communication offline.")
 

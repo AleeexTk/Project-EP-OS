@@ -88,7 +88,6 @@ def main():
     # Explicitly quoting commands for Windows shell
     commands = [
         ("Core Engine", f'uv run python "{core_api_path}"'),
-        ("Session Registry", f'uv run uvicorn session_api:app --app-dir "{session_api_dir}" --port 8001'),
         ("Frontend UI", f'npm run dev')
     ]
     

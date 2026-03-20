@@ -40,7 +40,7 @@ Health checks:
 
 ```powershell
 Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8000/state
-Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8001/health
+Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8000/v1/health
 Invoke-WebRequest -UseBasicParsing http://127.0.0.1:3000
 ```
 

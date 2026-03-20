@@ -1,4 +1,4 @@
-﻿# EvoPyramid v2
+# EvoPyramid v2
 
 React/Vite frontend for the EvoPyramid runtime. The UI renders pyramid nodes from Core state and exposes session/agent controls.
 
@@ -14,7 +14,7 @@ React/Vite frontend for the EvoPyramid runtime. The UI renders pyramid nodes fro
 
 - Node.js 20+
 - Core API on `http://127.0.0.1:8000`
-- Session API on `http://127.0.0.1:8001`
+- Session API on `http://127.0.0.1:8000/v1`
 
 Default backend entrypoints in this repo:
 

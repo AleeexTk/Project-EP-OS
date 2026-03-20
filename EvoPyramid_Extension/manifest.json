@@ -11,7 +11,7 @@
   ],
   "host_permissions": [
     "http://127.0.0.1:8000/*",
-    "https://chatgpt.com/*",
+    "*://*.chatgpt.com/*",
     "https://grok.com/*",
     "https://*.anthropic.com/*",
     "https://aistudio.google.com/*",
@@ -23,7 +23,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://chatgpt.com/*", 
+        "*://*.chatgpt.com/*", 
         "https://grok.com/*", 
         "https://aistudio.google.com/*",
         "https://gemini.google.com/*"

@@ -78,6 +78,7 @@ class ZBus:
                     event_dict = event if isinstance(event, dict) else dict(event)
                 
                 topic = event_dict.get("topic")
+                logging.info(f"[Z-Bus] Routing Event: {topic} (Payload keys: {list(event_dict.get('payload', {}).keys())})")
                 
                 # 1. Trigger local subscribers if any
                 if topic in self.subscribers:

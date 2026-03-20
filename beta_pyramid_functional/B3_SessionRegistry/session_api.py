@@ -62,7 +62,7 @@ from session_models import (
 )
 from provider_matrix import ProviderMatrix
 from beta_pyramid_functional.B1_Kernel.contracts import AgentSessionContract, TaskStatus
-from beta_pyramid_functional.B1_Kernel.ws_manager import ConnectionManager
+from beta_pyramid_functional.B1_Kernel.ws_manager import manager
 from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator, _session_routing_policy
 from alpha_pyramid_core.B_Structure.models import NodeState
 
@@ -70,7 +70,7 @@ from alpha_pyramid_core.B_Structure.models import NodeState
 router = APIRouter(prefix="/v1", tags=["sessions"])
 
 
-manager = ConnectionManager()
+# manager = ConnectionManager() - Now using singleton export
 
 
 

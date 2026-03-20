@@ -29,3 +29,6 @@ class ConnectionManager:
                 logger.warning(f"Failed to broadcast to client: {e}")
                 if connection in self.active_connections:
                     self.active_connections.remove(connection)
+
+# Global singleton
+manager = ConnectionManager()

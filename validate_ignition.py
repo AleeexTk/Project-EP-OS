@@ -6,7 +6,7 @@ from pathlib import Path
 
 # --- CONFIG ---
 API_CORE = "http://127.0.0.1:8000"
-API_SESSION = "http://127.0.0.1:8001"
+API_SESSION = "http://127.0.0.1:8000/v1"
 ROOT_DIR = Path(__file__).resolve().parents[0]
 
 class EvoValidator:

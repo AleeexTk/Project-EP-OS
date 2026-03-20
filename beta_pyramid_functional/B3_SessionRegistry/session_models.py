@@ -20,13 +20,13 @@ from pydantic import BaseModel, Field
 # в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 class ZBusTopic(str, Enum):
-    PROMPT_DISPATCH = "prompt.dispatch"
-    PROMPT_STREAM_START = "prompt.stream.start"
-    TOKEN = "prompt.token"
-    RESPONSE_COMPLETE = "prompt.complete"
-    BRIDGE_EVENT = "bridge.event"
-    BRIDGE_HEARTBEAT = "bridge.heartbeat"
-    TASK_STATUS = "task.status"
+    PROMPT_DISPATCH = "PROMPT_DISPATCH"
+    PROMPT_STREAM_START = "PROMPT_STREAM_START"
+    TOKEN = "TOKEN_STREAM"
+    RESPONSE_COMPLETE = "RESPONSE_COMPLETE"
+    BRIDGE_EVENT = "BRIDGE_EVENT"
+    BRIDGE_HEARTBEAT = "BRIDGE_HEARTBEAT"
+    TASK_STATUS = "TASK_STATUS"
 
 class MemoryBlockType(str, Enum):
     FACT = "fact"

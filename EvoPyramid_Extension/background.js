@@ -1,91 +1,163 @@
-// background.js - The Robust Orchestrator
+// background.js - Browser Bridge Orchestrator (Z-Bus Vertical Slice)
 let ws = null;
 let isConnected = false;
-let messageQueue = []; // The Offline Queue
+let messageQueue = [];
 
-// Establish unkillable connection loop
-function connectWebSocket() {
-  if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
-
-  console.log("[EvoPyramid Nexus] Attempting connection to os kernel...");
-  ws = new WebSocket('ws://127.0.0.1:8000/ws');
-
-  ws.onopen = () => {
-    console.log("[EvoPyramid Nexus] Linked to Core.");
-    isConnected = true;
-    flushQueue(); // Send all stacked messages
-  };
-
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    handleIncomingCommand(data);
-  };
-
-  ws.onclose = () => {
-    console.warn("[EvoPyramid Nexus] Connection lost. Falling back to offline queue.");
-    isConnected = false;
-    setTimeout(connectWebSocket, 5000); // Exponential backoff in production
-  };
-
-  ws.onerror = (err) => {
-    console.error("[EvoPyramid Nexus] Socket error.", err);
-    ws.close();
-  };
+// Schema Factory
+function createZBusMessage(topic, payload = {}, session_id = null, task_id = null, severity = "info") {
+    return {
+        event_id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        topic: topic,
+        session_id: session_id,
+        provider_id: "gpt",
+        task_id: task_id,
+        severity: severity,
+        payload: payload
+    };
 }
 
-// Queue system for Offline safety
-function sendToCore(payload) {
-  if (isConnected && ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify(payload));
-  } else {
-    console.log("[EvoPyramid Nexus] Offline. Queuing payload for sync.", payload);
-    messageQueue.push(payload);
-    // Persist queue to local storage in case browser closes
-    chrome.storage.local.set({ offlineQueue: messageQueue });
-  }
+function connectWebSocket() {
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+    
+    console.log("[EvoPyramid Bridge] Connecting to Z-Bus...");
+    ws = new WebSocket('ws://127.0.0.1:8000/ws');
+    
+    ws.onopen = () => {
+        console.log("[EvoPyramid Bridge] Z-Bus Connected.");
+        isConnected = true;
+        flushQueue();
+    };
+    
+    ws.onmessage = (event) => {
+        try {
+            const msg = JSON.parse(event.data);
+            console.log("[Bridge] Received WS Message:", msg.type || "unknown");
+
+            // Handle Z-Bus events wrapped by the worker
+            if (msg.type === "zbus_event" && msg.data) {
+                const zEvent = msg.data;
+                console.log(`[Bridge] Unwrapped Z-Bus Event: ${zEvent.topic}`);
+                if (zEvent.topic === "PROMPT_DISPATCH") {
+                    handlePromptDispatch(zEvent);
+                }
+            } 
+            // Handle direct messages
+            else if (msg.topic === "PROMPT_DISPATCH") {
+                handlePromptDispatch(msg);
+            }
+        } catch (e) {
+            console.error("[Bridge] WS Message Parse Error:", e, event.data);
+        }
+    };
+    
+    ws.onclose = () => {
+        isConnected = false;
+        setTimeout(connectWebSocket, 3000);
+    };
+    ws.onerror = () => ws.close();
+}
+
+function sendToCore(zbusMessage) {
+    if (isConnected && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(zbusMessage));
+    } else {
+        messageQueue.push(zbusMessage);
+    }
 }
 
 function flushQueue() {
-  chrome.storage.local.get(['offlineQueue'], (result) => {
-    let q = result.offlineQueue || messageQueue;
-    while (q.length > 0) {
-      let msg = q.shift();
-      ws.send(JSON.stringify(msg));
-    }
-    messageQueue = [];
-    chrome.storage.local.set({ offlineQueue: [] });
-  });
-}
-
-function handleIncomingCommand(command) {
-    if (command.type === "LLM_INJECT_PROMPT") {
-        injectPromptIntoTab(command.url, command.prompt, command.node_id);
+    while (messageQueue.length > 0) {
+        ws.send(JSON.stringify(messageQueue.shift()));
     }
 }
 
-// Find existing tab or create new isolated one
-function injectPromptIntoTab(targetUrl, promptText, callingNodeId) {
-    chrome.tabs.query({ url: targetUrl + "*" }, (tabs) => {
-        let tabId;
+// Inbound Routing
+function handlePromptDispatch(message) {
+    const payload = message.payload;
+    const targetUrl = payload.url || "https://chatgpt.com/";
+    const promptText = payload.prompt;
+    const taskId = message.task_id;
+    const sessionId = message.session_id;
+
+    // Strict ChatGPT target for this slice
+    chrome.tabs.query({ url: "*://*.chatgpt.com/*" }, (tabs) => {
         if (tabs.length > 0) {
-            tabId = tabs[0].id; // Reuse existing session
-            chrome.tabs.sendMessage(tabId, { action: "RUN_PROMPT", prompt: promptText, node_id: callingNodeId });
-        } else {
-            // Create a pinned background tab
-            chrome.tabs.create({ url: targetUrl, active: false, pinned: true }, (newTab) => {
-                // Wait for map load and inject
-                setTimeout(() => {
-                    chrome.tabs.sendMessage(newTab.id, { action: "RUN_PROMPT", prompt: promptText, node_id: callingNodeId });
-                }, 5000); // Temporary dumb wait, robust version uses tab update listener
+            const tabId = tabs[0].id;
+            console.log("[Bridge] Dispatching to ChatGPT tab:", tabId);
+            
+            chrome.tabs.sendMessage(tabId, { 
+                action: "INJECT_PROMPT", 
+                prompt: promptText,
+                task_id: taskId,
+                session_id: sessionId
+            }, (response) => {
+                if (chrome.runtime.lastError) {
+                    const errMsg = chrome.runtime.lastError.message;
+                    console.warn("[Bridge] Message failed, attempting auto-injection:", errMsg);
+                    
+                    if (errMsg.includes("Receiving end does not exist")) {
+                        chrome.scripting.executeScript({
+                            target: { tabId: tabId },
+                            files: ["content.js"]
+                        }, () => {
+                            if (chrome.runtime.lastError) {
+                                console.error("[Bridge] Auto-injection failed:", chrome.runtime.lastError.message);
+                                sendToCore(createZBusMessage("BRIDGE_ERROR", { detail: "Injection failed" }, sessionId, taskId, "error"));
+                            } else {
+                                console.log("[Bridge] Auto-injection success, retrying dispatch...");
+                                // Retry once after injection
+                                setTimeout(() => {
+                                    chrome.tabs.sendMessage(tabId, { 
+                                        action: "INJECT_PROMPT", 
+                                        prompt: promptText,
+                                        task_id: taskId,
+                                        session_id: sessionId
+                                    });
+                                }, 500);
+                                sendToCore(createZBusMessage("PROMPT_ACCEPTED", { status: "received_after_inject" }, sessionId, taskId));
+                            }
+                        });
+                    } else {
+                        sendToCore(createZBusMessage("BRIDGE_ERROR", { detail: errMsg }, sessionId, taskId, "error"));
+                    }
+                } else {
+                    console.log("[Bridge] Content script ACK:", response);
+                    sendToCore(createZBusMessage("PROMPT_ACCEPTED", { status: "received" }, sessionId, taskId));
+                }
             });
+        } else {
+            console.warn("[Bridge] No ChatGPT tabs found for dispatch.");
+            sendToCore(createZBusMessage("BRIDGE_ERROR", { detail: "No active ChatGPT tab found" }));
         }
     });
 }
 
-// Kickstart the heartbeat
-chrome.alarms.create("heartbeat", { periodInMinutes: 1 });
+// Receive from content.js and forward to Z-Bus
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.type === "FORWARD_ZBUS") {
+        sendToCore(msg.zbusMessage);
+    }
+});
+
+// Heartbeat
+chrome.alarms.create("heartbeat", { periodInMinutes: 0.5 });
 chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === "heartbeat") connectWebSocket();
+    if (alarm.name === "heartbeat") {
+        sendToCore(createZBusMessage("BRIDGE_HEARTBEAT", { status: "alive", provider: "ChatGPT" }));
+        connectWebSocket();
+        
+        // Scan for tabs to update UI state
+        chrome.tabs.query({ url: "*://*.chatgpt.com/*" }, (tabs) => {
+            if (tabs.length > 0) {
+                sendToCore(createZBusMessage("TAB_DISCOVERED", { 
+                    url: tabs[0].url, 
+                    title: tabs[0].title,
+                    tab_id: tabs[0].id
+                }));
+            }
+        });
+    }
 });
 
 connectWebSocket();
