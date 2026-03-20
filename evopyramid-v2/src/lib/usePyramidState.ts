@@ -147,6 +147,8 @@ export function usePyramidState() {
   const [latestZBusEvent, setLatestZBusEvent] = useState<any>(null); // To store the latest ZBus event
   const backendNodesRef = useRef<Record<string, any>>({});
 
+  const [systemMetrics, setSystemMetrics] = useState<any>(null);
+
   useEffect(() => {
     let socket: WebSocket | null = null;
     let reconnectTimer: number | null = null;
@@ -176,8 +178,12 @@ export function usePyramidState() {
           const message = JSON.parse(event.data);
           if (message.type === 'full_state') {
             const snapshot = message?.data?.nodes;
+            const metrics = message?.data?.system_metrics;
             if (snapshot && typeof snapshot === 'object') {
               applySnapshot(snapshot as Record<string, any>);
+            }
+            if (metrics) {
+              setSystemMetrics(metrics);
             }
           } else if (message.type === 'node_update' && message?.data?.id) {
             const nextSnapshot = {
@@ -217,7 +223,8 @@ export function usePyramidState() {
     };
   }, []);
 
-  return { nodes, isConnected, latestZBusEvent };
+  return { nodes, isConnected, latestZBusEvent, systemMetrics };
 }
+
 
 

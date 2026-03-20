@@ -157,9 +157,57 @@ async def lifespan(app: FastAPI):
     except ImportError:
         logging.warning("Z-Bus module not found. Orchestrator communication offline.")
 
+    # System Metrics Background Poller
+    async def metrics_poller():
+        try:
+            from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
+            bridge = await CognitiveBridge.get_instance()
+        except ImportError:
+            bridge = None
+            logging.warning("CognitiveBridge not found. Memory metrics offline.")
+
+        pulse_path = ROOT_DIR / "state" / "project_cortex" / "pulse.json"
+
+        while True:
+            try:
+                metrics = {}
+                # Health from ObserverRelay pulse
+                if pulse_path.exists():
+                    try:
+                        with open(pulse_path, "r", encoding="utf-8") as f:
+                            pulse_data = json.load(f)
+                            metrics["health_pct"] = pulse_data.get("health_pct", 0.0)
+                            metrics["health_status"] = pulse_data.get("status", "unknown")
+                    except Exception:
+                        pass
+                else:
+                    metrics["health_pct"] = 0.0
+                    metrics["health_status"] = "offline"
+
+                # Memory from CognitiveBridge
+                if bridge:
+                     try:
+                         mem_stats = await bridge.health_summary()
+                         metrics["memory_total"] = mem_stats.get("total_blocks", 0)
+                         metrics["memory_session"] = mem_stats.get("session_memory_blocks", 0)
+                     except Exception:
+                         pass
+
+                if metrics:
+                    current_state.system_metrics = metrics
+                    # Full state broadcast is handled by other events (like pulser) periodically, 
+                    # but we could also broadcast a lightweight metrics update if needed.
+            except Exception as e:
+                logging.error(f"Metrics poller error: {e}")
+            
+            await asyncio.sleep(5)  # Poll every 5 seconds
+
+    metrics_task = asyncio.create_task(metrics_poller())
+
     yield
     
     # Shutdown
+    metrics_task.cancel()
     await pulser.stop()
     if zbus_task:
         zbus_task.cancel()

@@ -1,10 +1,8 @@
-from .sk_engine import QuantumBlock, MemoryColor, DynamicState, MethodMode, EvoMethod_SK, SystemConfig
+"""
+B4_Cognitive — Cognitive layer of EvoPyramid OS.
 
-__all__ = [
-    'QuantumBlock', 
-    'MemoryColor', 
-    'DynamicState', 
-    'MethodMode', 
-    'EvoMethod_SK',
-    'SystemConfig'
-]
+Provides long-term semantic memory through CognitiveBridge.
+"""
+from .cognitive_bridge import CognitiveBridge
+
+__all__ = ["CognitiveBridge"]

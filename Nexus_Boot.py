@@ -97,13 +97,18 @@ def main():
         cwd = str(ui_dir) if name == "Frontend UI" else str(root_dir)
         try:
             log_status(f"Activating {name}...", "INFO")
-            # Create unique log files for each cluster
-            slug = name.lower().replace(" ", "_")
-            out_log = open(root_dir / "state" / f"{slug}_stdout.log", "w")
-            err_log = open(root_dir / "state" / f"{slug}_stderr.log", "w")
             
-            proc = subprocess.Popen(cmd, cwd=cwd, shell=True, stdout=out_log, stderr=err_log)
-            procs.append((name, proc, out_log, err_log))
+            if os.name == 'nt':
+                # Open in a new visible console window, no stdout redirection
+                proc = subprocess.Popen(cmd, cwd=cwd, shell=True, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                procs.append((name, proc, None, None))
+            else:
+                slug = name.lower().replace(" ", "_")
+                out_log = open(root_dir / "state" / f"{slug}_stdout.log", "w")
+                err_log = open(root_dir / "state" / f"{slug}_stderr.log", "w")
+                proc = subprocess.Popen(cmd, cwd=cwd, shell=True, stdout=out_log, stderr=err_log)
+                procs.append((name, proc, out_log, err_log))
+                
             time.sleep(1) # Stagger boot
         except Exception as e:
             log_status(f"Critical failure launching {name}: {e}", "ERROR")
@@ -125,9 +130,12 @@ def main():
     except KeyboardInterrupt:
         print(f"\n{BColors.WARNING}[NEXUS] TEAR-DOWN INITIATED...{BColors.ENDC}")
         for name, p, out_f, err_f in procs:
-            p.terminate()
-            out_f.close()
-            err_f.close()
+            if os.name == 'nt':
+                subprocess.run(f"taskkill /F /T /PID {p.pid}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            else:
+                p.terminate()
+            if out_f: out_f.close()
+            if err_f: err_f.close()
         log_status("All nodes secured.", "SUCCESS")
 
 if __name__ == "__main__":

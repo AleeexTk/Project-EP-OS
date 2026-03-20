@@ -57,7 +57,7 @@ const getProjectPathForNode = (node: EvoNode) => {
 };
 
 function App() {
-  const { nodes: coreNodes, isConnected, latestZBusEvent } = usePyramidState();
+  const { nodes: coreNodes, isConnected, latestZBusEvent, systemMetrics } = usePyramidState();
   const { events, connected: swarmConnected } = useSwarmTerminal();
   const { sessions, loadSessions } = useSessionRegistry();
 
@@ -264,6 +264,9 @@ function App() {
     void handleSyncFromStructure();
   }, [handleSyncFromStructure]);
 
+  const healthPct = systemMetrics?.health_pct !== undefined ? Math.round(systemMetrics.health_pct) : null;
+  const memoryBlocks = systemMetrics?.memory_total ?? 0;
+
   return (
     <div className="app-shell flex h-screen text-slate-100 overflow-hidden">
       <main className={`pyramid-stage relative h-full transition-all duration-300 ${assistantOpen ? 'w-full lg:w-[60%]' : 'w-full'}`}>
@@ -278,6 +281,26 @@ function App() {
 
           <div className="flex items-center gap-2 md:gap-3">
             <KernelMonitor />
+            
+            {/* V11 Metrics Widget */}
+            {(healthPct !== null || memoryBlocks > 0) && (
+              <div className="hidden md:flex items-center gap-3 text-[10px] px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] backdrop-blur">
+                {healthPct !== null && (
+                  <div className="flex items-center gap-1.5" title="System Health (ObserverRelay)">
+                    <Activity className={`w-3.5 h-3.5 ${healthPct >= 90 ? 'text-emerald-400' : healthPct >= 60 ? 'text-amber-400' : 'text-rose-400'}`} />
+                    <span className="font-mono text-slate-200">{healthPct}%</span>
+                  </div>
+                )}
+                {healthPct !== null && memoryBlocks > 0 && <span className="text-slate-600">|</span>}
+                {memoryBlocks > 0 && (
+                  <div className="flex items-center gap-1.5" title="Cognitive Cortex Size (Blocks)">
+                    <Layers3 className="w-3.5 h-3.5 text-blue-400" />
+                    <span className="font-mono text-slate-200">{memoryBlocks} ENG</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="hidden md:flex items-center gap-2 text-[10px] px-2 py-1 rounded-full bg-black/30 border border-white/10">
               <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
               <span>CORE</span>

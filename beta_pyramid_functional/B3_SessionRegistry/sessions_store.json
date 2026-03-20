@@ -10,9 +10,9 @@
       "model_hint": null,
       "task_title": "Create & Bind",
       "task_context": null,
-      "status": "waiting",
+      "status": "active",
       "created_at": "2026-03-09T15:45:18.296929+00:00",
-      "updated_at": "2026-03-19T16:53:15.688206+00:00",
+      "updated_at": "2026-03-20T01:32:00.311343+00:00",
       "messages": [
         {
           "id": "109c4a1a-12bd-4098-afb5-88f8a774c330",
@@ -68,6 +68,27 @@
           "role": "assistant",
           "content": "⚠ AI Orchestration Error: Timeout of 600.0s exceeded, last exception: 503 DNS resolution failed for generativelanguage.googleapis.com:443: UNAVAILABLE: getaddrinfo: WSA Error (No such host is known.\r\n -- 11001)",
           "ts": "2026-03-19T16:53:15.688184+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "9193fd4f-38c9-4ab7-bb5a-7d9381b6f8ad",
+          "role": "user",
+          "content": "Привет",
+          "ts": "2026-03-20T01:10:25.414699+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "aed84121-6907-4c6f-930d-d04af5d87a18",
+          "role": "assistant",
+          "content": "[SYSTEM FALLBACK] Gemini quota exhausted. Please try again (Ollama will take over).",
+          "ts": "2026-03-20T01:11:12.369033+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "7d817634-2885-4b1a-a8aa-8f796270ce9f",
+          "role": "assistant",
+          "content": "[AUTORUN SUCCESS]\nCore Node 8-9-13 active.\n",
+          "ts": "2026-03-20T01:12:04.493279+00:00",
           "agent_ref": null
         }
       ],

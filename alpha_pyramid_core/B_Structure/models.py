@@ -92,3 +92,5 @@ class Link(BaseModel):
 class PyramidState(BaseModel):
     nodes: Dict[str, Node] = {}
     links: List[Link] = []
+    system_metrics: Dict[str, Any] = {}
+

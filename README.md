@@ -70,10 +70,20 @@ Remove-Item state\pyramid_state.json -Force
 python Nexus_Boot.py
 ```
 
-## Integration Docs
+## Documentation
+
+The project architecture and communication protocols have been moved to the `/docs` directory for better organization:
+
+- **[Z-Architecture Order & Z-Levels](docs/z_architecture_order.md)** — Explains the Z1 to Z17 tiering and logic separation.
+- **[Project Architectural Audit](docs/PROJECT_AUDIT.md)** — Details the structural health and milestones (V11+).
+- **[Trinity Protocol](docs/trinity_protocol.md)** — Guidelines for Triad role interactions.
+- **[Trinity Connect Protocol (TCP)](docs/TRINITY_CONNECT.md)** — External LLM handshake rules for connecting to EvoPyramid OS.
+- **[Collaboration Workflow](docs/COLLABORATION.md)** — Git and task progress tracking guidelines.
+
+### Internal Guides
 
 - Z-service registry: `state/z_service_vertical.md`
-- Frontend/runtime guide: `evopyramid-v2/README.md`
+- Frontend UI guide: `evopyramid-v2/README.md`
 - CI workflow: `.github/workflows/evopyramid-ci.yml`
 - Secrets checklist: `.github/SECRETS_CHECKLIST.md`
 

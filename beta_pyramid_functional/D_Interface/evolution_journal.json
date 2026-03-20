@@ -145,6 +145,33 @@
       "action": "execute_node",
       "result_summary": "[AUTORUN FAILED] Traceback (most recent call last):\n  File \"c:\\Users\\Alex Bear\\Desktop\\EvoPyramid OS\\tmp\\broken_node.py\", line 7, in <module>\n    from non_existent_package.module import Something\nModuleNotFoundError: No module named 'non_existent_package'",
       "status": "FAILED"
+    },
+    {
+      "task_id": "synthetic_a928131d",
+      "timestamp": "2026-03-20T00:19:09.069873+00:00",
+      "source": "injector_z0",
+      "origin_z": 0,
+      "action": "synthetic_failure_injection",
+      "result_summary": "FAILED | Traceback (most recent call last):\n  File \"C:\\Users\\Alex Bear\\Desktop\\EvoPyramid OS\\beta_pyramid_functional\\B2_Orchestrator\\synthesis_agent.py\", line 42, in scan_and_synthesize\n    clusters = self._cluster_signatures(sigs)\nAttributeError: 'NoneType' object has no attribute 'items'",
+      "status": "REJECTED"
+    },
+    {
+      "task_id": "synthetic_263ef4a5",
+      "timestamp": "2026-03-20T00:44:38.089124+00:00",
+      "source": "injector_z0",
+      "origin_z": 0,
+      "action": "synthetic_failure_injection",
+      "result_summary": "FAILED | Traceback (most recent call last):\n  File \"C:\\Users\\Alex Bear\\Desktop\\EvoPyramid OS\\beta_pyramid_functional\\B2_Orchestrator\\synthesis_agent.py\", line 42, in scan_and_synthesize\n    clusters = self._cluster_signatures(sigs)\nAttributeError: 'NoneType' object has no attribute 'items'",
+      "status": "REJECTED"
+    },
+    {
+      "task_id": "ux-1773969119174",
+      "timestamp": "2026-03-20T01:12:02.906276+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "manifest_node",
+      "result_summary": "{'path': 'C:\\\\Users\\\\Alex Bear\\\\Desktop\\\\EvoPyramid OS\\\\beta_pyramid_functional\\\\GREEN\\\\9_GH_PR_Resolver'}",
+      "status": "ACCEPTED"
     }
   ]
 }
