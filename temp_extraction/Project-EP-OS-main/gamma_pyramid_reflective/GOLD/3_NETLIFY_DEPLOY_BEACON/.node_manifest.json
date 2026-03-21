@@ -1,0 +1,17 @@
+{
+  "id": "netlify_deploy_beacon",
+  "title": "Netlify Deploy Beacon",
+  "z_level": 3,
+  "sector": "GOLD",
+  "coords": { "x": 11, "y": 9, "z": 3 },
+  "layer_type": "gamma",
+  "kind": "service",
+  "summary": "Reflective deploy checkpoint for Netlify publication and release state.",
+  "state": "active",
+  "links": ["deploy_audit_ledger"],
+  "metadata": {
+    "service": "netlify-deploy",
+    "owner": "integrations",
+    "z_vertical": "release-reflection"
+  }
+}

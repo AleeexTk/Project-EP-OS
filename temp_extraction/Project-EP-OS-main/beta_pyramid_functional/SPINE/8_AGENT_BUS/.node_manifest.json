@@ -1,0 +1,16 @@
+{
+  "id": "agent_bus",
+  "title": "Agent Bus (Z-Bus)",
+  "z_level": 8,
+  "sector": "SPINE",
+  "layer_type": "beta",
+  "kind": "bus",
+  "summary": "Inter-agent task routing and LLM result synchronization.",
+  "state": "active",
+  "coords": { "x": 9, "y": 9, "z": 8 },
+  "links": ["gen-async-jobs", "gen-webmcp", "chaos_engine"],
+  "metadata": {
+    "main_script": "index.py",
+    "core_module": "B2_Orchestrator/zbus.py"
+  }
+}

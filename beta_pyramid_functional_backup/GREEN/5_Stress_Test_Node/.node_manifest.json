@@ -1,0 +1,25 @@
+{
+  "id": "test_stress_node",
+  "title": "Stress Test Node",
+  "z_level": 5,
+  "sector": "GREEN",
+  "coords": {
+    "x": 5,
+    "y": 5,
+    "z": 5
+  },
+  "layer_type": "beta",
+  "kind": "module",
+  "summary": "Node for testing manifestor.py extraction",
+  "state": "active",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [],
+  "children": [],
+  "source_refs": [],
+  "metadata": {},
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "layer_folder": "\u03b2_Pyramid_Functional"
+}

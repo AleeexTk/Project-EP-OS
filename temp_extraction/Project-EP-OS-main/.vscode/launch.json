@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug: Core Engine (evo_api)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/β_Pyramid_Functional/D_Interface/evo_api.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "PYTHONIOENCODING": "utf-8"
+            },
+            "justMyCode": true
+        },
+        {
+            "name": "Debug: Session Registry (session_api)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "β_Pyramid_Functional.B3_SessionRegistry.session_api:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8001"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "PYTHONIOENCODING": "utf-8"
+            },
+            "justMyCode": true
+        },
+        {
+            "type": "chrome",
+            "name": "Debug: Frontend (localhost:3000)",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/evopyramid-v2/src"
+        }
+    ]
+}

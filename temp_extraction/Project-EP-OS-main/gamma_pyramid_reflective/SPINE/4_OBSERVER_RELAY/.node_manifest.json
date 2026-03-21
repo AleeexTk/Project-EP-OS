@@ -1,0 +1,35 @@
+{
+  "id": "observer_relay",
+  "title": "Observer Relay",
+  "z_level": 4,
+  "sector": "SPINE",
+  "coords": {
+    "x": 9,
+    "y": 9,
+    "z": 4
+  },
+  "layer_type": "beta",
+  "kind": "router",
+  "summary": "Beta-to-Gamma boundary relay. Forwards dashboard events and anomaly signals to Gamma reflective layer.",
+  "state": "idle",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [
+    "gen-dashboard",
+    "netlify_deploy_beacon"
+  ],
+  "children": [],
+  "source_refs": [],
+  "metadata": {
+    "source": "filesystem-discovery",
+    "path": "beta_pyramid_functional/SPINE/4_OBSERVER_RELAY",
+    "layer_folder": "beta_pyramid_functional"
+  },
+  "runtime_canon_flag": "runtime",
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "memory_color": "white",
+  "gravity": 1.0,
+  "layer_folder": "gamma_pyramid_reflective"
+}

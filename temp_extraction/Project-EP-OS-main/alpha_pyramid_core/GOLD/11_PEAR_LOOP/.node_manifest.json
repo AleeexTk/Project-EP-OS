@@ -1,0 +1,28 @@
+{
+  "id": "gen-pear",
+  "title": "PEAR LOOP",
+  "z_level": 11,
+  "sector": "GOLD",
+  "coords": {
+    "x": 9,
+    "y": 9,
+    "z": 11
+  },
+  "layer_type": "alpha",
+  "kind": "memory",
+  "summary": "Perception, Evolution, Action, Reflection",
+  "state": "active",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [
+    "gen-async-jobs"
+  ],
+  "children": [],
+  "source_refs": [],
+  "metadata": {},
+  "runtime_canon_flag": "runtime",
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "layer_folder": "\u03b1_Pyramid_Core"
+}

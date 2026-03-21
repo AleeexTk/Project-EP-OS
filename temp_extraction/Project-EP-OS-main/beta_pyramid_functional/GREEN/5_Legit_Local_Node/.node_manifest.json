@@ -1,0 +1,28 @@
+{
+  "id": "legit_node",
+  "title": "Legit Local Node",
+  "z_level": 5,
+  "sector": "GREEN",
+  "coords": {
+    "x": 10,
+    "y": 10,
+    "z": 5
+  },
+  "layer_type": "beta",
+  "kind": "module",
+  "summary": "Legitimate Z5 manifestation",
+  "state": "idle",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [],
+  "children": [],
+  "source_refs": [],
+  "metadata": {},
+  "runtime_canon_flag": "runtime",
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "memory_color": "white",
+  "gravity": 1.0,
+  "layer_folder": "beta_pyramid_functional"
+}

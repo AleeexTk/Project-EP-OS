@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+build/
+dist/
+
+# Logs and State
+state/*.log
+state/*.json
+!state/.gitkeep
+
+# Node.js
+node_modules/
+.npm/
+dist-ssr/
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+.env
+.python-version
+.uv/

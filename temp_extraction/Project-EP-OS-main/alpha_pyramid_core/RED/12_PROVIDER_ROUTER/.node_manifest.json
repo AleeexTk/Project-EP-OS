@@ -1,0 +1,15 @@
+{
+  "id": "provider_router",
+  "title": "AI Provider Router",
+  "z_level": 12,
+  "sector": "RED",
+  "layer_type": "alpha",
+  "kind": "router",
+  "summary": "Intelligent provider selection and adapter layer (Gemini, OpenAI, Replicate).",
+  "state": "active",
+  "coords": { "x": 10, "y": 8, "z": 12 },
+  "links": ["gen-bridge", "gh_ci_guardian"],
+  "metadata": {
+    "main_script": "index.py"
+  }
+}

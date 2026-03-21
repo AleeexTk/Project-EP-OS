@@ -29,7 +29,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gen-meta": {
       "id": "gen-meta",
@@ -62,7 +62,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "violet",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gen-bridge": {
       "id": "gen-bridge",
@@ -96,7 +96,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "red",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gen-pear": {
       "id": "gen-pear",
@@ -129,7 +129,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "yellow",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "cr_gateway": {
       "id": "cr_gateway",
@@ -163,7 +163,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gen-async-jobs": {
       "id": "gen-async-jobs",
@@ -196,7 +196,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "green",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "agent_bus": {
       "id": "agent_bus",
@@ -231,7 +231,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gen-webmcp": {
       "id": "gen-webmcp",
@@ -264,7 +264,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "green",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "chaos_engine": {
       "id": "chaos_engine",
@@ -299,7 +299,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gen-dashboard": {
       "id": "gen-dashboard",
@@ -330,7 +330,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "observer_relay": {
       "id": "observer_relay",
@@ -364,7 +364,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "netlify_deploy_beacon": {
       "id": "netlify_deploy_beacon",
@@ -397,7 +397,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "yellow",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "deploy_audit_ledger": {
       "id": "deploy_audit_ledger",
@@ -430,7 +430,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "openai_docs_hub": {
       "id": "openai_docs_hub",
@@ -464,7 +464,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "violet",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gh_ci_guardian": {
       "id": "gh_ci_guardian",
@@ -498,7 +498,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "red",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "provider_router": {
       "id": "provider_router",
@@ -532,7 +532,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "red",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "policy_bus": {
       "id": "policy_bus",
@@ -566,7 +566,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "nexus_router": {
       "id": "nexus_router",
@@ -600,7 +600,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "gh_pr_resolver": {
       "id": "gh_pr_resolver",
@@ -633,7 +633,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "green",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "resolution_stream": {
       "id": "resolution_stream",
@@ -667,7 +667,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "audit_bridge": {
       "id": "audit_bridge",
@@ -701,7 +701,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "sk_engine": {
       "id": "sk_engine",
@@ -733,7 +733,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "yellow",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "test_stress_node": {
       "id": "test_stress_node",
@@ -764,7 +764,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "green",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "renegade_node": {
       "id": "renegade_node",
@@ -795,7 +795,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "legit_node": {
       "id": "legit_node",
@@ -826,7 +826,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "green",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "chatgpt_apps_bridge": {
       "id": "chatgpt_apps_bridge",
@@ -859,7 +859,7 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "blue",
-      "gravity": 1.0
+      "gravity": 0.5
     },
     "workspace_tools": {
       "id": "workspace_tools",
@@ -893,15 +893,40 @@
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "green",
+      "gravity": 0.5
+    },
+    "e2e_persistence_test_node": {
+      "id": "e2e_persistence_test_node",
+      "title": "Persistence Test Node",
+      "z_level": 1,
+      "sector": "SANDBOX",
+      "coords": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "layer_type": "beta",
+      "kind": "module",
+      "summary": "Testing write_atomic integration",
+      "state": "active",
+      "canon_status": "runtime",
+      "artifacts": [],
+      "links": [],
+      "children": [],
+      "source_refs": [],
+      "metadata": {},
+      "runtime_canon_flag": "runtime",
+      "session_url": null,
+      "browser_profile_dir": null,
+      "orchestrator_state": "unlinked",
+      "memory_color": "white",
       "gravity": 1.0
     }
   },
   "links": [],
   "system_metrics": {
     "health_pct": 0.0,
-    "health_status": "offline",
-    "memory_total": 20,
-    "memory_session": 3
+    "health_status": "offline"
   },
   "bridge_health": "online",
   "latest_bridge_event": null

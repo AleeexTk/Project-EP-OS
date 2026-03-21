@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@layer components {
+  .slider-vertical {
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+  }
+}
+
+input[type="range"] {
+  accent-color: #10b981;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+@supports (scrollbar-width: none) {
+  .no-scrollbar {
+    scrollbar-width: none; /* Firefox / Chrome 121+ */
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome < 121, Safari, Opera */
+}
+
+:root {
+  --ep-bg-base: #071024;
+  --ep-bg-deep: #0d1d3f;
+  --ep-bg-night: #102651;
+}
+
+.app-shell {
+  background:
+    radial-gradient(1000px 620px at 16% 14%, rgba(59, 130, 246, 0.28), transparent 60%),
+    radial-gradient(840px 560px at 78% 70%, rgba(45, 212, 191, 0.18), transparent 62%),
+    linear-gradient(160deg, var(--ep-bg-base) 0%, var(--ep-bg-deep) 45%, var(--ep-bg-night) 100%);
+}
+
+.pyramid-stage {
+  position: relative;
+  overflow: hidden;
+}
+
+.pyramid-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.38;
+  -webkit-mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0.9) 0%, transparent 80%);
+  mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0.9) 0%, transparent 80%);
+}
+
+/* Provider Identity Dots */
+.provider-dot { 
+  display: inline-block;
+  width: 0.5rem; /* 8px */
+  height: 0.5rem; /* 8px */
+  border-radius: 9999px;
+}
+.provider-dot-gpt { background-color: #10a37f; }
+.provider-dot-gemini { background-color: #4285f4; }
+.provider-dot-claude { background-color: #f5a623; }
+.provider-dot-copilot { background-color: #4285f4; }
+.provider-dot-ollama { background-color: #7c3aed; }

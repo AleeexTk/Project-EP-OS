@@ -1,0 +1,26 @@
+{
+    "python.analysis.extraPaths": [
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS",
+        "C:/Users/Alex Bear/AppData/Local/Programs/Python/Python313/Lib/site-packages",
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS/α_Pyramid_Core",
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS/β_Pyramid_Functional",
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS/α_Pyramid_Core/B_Structure",
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS/β_Pyramid_Functional/D_Interface"
+    ],
+    "python.autoComplete.extraPaths": [
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS",
+        "C:/Users/Alex Bear/AppData/Local/Programs/Python/Python313/Lib/site-packages",
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS/α_Pyramid_Core",
+        "C:/Users/Alex Bear/Desktop/EvoPyramid OS/β_Pyramid_Functional"
+    ],
+    "python.terminal.useEnvFile": true,
+    "python.defaultInterpreterPath": "C:/Users/Alex Bear/AppData/Local/Programs/Python/Python313/python.exe",
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH": "C:/Users/Alex Bear/Desktop/EvoPyramid OS;C:/Users/Alex Bear/Desktop/EvoPyramid OS/α_Pyramid_Core/B_Structure;C:/Users/Alex Bear/Desktop/EvoPyramid OS/β_Pyramid_Functional/D_Interface"
+    },
+    "files.readonlyInclude": {
+        "{**/.c4z/.extsrcs/*.PROTSYM.cbl,**/.c4z/.extsrcs/*.PROTSYM.listing}": true
+    },
+    "editor.stickyScroll.enabled": false,
+    "window.autoDetectColorScheme": true
+}

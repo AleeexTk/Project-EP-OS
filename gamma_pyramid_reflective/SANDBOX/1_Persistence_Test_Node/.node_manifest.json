@@ -1,0 +1,28 @@
+{
+  "id": "e2e_persistence_test_node",
+  "title": "Persistence Test Node",
+  "z_level": 1,
+  "sector": "SANDBOX",
+  "coords": {
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "layer_type": "beta",
+  "kind": "module",
+  "summary": "Testing write_atomic integration",
+  "state": "active",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [],
+  "children": [],
+  "source_refs": [],
+  "metadata": {},
+  "runtime_canon_flag": "runtime",
+  "session_url": null,
+  "browser_profile_dir": null,
+  "orchestrator_state": "unlinked",
+  "memory_color": "white",
+  "gravity": 1.0,
+  "layer_folder": "gamma_pyramid_reflective"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "sk_engine",
+  "title": "SK Cognitive Engine",
+  "z_level": 7,
+  "sector": "GOLD",
+  "layer_type": "beta",
+  "kind": "memory",
+  "summary": "Associative memory, MinHash indexing and LSH similarity search. Core cognitive layer.",
+  "state": "active",
+  "coords": { "x": 10, "y": 7, "z": 7 },
+  "links": ["agent_bus", "gen-dashboard"],
+  "metadata": {
+    "main_script": "engine.py",
+    "version": "EVO_METHOD_SK 3.3",
+    "path": "beta_pyramid_functional/B1_Kernel/SK_Engine"
+  }
+}

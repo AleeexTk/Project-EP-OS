@@ -1,0 +1,79 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start All EvoPyramid Services",
+            "dependsOn": [
+                "Backend: Core Engine (evo_api)",
+                "Backend: Session Registry (session_api)",
+                "Frontend: Vite UI"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Backend: Core Engine (evo_api)",
+            "type": "shell",
+            "command": "${config:python.defaultInterpreterPath}",
+            "args": [
+                "β_Pyramid_Functional/D_Interface/evo_api.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "group": "EvoPyramid",
+                "panel": "shared",
+                "clear": true
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Backend: Session Registry (session_api)",
+            "type": "shell",
+            "command": "${config:python.defaultInterpreterPath}",
+            "args": [
+                "-m",
+                "uvicorn",
+                "β_Pyramid_Functional.B3_SessionRegistry.session_api:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8001"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "group": "EvoPyramid",
+                "panel": "shared",
+                "clear": true
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Frontend: Vite UI",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "dev"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/evopyramid-v2"
+            },
+            "presentation": {
+                "group": "EvoPyramid",
+                "panel": "shared",
+                "clear": true
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        }
+    ]
+}

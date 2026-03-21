@@ -1,0 +1,56 @@
+{
+  "id": "miss_e3574167",
+  "title": "Structural Optimization",
+  "objective": "Analyze the integration between ProjectCortex and SynthesisAgent and suggest 1 performance optimization.",
+  "tasks": [
+    {
+      "task_id": "task_bedb0b",
+      "assigned_role": "Auditor",
+      "z_level": 7,
+      "intent": "Investigate the integration code between ProjectCortex and SynthesisAgent for potential performance bottlenecks",
+      "status": "pending",
+      "result_ref": null
+    },
+    {
+      "task_id": "task_1bf5a1",
+      "assigned_role": "Researcher",
+      "z_level": 11,
+      "intent": "Explore existing literature and best practices for optimizing similar integrations",
+      "status": "pending",
+      "result_ref": null
+    },
+    {
+      "task_id": "task_b297e6",
+      "assigned_role": "Engineer",
+      "z_level": 5,
+      "intent": "Propose a performance optimization based on the audit findings and research",
+      "status": "pending",
+      "result_ref": null
+    },
+    {
+      "task_id": "task_c0b35a",
+      "assigned_role": "Engineer",
+      "z_level": 5,
+      "intent": "Implement the proposed performance optimization for the integration between ProjectCortex and SynthesisAgent",
+      "status": "pending",
+      "result_ref": null
+    },
+    {
+      "task_id": "task_463cc6",
+      "assigned_role": "Tester",
+      "z_level": 13,
+      "intent": "Test the optimized integration for correct functionality and performance improvement",
+      "status": "pending",
+      "result_ref": null
+    },
+    {
+      "task_id": "task_707d1e",
+      "assigned_role": "Auditor",
+      "z_level": 7,
+      "intent": "Review the tested optimized integration for potential side effects or regressions",
+      "status": "pending",
+      "result_ref": null
+    }
+  ],
+  "status": "active"
+}

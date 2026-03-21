@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-03-19T20:42:26.515784",
+  "analyzed_blocks": 11,
+  "patterns_discovered": 3,
+  "clusters": [
+    {
+      "cluster_id": "pattern_fe7f26",
+      "member_count": 2,
+      "members": [
+        "pulse_d6d6181d",
+        "pulse_78a466af"
+      ]
+    },
+    {
+      "cluster_id": "pattern_23996b",
+      "member_count": 6,
+      "members": [
+        "ref_30e6c8f8",
+        "ref_3dfe543d",
+        "ref_53ba76f4",
+        "ref_8c452de6",
+        "ref_a013331b",
+        "ref_d9fac688"
+      ]
+    },
+    {
+      "cluster_id": "pattern_da1b62",
+      "member_count": 3,
+      "members": [
+        "ref_46eddfe1",
+        "ref_963b52b3",
+        "ref_e721253c"
+      ]
+    }
+  ]
+}

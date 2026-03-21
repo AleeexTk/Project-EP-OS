@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-03-19T19:22:20.164337",
+  "analyzed_blocks": 9,
+  "patterns_discovered": 2,
+  "clusters": [
+    {
+      "cluster_id": "pattern_57f804",
+      "member_count": 6,
+      "members": [
+        "ref_30e6c8f8",
+        "ref_3dfe543d",
+        "ref_53ba76f4",
+        "ref_8c452de6",
+        "ref_a013331b",
+        "ref_d9fac688"
+      ]
+    },
+    {
+      "cluster_id": "pattern_30ea45",
+      "member_count": 3,
+      "members": [
+        "ref_46eddfe1",
+        "ref_963b52b3",
+        "ref_e721253c"
+      ]
+    }
+  ]
+}
