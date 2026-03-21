@@ -59,6 +59,9 @@ from session_models import (
     SessionRegistry,
     SessionStatus,
     StatusUpdateRequest,
+    MemoryCrystal,
+    CrystalManager,
+    CrystalScope,
 )
 from provider_matrix import ProviderMatrix
 from beta_pyramid_functional.B1_Kernel.contracts import AgentSessionContract, TaskStatus
@@ -282,6 +285,38 @@ def health():
         "ws_connections": len(manager.active_connections),
     }
 
+
+# в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+#  Memory Crystals API 
+# в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+
+@router.post("/memory/crystal", response_model=MemoryCrystal, summary="Create a new Memory Crystal")
+def create_crystal(crystal: MemoryCrystal):
+    """
+    Stores a new memory crystal (container) with the essence of a session or task.
+    """
+    return CrystalManager.create(crystal)
+
+
+@router.get("/memory/crystals", response_model=List[MemoryCrystal], summary="List all Memory Crystals")
+def list_crystals(scope: Optional[CrystalScope] = None):
+    """
+    Lists Memory Crystals, optionally filtered by scope.
+    """
+    if scope:
+        return CrystalManager.list_by_scope(scope)
+    return CrystalManager.list_all()
+
+
+@router.delete("/memory/crystals/{crystal_id}", summary="Delete a Memory Crystal")
+def delete_crystal(crystal_id: str):
+    """
+    Deletes a specific memory crystal.
+    """
+    ok = CrystalManager.delete(crystal_id)
+    if not ok:
+        raise HTTPException(404, detail=f"Crystal {crystal_id} not found")
+    return {"deleted": crystal_id}
 
 
 

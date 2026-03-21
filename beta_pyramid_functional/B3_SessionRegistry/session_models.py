@@ -61,6 +61,22 @@ class MessageRole(str, Enum):
     SYSTEM    = "system"
 
 
+class CrystalScope(str, Enum):
+    SESSION = "session"
+    USER = "user"
+    NODE = "node"
+    ARCHITECTURE = "architecture"
+    CONFEDERATION = "confederation"
+
+
+class CrystalType(str, Enum):
+    CONTEXT = "context"
+    MEMORY = "memory"
+    EVENT = "event"
+    ARTIFACT = "artifact"
+    MISSION = "mission"
+
+
 # в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 #  Data Models
 # в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
@@ -139,6 +155,22 @@ class ContextPack(BaseModel):
     summaries: List[str] = Field(default_factory=list)
     task_history: List[str] = Field(default_factory=list)
 
+
+class MemoryCrystal(BaseModel):
+    id: str = Field(default_factory=lambda: f"cnt_{uuid.uuid4().hex[:8]}")
+    type: CrystalType = CrystalType.MEMORY
+    scope: CrystalScope = CrystalScope.SESSION
+    content: str
+    metadata: dict = Field(default_factory=dict)
+    weight: float = 1.0
+    ttl_rule: Optional[str] = None
+    links: List[str] = Field(default_factory=list)
+    timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+
+class CrystalStorage(BaseModel):
+    crystals: List[MemoryCrystal] = Field(default_factory=list)
+
 class ProviderExecution(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     provider: Provider
@@ -192,6 +224,7 @@ def _now() -> str:
 # в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 
 STORE_PATH = Path(__file__).parent / "sessions_store.json"
+CRYSTALS_STORE_PATH = Path(__file__).parent / "crystals_store.json"
 
 
 def _load_store() -> dict:
@@ -202,6 +235,19 @@ def _load_store() -> dict:
 
 def _save_store(store: dict) -> None:
     STORE_PATH.write_text(
+        json.dumps(store, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
+def _load_crystals_store() -> dict:
+    if not CRYSTALS_STORE_PATH.exists():
+        return {"crystals": []}
+    return json.loads(CRYSTALS_STORE_PATH.read_text(encoding="utf-8"))
+
+
+def _save_crystals_store(store: dict) -> None:
+    CRYSTALS_STORE_PATH.write_text(
         json.dumps(store, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
@@ -298,4 +344,34 @@ class SessionRegistry:
         return True
 
 
+class CrystalManager:
+    """Service layer for Memory Crystals (Containers)."""
 
+    @staticmethod
+    def create(crystal: MemoryCrystal) -> MemoryCrystal:
+        store = _load_crystals_store()
+        if "crystals" not in store:
+            store["crystals"] = []
+        store["crystals"].append(crystal.model_dump())
+        _save_crystals_store(store)
+        return crystal
+
+    @staticmethod
+    def list_all() -> List[MemoryCrystal]:
+        store = _load_crystals_store()
+        return [MemoryCrystal(**c) for c in store.get("crystals", [])]
+
+    @staticmethod
+    def list_by_scope(scope: CrystalScope) -> List[MemoryCrystal]:
+        store = _load_crystals_store()
+        return [MemoryCrystal(**c) for c in store.get("crystals", []) if c.get("scope") == scope]
+
+    @staticmethod
+    def delete(crystal_id: str) -> bool:
+        store = _load_crystals_store()
+        original_len = len(store.get("crystals", []))
+        store["crystals"] = [c for c in store.get("crystals", []) if c.get("id") != crystal_id]
+        if len(store.get("crystals", [])) < original_len:
+            _save_crystals_store(store)
+            return True
+        return False

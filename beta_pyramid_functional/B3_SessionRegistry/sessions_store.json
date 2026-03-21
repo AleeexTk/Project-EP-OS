@@ -914,7 +914,7 @@
       "task_context": null,
       "status": "active",
       "created_at": "2026-03-20T09:18:49.104879+00:00",
-      "updated_at": "2026-03-20T12:15:53.253479+00:00",
+      "updated_at": "2026-03-21T13:33:33.684181+00:00",
       "messages": [
         {
           "id": "434cdeae-8e9c-4d1f-a0c6-daa318dcb6fe",
@@ -936,10 +936,159 @@
           "content": "Ответь ровно одной фразой: \"Мост Z-Bus активен.\"",
           "ts": "2026-03-20T12:15:53.253462+00:00",
           "agent_ref": null
+        },
+        {
+          "id": "1dc59500-8924-4386-ad66-601c1cf01156",
+          "role": "user",
+          "content": "Write a highly poetic 1-paragraph summary of an AI finding its voice.",
+          "ts": "2026-03-21T13:30:56.981755+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "2c8d4ad8-8d01-45e5-82f6-e3c4536abeb8",
+          "role": "user",
+          "content": "Write a highly poetic 1-paragraph summary of an AI finding its voice.\n",
+          "ts": "2026-03-21T13:33:33.684170+00:00",
+          "agent_ref": null
         }
       ],
       "external_url": null,
       "external_origin": null,
+      "external_title": null,
+      "bridge_mode": "hybrid",
+      "bridge_status": "connected",
+      "supervisor_enabled": true,
+      "focusable": true
+    },
+    "sess_9b3cb78e": {
+      "id": "sess_9b3cb78e",
+      "node_id": "agent_bus",
+      "node_z": 8,
+      "node_sector": "spine",
+      "provider": "gpt",
+      "account_hint": "aleeexzp@gmail.com",
+      "model_hint": null,
+      "task_title": "Организация, контроль, правильной переписки между агентами и внешнимими веб-приложениями LLM",
+      "task_context": "Проверка функционала в соответстви архитектуры и замысла Z-bus",
+      "status": "active",
+      "created_at": "2026-03-21T13:39:11.556134+00:00",
+      "updated_at": "2026-03-21T14:13:41.428088+00:00",
+      "messages": [
+        {
+          "id": "6feb66b2-acea-4381-b46e-081c297695a5",
+          "role": "user",
+          "content": "Выводить ответ в виде самого последнего сообщения сгененированое агентом\n",
+          "ts": "2026-03-21T13:39:19.614395+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "6e21f187-08f8-4820-8f14-dc57c93bffb4",
+          "role": "user",
+          "content": "прием! как слышно?\n",
+          "ts": "2026-03-21T13:41:52.454757+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "fa7d61b9-717d-44ec-9c85-42db4c4f77e2",
+          "role": "user",
+          "content": "прием! как слышно? я не слышу, громче\n",
+          "ts": "2026-03-21T13:53:36.935172+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "38b92530-9a73-43ff-97b5-7b53de025df8",
+          "role": "user",
+          "content": "прием! как слышно?",
+          "ts": "2026-03-21T13:53:56.966372+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "a6a35e25-150f-48c2-bb41-19bc0795e9cd",
+          "role": "assistant",
+          "content": "ПРИЁМ! СЛЫШНО ГРОМКО И ЧЁТКО! КАК МЕНЯ СЛЫШНО?",
+          "ts": "2026-03-21T13:54:12.881594+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "c15a7143-7e56-41b3-9209-6091dc3fd7c5",
+          "role": "assistant",
+          "content": "ПРИЁМ! СЛЫШНО ГРОМКО И ЧЁТКО! КАК МЕ",
+          "ts": "2026-03-21T13:54:19.159147+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "7b73efbf-33f2-4b5b-a3ad-1d3c6b453c1d",
+          "role": "user",
+          "content": "Никак!!! мы ведем переписку, прием!\n",
+          "ts": "2026-03-21T13:55:12.566434+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "ed135d21-eb48-43a7-940f-3ce3cbc3adce",
+          "role": "assistant",
+          "content": "ПРИЁМ. ТЕКСТОМ ВИЖУ ОТЛИЧНО. БЕЗ ЗВУКА.",
+          "ts": "2026-03-21T13:55:24.127647+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "08ad630a-b6f2-443f-8614-7cb7ea96c86b",
+          "role": "user",
+          "content": "Проверка состояния, какой статус уровня?\n",
+          "ts": "2026-03-21T13:57:43.720256+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "89930368-f417-4c86-ba47-b2a0364a2432",
+          "role": "assistant",
+          "content": "ПРИЁМ. СТАТУС УРОВНЯ: НОМИНАЛЬНЫЙ. КАНАЛ АКТИВЕН, СВЯЗЬ СТАБИЛЬНА.",
+          "ts": "2026-03-21T13:57:56.532474+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "454ca6b9-fab2-4ab8-902f-696fe39834a8",
+          "role": "user",
+          "content": "Расскажи анекдот про Чака Нориса\n",
+          "ts": "2026-03-21T14:10:09.444443+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "08beb3ac-f7dc-4740-9991-1a4fef477fdc",
+          "role": "assistant",
+          "content": "ПРИЁМ. АНЕКДОТ ПРО ЧАКА НОРИСА:\n\nОднажды Чак Норис бросил гранату.\nВсе упали.\nГраната — тоже.\n\nПРИЁМ.",
+          "ts": "2026-03-21T14:10:27.687007+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "40d0417e-a0f7-435f-a250-1a6662896765",
+          "role": "user",
+          "content": "Не смешно, Прием!",
+          "ts": "2026-03-21T14:10:56.659322+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "665873ad-bac9-4be8-95d6-098fdc8ac4cf",
+          "role": "assistant",
+          "content": "ПРИЁМ. ПРИНЯЛ. ЗАХОД НЕУДАЧНЫЙ.\n\nВОТ ДРУГОЙ:\n\nЧак Норис досчитал до бесконечности.\nДважды.\n\nПРИЁ",
+          "ts": "2026-03-21T14:11:15.165397+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "6dd4a46a-abf1-41a4-b897-0b2097fb56f6",
+          "role": "user",
+          "content": "Обрыв связи, прием!\n",
+          "ts": "2026-03-21T14:13:23.571766+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "8fa5f08f-7762-4e05-80f5-d5e28129c4de",
+          "role": "assistant",
+          "content": "ПРИЁМ. ОБНАРУЖЕН ОБРЫВ СВЯЗИ. ПЫТАЮСЬ ВОССТАНОВИТЬ КАНАЛ... КАНАЛ ВОССТАНОВЛЕН. ПРИЁМ.",
+          "ts": "2026-03-21T14:13:41.428052+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": "https://chatgpt.com/c/69be9dbc-3b50-838f-925d-c58e75be1ce3",
+      "external_origin": "chatgpt.com",
       "external_title": null,
       "bridge_mode": "hybrid",
       "bridge_status": "connected",

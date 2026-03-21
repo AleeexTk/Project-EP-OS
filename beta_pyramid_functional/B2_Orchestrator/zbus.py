@@ -34,7 +34,7 @@ class ZBus:
         """Publish a ZBusEvent (or dict) to the queue."""
         await self.queue.put(event)
 
-    async def dispatch_llm_task(self, task_id: str, session_id: str, provider: str, prompt: str, target_url: str = ""):
+    async def dispatch_llm_task(self, task_id: str, session_id: str, provider: str, prompt: str, target_url: str = "", routing: str = "single"):
         """Legacy compatibility wrapper mapped to the new architecture."""
         try:
             from session_models import ZBusEvent, ZBusTopic
@@ -47,7 +47,8 @@ class ZBus:
                 payload={
                     "provider": provider,
                     "prompt": prompt,
-                    "url": target_url
+                    "url": target_url,
+                    "routing": routing
                 },
                 timestamp=datetime.now(timezone.utc).isoformat()
             )
@@ -59,7 +60,7 @@ class ZBus:
                 "topic": "prompt.dispatch",
                 "session_id": session_id,
                 "task_id": task_id,
-                "payload": {"provider": provider, "prompt": prompt, "url": target_url}
+                "payload": {"provider": provider, "prompt": prompt, "url": target_url, "routing": routing}
             })
             
     async def run_worker(self, websocket_manager, current_state=None):

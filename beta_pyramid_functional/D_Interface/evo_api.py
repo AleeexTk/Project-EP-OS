@@ -161,25 +161,111 @@ async def lifespan(app: FastAPI):
             try:
                 topic = event_dict.get("topic")
                 payload = event_dict.get("payload", {})
-                
+                session_id = event_dict.get("session_id")
+
                 # 1. Update State Heartbeat
-                if topic == "BRIDGE_HEARTBEAT":
+                if topic in ("BRIDGE_HEARTBEAT", "BRIDGE_CONNECTED"):
                     current_state.bridge_health = "online"
-                    logging.info("[Truth Sync] Bridge Heartbeat Received. System State -> ONLINE.")
-                
-                # 2. Phase 4: Memory Writeback
+                    logging.info("[Truth Sync] Bridge Heartbeat. System State -> ONLINE.")
+
+                # 2. Memory Writeback — assistant response
                 elif topic == "RESPONSE_COMPLETE":
                     from beta_pyramid_functional.B3_SessionRegistry.session_models import SessionRegistry, MessageCreateRequest
-                    session_id = event_dict.get("session_id")
                     content = payload.get("content", "")
                     if session_id and content:
-                        SessionRegistry.add_message(session_id, MessageCreateRequest(role="assistant", content=content))
-                        logging.info(f"[Memory Writeback] Saved Artifact to session {session_id}")
+                        SessionRegistry.add_message(
+                            session_id,
+                            MessageCreateRequest(role="assistant", content=content)
+                        )
+                        logging.info(f"[Memory] Saved assistant response → session {session_id} ({len(content)} chars)")
+                        # [NEW: Auto-Crystallization for Quantum Responses]
+                        session = SessionRegistry.get(session_id)
+                        if session and len(session.messages) >= 2:
+                            last_prompt = session.messages[-2].content
+                            if "*** QUANTUM SCENARIO PROTOCOL ACTIVATED ***" in last_prompt:
+                                try:
+                                    import re
+                                    from beta_pyramid_functional.B3_SessionRegistry.session_models import CrystalManager, MemoryCrystal, CrystalType, CrystalScope
+                                    
+                                    synthesis_content = content
+                                    sync_match = re.search(r"(Final Synthesis|Verdict|Overseer Synthesis|Overseer Verdict).*?(.*)", content, re.IGNORECASE | re.DOTALL)
+                                    if sync_match:
+                                        synthesis_content = sync_match.group(0).strip()
+                                        
+                                    crystal = MemoryCrystal(
+                                        type=CrystalType.MEMORY,
+                                        scope=CrystalScope.ARCHITECTURE,
+                                        content=f"Quantum Overseer Synthesis:\n\n{synthesis_content}",
+                                        source_session=session_id
+                                    )
+                                    CrystalManager.create(crystal)
+                                    logging.info(f"[Memory] 💎 Auto-crystallized Quantum Synthesis for {session_id}")
+                                except Exception as ce:
+                                    logging.error(f"[Memory] Failed to auto-crystallize: {ce}")
+
+                        # Broadcast so UI session list refreshes
+                        await manager.broadcast({
+                            "event": "session.message",
+                            "session_id": session_id,
+                            "role": "assistant",
+                            "content": content[:200] + ("..." if len(content) > 200 else ""),
+                        })
+
+                # 3. Surface bridge errors to UI
+                elif topic in ("AUTH_ERROR", "SESSION_TAB_MISSING", "DOM_ERROR", "BRIDGE_ERROR"):
+                    logging.warning(f"[Bridge] {topic}: {payload.get('detail', '')}")
+                    await manager.broadcast({
+                        "event": "bridge.error",
+                        "topic": topic,
+                        "session_id": session_id,
+                        "detail": payload.get("detail", ""),
+                    })
+
+                # 4. Universal LLM Routing (Backend execution for API providers)
+                elif topic in ("PROMPT_DISPATCH", "prompt.dispatch"):
+                    provider = payload.get("provider", "").lower()
+                    # If this is a direct API provider, the backend handles it.
+                    # Browser-based providers (gpt, claude web) are handled by the extension.
+                    if provider in ("gemini", "ollama"):
+                        from beta_pyramid_functional.B3_SessionRegistry.session_models import SessionRegistry
+                        from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator
+                        
+                        session = SessionRegistry.get(session_id)
+                        if session:
+                            async def handle_api_llm():
+                                try:
+                                    logging.info(f"[Orchestrator] Direct API Dispatch: {provider} for session {session_id}")
+                                    response = await AgentOrchestrator.get_response(session)
+                                    if response:
+                                        # Emit completion to Z-Bus to trigger memory writeback and UI sync
+                                        await zbus.publish({
+                                            "topic": "RESPONSE_COMPLETE",
+                                            "session_id": session_id,
+                                            "payload": {"content": response}
+                                        })
+                                except Exception as llm_e:
+                                    logging.error(f"[Orchestrator] API LLM Failed: {llm_e}")
+                                    await manager.broadcast({
+                                        "event": "bridge.error",
+                                        "topic": "API_LLM_ERROR",
+                                        "session_id": session_id,
+                                        "detail": str(llm_e)
+                                    })
+                            
+                            asyncio.create_task(handle_api_llm())
+
             except Exception as e:
                 logging.error(f"[Z-Bus Sync Error] {e}")
 
         zbus.subscribe("BRIDGE_HEARTBEAT", zbus_truth_sync_handler)
+        zbus.subscribe("BRIDGE_CONNECTED", zbus_truth_sync_handler)
         zbus.subscribe("RESPONSE_COMPLETE", zbus_truth_sync_handler)
+        zbus.subscribe("AUTH_ERROR", zbus_truth_sync_handler)
+        zbus.subscribe("SESSION_TAB_MISSING", zbus_truth_sync_handler)
+        zbus.subscribe("DOM_ERROR", zbus_truth_sync_handler)
+        zbus.subscribe("BRIDGE_ERROR", zbus_truth_sync_handler)
+        zbus.subscribe("PROMPT_DISPATCH", zbus_truth_sync_handler)
+        zbus.subscribe("prompt.dispatch", zbus_truth_sync_handler)
         logging.info("Z-Bus Truth Layer Sync subscribers registered.")
         
     except ImportError:
@@ -267,6 +353,18 @@ try:
     logging.info("Mounted Evo API v1 Session Router (/v1/sessions, /v1/providers)")
 except ImportError as e:
     logging.warning(f"Could not load session router: {e}")
+
+# ─────────────────────────────────────────
+#  Mount Workspace API Router (Phase 4)
+# ─────────────────────────────────────────
+try:
+    from beta_pyramid_functional.B5_AgentTools.workspace_api import router as workspace_router
+    app.include_router(workspace_router)
+    logging.info("Mounted Workspace API Router (/v1/workspace) - EXPLICIT")
+except ImportError as e:
+    logging.warning(f"Could not load workspace router: {e}")
+except Exception as e:
+    logging.error(f"Error mounting workspace router: {e}")
 
 
 
@@ -582,37 +680,67 @@ class PromptRequest(BaseModel):
 @app.post("/v1/prompt")
 async def trigger_prompt(req: PromptRequest):
     """Evo API v1: Unified prompt routing dispatch."""
-    import uuid
     try:
         from zbus import zbus
     except ImportError:
         return {"status": "error", "message": "Z-Bus not available"}
-        
+
     task_id = str(uuid.uuid4())
-    
-    # Broadcast to requested sessions
+    dispatched: list[str] = []
+    errors: list[str] = []
+
     for sid in req.session_ids:
         try:
-            from beta_pyramid_functional.B3_SessionRegistry.session_api import SessionRegistry
+            from beta_pyramid_functional.B3_SessionRegistry.session_models import SessionRegistry, MessageCreateRequest
             session = SessionRegistry.get(sid)
-            provider = session.provider if session else "unknown"
-            url = session.external_url if session and hasattr(session, "external_url") else ""
-            
+            if not session:
+                errors.append(f"{sid}: session not found")
+                continue
+
+            # ① Prep Prompt (Quantum Mode Wrap)
+            final_prompt = req.prompt
+            if req.routing == "quantum":
+                final_prompt = (
+                    "*** QUANTUM SCENARIO PROTOCOL ACTIVATED ***\n"
+                    "You must execute the following task by generating 3 distinct approaches (branches).\n"
+                    "For each branch, provide the solution and rate its Risk, Coherence, and Latency.\n"
+                    "Finally, act as the EvoGenesis Overseer: synthesize the best elements from the 3 branches "
+                    "into one final, definitive answer.\n\n"
+                    f"TASK: {req.prompt}"
+                )
+
+            # ② Save the user prompt to session memory BEFORE dispatching
+            #    so both sides of the conversation are always recorded.
+            SessionRegistry.add_message(
+                sid,
+                MessageCreateRequest(role="user", content=final_prompt)
+            )
+            logging.info(f"[Memory] Saved user prompt → session {sid}")
+
+            provider = session.provider
+            external_url = str(session.external_url or "").strip()
+
+            # ③ Dispatch to Z-Bus, passing external_url so bridge can bind the tab
             await zbus.dispatch_llm_task(
                 task_id=task_id,
                 session_id=sid,
                 provider=provider,
-                prompt=req.prompt,
-                target_url=url or ""
+                prompt=final_prompt,
+                target_url=external_url,
+                routing=req.routing
             )
+            dispatched.append(sid)
+
         except Exception as e:
-            logging.error(f"Failed to dispatch prompt for session {sid}: {e}")
-            
+            logging.error(f"[Prompt Dispatch] Failed for session {sid}: {e}")
+            errors.append(f"{sid}: {e}")
+
     return {
-        "status": "dispatched",
+        "status": "dispatched" if dispatched else "error",
         "task_id": task_id,
         "routing": req.routing,
-        "sessions": req.session_ids
+        "dispatched": dispatched,
+        "errors": errors,
     }
 
 @app.websocket("/ws")

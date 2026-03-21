@@ -488,7 +488,8 @@ class AgentOrchestrator:
 
         except Exception as e:
             state_summary = f"State insight error: {e}"
-
+        
+        workspace_info = "Workspace explorer active. Use 'REQUEST_FILE: <path>' if you need code context."
         ctx = ""
         is_genesis = session.node_id and session.node_id.startswith("gen-")
         if is_genesis:
@@ -508,10 +509,12 @@ class AgentOrchestrator:
                 f"ACTUAL SYSTEM STATE:\n{state_summary}\n"
                 f"PROJECT RECOLLECTION: {memory_context}\n"
                 f"Task Context: {session.task_context or 'General assistance.'}.\n"
+                f"WORKSPACE TOOLS: {workspace_info}\n"
                 "CRITICAL DIRECTIVES:\n"
                 "1. If asked about system health, memory size, or connected nodes, respond EXCLUSIVELY using the LIVE TELEMETRY numbers provided above.\n"
                 "2. Do NOT invent capabilities or guess statuses. If a metric says UNKNOWN, state that it is unknown.\n"
-                "3. Keep responses professional, factual, and deeply rooted in the actual state."
+                "3. If you need to see a file, conclude your thought with 'REQUEST_FILE: <path>'. The system will provide it in the next cycle.\n"
+                "4. Keep responses professional, factual, and deeply rooted in the actual state."
             )
         
         # Log context for debugging
