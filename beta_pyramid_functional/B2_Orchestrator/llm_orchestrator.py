@@ -602,6 +602,60 @@ class AgentOrchestrator:
         return await asyncio.to_thread(AgentOrchestrator._send_ollama_sync, model_name, messages)
 
     @staticmethod
+    async def _send_anthropic(session: AgentSession, system_ctx: str) -> str:
+        """Direct Anthropic API. Requires ANTHROPIC_API_KEY env var."""
+        api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
+        if not api_key:
+            raise RuntimeError(
+                "ANTHROPIC_API_KEY not set. Add it to your .env or environment variables."
+            )
+
+        model_name = (
+            os.getenv("ANTHROPIC_MODEL", "").strip() or
+            getattr(session, "model_hint", None) or
+            "claude-sonnet-4-20250514"
+        )
+
+        history_messages: List[dict] = []
+        for msg in session.messages[:-1]:
+            if msg.role.value in ("user", "assistant"):
+                history_messages.append({"role": msg.role.value, "content": msg.content})
+
+        last_content = session.messages[-1].content if session.messages else ""
+
+        payload = {
+            "model": model_name,
+            "max_tokens": 4096,
+            "system": system_ctx,
+            "messages": history_messages + [{"role": "user", "content": last_content}]
+        }
+
+        def _call():
+            import urllib.request, urllib.error
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                "https://api.anthropic.com/v1/messages",
+                data=data,
+                headers={
+                    "Content-Type": "application/json",
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01",
+                }
+            )
+            try:
+                with urllib.request.urlopen(req, timeout=120) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
+                    blocks = result.get("content", [])
+                    return "".join(b.get("text", "") for b in blocks if b.get("type") == "text")
+            except urllib.error.HTTPError as e:
+                body = e.read().decode("utf-8", errors="replace")
+                raise RuntimeError(f"Anthropic API HTTP {e.code}: {body}")
+
+        response = await asyncio.to_thread(_call)
+        logger.info(f"[Anthropic] {model_name} → {len(response)} chars for session {session.id}")
+        return response
+
+    @staticmethod
     async def get_response(session: AgentSession) -> Optional[str]:
         global _GEMINI_QUOTA_BLOCK_UNTIL, _GEMINI_QUOTA_BLOCK_REASON
 
@@ -619,8 +673,12 @@ class AgentOrchestrator:
             logger.info(f"Ollama Supervisor (Z{session.node_z}) analysis: {analysis.get('prepared_prompt', 'None')[:50]}...")
 
             response_text = ""
-            
-            if provider == Provider.OLLAMA:
+
+            if provider == Provider.CLAUDE or session.provider == Provider.CLAUDE:
+                # ─── DIRECT ANTHROPIC API PATH ────────────────────────────
+                response_text = await AgentOrchestrator._send_anthropic(session, system_ctx)
+
+            elif provider == Provider.OLLAMA:
                 # LOCAL OLLAMA PATH
                 model_hint = session.model_hint if session.provider == Provider.OLLAMA else "llama3.2:3b"
                 model_name = await _resolve_ollama_model(model_hint)

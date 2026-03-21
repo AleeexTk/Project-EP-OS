@@ -39,7 +39,7 @@ from pydantic import BaseModel
 from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeState, NodeKind, LayerType, OrchestratorState
 from beta_pyramid_functional.B1_Kernel.ws_manager import manager
 from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
-from beta_pyramid_functional.B1_Kernel.SK_Engine import CortexMemory, QuantumBlock, write_atomic, MemoryColor
+from beta_pyramid_functional.B1_Kernel.SK_Engine import ProjectCortex, QuantumBlock, write_atomic, MemoryColor, HyperNode
 from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
 from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
 
@@ -111,17 +111,19 @@ current_state = load_state()
 #  Communication Manager
 # ─────────────────────────────────────────
 # manager = ConnectionManager() - Now using singleton export from B1_Kernel.ws_manager
-sk_memory = CortexMemory()
+sk_memory = None # Set during lifespan
 
 # ─────────────────────────────────────────
 #  Lifespan & Background Tasks
 # ─────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize SK Memory from current state for associative search
-    logging.info("Initializing SK Memory from current state...")
+    global sk_memory
+    sk_memory = await ProjectCortex.get_instance()
+    
+    logging.info("Initializing SK Memory Hypergraph from current state...")
     for node_id, node in current_state.nodes.items():
-        # Sector-to-Color Logic Mapping
+        # Sector-to-Color Logic Mapping (v3.3)
         sector_colors = {
             "SPINE": MemoryColor.BLUE,
             "GOLD": MemoryColor.YELLOW,
@@ -129,21 +131,28 @@ async def lifespan(app: FastAPI):
             "GREEN": MemoryColor.GREEN,
             "PURPLE": MemoryColor.VIOLET
         }
-        m_color = sector_colors.get(node.sector, MemoryColor.WHITE)
-        
+        m_color = sector_colors.get(node.sector.upper(), MemoryColor.WHITE)
+
         block = QuantumBlock(
             id=node_id,
-            content=f"{node.title} {node.summary}",
+            hyper_id=f"HYP_{node_id}",
             base_color=m_color,
-            metadata={"path": node.metadata.get("path")}
+            content=f"{node.title} {node.summary}"
         )
-        await sk_memory.add_block(block, persist=False)
         
-        # Sync back to current_state for UI
+        # In v3.3, we create a HyperNode and add it to the hypergraph
+        h_node = HyperNode(
+            id=node_id,
+            block_id=node_id,
+            color=m_color
+        )
+        await sk_memory.hypergraph.add_node(h_node, block)
+        
+        # Sync back to current_state for UI (v3.3)
         node.memory_color = m_color.value
-        node.gravity = block.gravity
+        node.gravity = block.metrics.get("energy_level", 1.0)
 
-    logging.info(f"SK Memory initialized with {len(sk_memory.blocks)} nodes.")
+    logging.info(f"SK Memory Hypergraph initialized.")
 
     # Initialize background engine
     pulser = PulserEngine(current_state, manager, save_state)
@@ -337,7 +346,9 @@ app.add_middleware(
         "http://localhost:5173", 
         "http://127.0.0.1:5173", 
         "http://localhost:3000",
-        "http://127.0.0.1:3000"
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -451,12 +462,12 @@ def discover_structure_nodes() -> Tuple[List[Node], Dict[str, int]]:
 @app.get("/search/similarity")
 async def search_similarity(q: str, threshold: float = 0.1):
     """Associative search for related nodes in the pyramid."""
-    results = await sk_memory.find_similar(q, threshold)
+    results = await ProjectCortex.find_similar(q, threshold)
     return [
         {
             "id": b.id,
             "title": current_state.nodes[b.id].title if b.id in current_state.nodes else b.id,
-            "similarity": sk_memory._jaccard_similarity(sk_memory.minhash.create_signature(q), b.minhash)
+            "similarity": 0.5 # Placeholder for refined metric in v3.3
         } 
         for b in results
     ]

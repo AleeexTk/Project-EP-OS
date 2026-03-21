@@ -9,6 +9,7 @@ import ObserverBanner from './components/ObserverBanner';
 import NodeInspector from './components/NodeInspector';
 import SwarmTerminalPanel from './components/SwarmTerminalPanel';
 import ZBusAlert from './components/ZBusAlert';
+import PyramidScene from './components/PyramidScene';
 
 import { CORE_API_BASE } from './lib/config';
 import { EvoNode } from './lib/evo';
@@ -16,7 +17,7 @@ import { useSwarmTerminal } from './lib/useSwarmTerminal';
 import { usePyramidState } from './lib/usePyramidState';
 import { AgentSession, useSessionRegistry } from './lib/useSessionRegistry';
 
-type TabId = 'core' | 'genesis' | 'table';
+type TabId = 'core' | 'nexus' | 'genesis' | 'table';
 type ViewMode = 'structure' | 'directory' | 'active' | 'collaboration' | 'canon';
 
 const PROVIDER_COLORS: Record<string, string> = {
@@ -170,8 +171,6 @@ function App() {
     }
   }, [activeSessionId, sessions]);
 
-  // Genesis sync effect removed. Nodes are now unified in backend state.
-
   useEffect(() => {
     if (!notice) {
       return;
@@ -191,8 +190,6 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [latestZBusEvent]);
-
-
 
   const handleSessionCreated = (sessionId: string) => {
     setActiveSessionId(sessionId);
@@ -282,7 +279,7 @@ function App() {
           <div className="flex items-center gap-2 md:gap-3">
             <KernelMonitor />
             
-            {/* V11 Metrics Widget */}
+            {/* Universal LLM Metrics Widget */}
             {(healthPct !== null || memoryBlocks > 0) && (
               <div className="hidden md:flex items-center gap-3 text-[10px] px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] backdrop-blur">
                 {healthPct !== null && (
@@ -343,6 +340,16 @@ function App() {
           </button>
           <button
             onClick={() => {
+              setActiveTab('nexus');
+              setSelectedNodeId(null);
+            }}
+            className={`px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1.5 ${activeTab === 'nexus' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+          >
+            <Radar className="w-3.5 h-3.5" />
+            Nexus
+          </button>
+          <button
+            onClick={() => {
               setActiveTab('table');
               setSelectedNodeId(null);
             }}
@@ -366,6 +373,14 @@ function App() {
           <div className="h-full pt-24 pb-6 px-3 md:px-6">
             <ArchitectTable nodes={nodes} onSelectNode={(node) => setSelectedNodeId(node.id)} />
           </div>
+        ) : activeTab === 'nexus' ? (
+          <div className="h-full relative">
+            <PyramidScene
+              nodes={nodes}
+              selectedNodeId={selectedNodeId}
+              onSelectNode={setSelectedNodeId}
+            />
+          </div>
         ) : (
           <div className="h-full">
             <EvoPyramid
@@ -380,7 +395,7 @@ function App() {
           </div>
         )}
 
-        {activeTab !== 'table' && (
+        {activeTab !== 'table' && activeTab !== 'nexus' && (
           <>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center gap-3 p-2 rounded-xl bg-black/30 border border-white/10 backdrop-blur">
               <input
