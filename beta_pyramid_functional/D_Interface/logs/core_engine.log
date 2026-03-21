@@ -3245,3 +3245,16 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-03-21 17:20:45,842 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
 2026-03-21 17:20:45,843 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
 2026-03-21 17:20:45,845 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-21 17:21:04,479 [ERROR] Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Users\Alex Bear\AppData\Roaming\uv\python\cpython-3.14.2-windows-x86_64-none\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Alex Bear\AppData\Roaming\uv\python\cpython-3.14.2-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2026-03-21 17:21:05,071 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-21 17:21:05,072 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-21 17:21:05,078 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
