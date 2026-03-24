@@ -1,5 +1,6 @@
 import logging
 import asyncio
+import json
 from typing import Callable, Awaitable
 from pathlib import Path
 
@@ -14,6 +15,8 @@ class PulserEngine:
         self.save_state = save_state_func
         self.is_running = False
         self.tasks = []
+        self.violation_count = 0
+        self.total_attempts = 0 # This would ideally come from the manager
 
     async def anchor_pulse(self):
         """Background task to sync physical reality with visual state."""
@@ -32,13 +35,38 @@ class PulserEngine:
                         changed = True
                 
                 if changed:
-                    await self.manager.broadcast({"type": "STATE_UPDATE", "state": self.state.model_dump()})
+                    # Inject compliance metrics into the broadcast
+                    compliance = self._calculate_compliance()
+                    await self.manager.broadcast({
+                        "type": "STATE_UPDATE", 
+                        "state": self.state.model_dump(),
+                        "metrics": {
+                            "compliance_score": compliance,
+                            "resilience_index": max(0.0, 1.0 - (self.violation_count * 0.1))
+                        }
+                    })
                     self.save_state(self.state)
                     
             except Exception as e:
                 logging.error(f"[PULSER] Anchor Pulse Error: {e}")
             
             await asyncio.sleep(10)
+
+    def _calculate_compliance(self) -> float:
+        """Reads the violation log and calculates a score."""
+        log_path = Path(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS\gamma_pyramid_reflective\B_Evo_Log\violations.json")
+        try:
+            if log_path.exists():
+                with open(log_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.violation_count = len(data)
+            
+            # Simple scoring: Starts at 1.0, drops 0.05 per violation
+            score = max(0.0, 1.0 - (self.violation_count * 0.05))
+            return round(score, 2)
+        except Exception as e:
+            logging.error(f"[PULSER] Compliance Calc Error: {e}")
+            return 1.0
 
     async def self_heal_pulse(self):
         """Background task for structural self-healing."""

@@ -14,6 +14,11 @@ class SystemPolicyManager:
     def __init__(self, default_policy: Optional[SystemPolicy] = None):
         self.policy = default_policy or SystemPolicy()
         self.audit_log: List[Dict[str, Any]] = []
+        self.reporting_hooks: List[Callable[[Dict[str, Any]], None]] = []
+
+    def register_reporter(self, hook: Callable[[Dict[str, Any]], None]):
+        """Registers a callback for security/architectural violations."""
+        self.reporting_hooks.append(hook)
 
     def validate_action(self, envelope: TaskEnvelope) -> bool:
         """
@@ -59,9 +64,20 @@ class SystemPolicyManager:
         return True
 
     def _log_violation(self, envelope: TaskEnvelope):
-        self.audit_log.append({
+        violation_event = {
             "task_id": envelope.task_id,
             "action": envelope.action,
             "error": envelope.metadata.get("error"),
-            "timestamp": envelope.timestamp.isoformat()
-        })
+            "timestamp": envelope.timestamp.isoformat(),
+            "source": envelope.source_node,
+            "target": envelope.target_node,
+            "origin_z": envelope.origin_z
+        }
+        self.audit_log.append(violation_event)
+        
+        # Trigger external reporters (Reflective Layer)
+        for hook in self.reporting_hooks:
+            try:
+                hook(violation_event)
+            except Exception as e:
+                print(f"[POLICY_MANAGER] Error in reporting hook: {e}")

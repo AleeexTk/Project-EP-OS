@@ -1,0 +1,11 @@
+[
+  {
+    "task_id": "5b7279d3-2164-49c8-a9e3-6dbffa604d5e",
+    "action": "manifest_node",
+    "error": "Z-Violation: Node at Z5 cannot manifest Z15 (High-Pyramid).",
+    "timestamp": "2026-03-24T23:43:39.986584+00:00",
+    "source": "test_node_z5",
+    "target": "system",
+    "origin_z": 5
+  }
+]
