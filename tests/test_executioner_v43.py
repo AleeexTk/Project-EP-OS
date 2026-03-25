@@ -6,7 +6,8 @@ import unittest
 import shutil
 from pathlib import Path
 
-os.chdir(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+os.chdir(str(PROJECT_ROOT))
 sys.path.append(str(Path("gamma_pyramid_reflective/A_Pulse")))
 sys.path.append(str(Path("beta_pyramid_functional/B2_Orchestrator")))
 

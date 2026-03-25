@@ -6,7 +6,8 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 # Add paths to sys.path for imports
-os.chdir(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+os.chdir(str(PROJECT_ROOT))
 sys.path.append(str(Path("beta_pyramid_functional/B1_Kernel")))
 sys.path.append(str(Path("gamma_pyramid_reflective/SPINE/2_INTEGRITY_OBSERVER")))
 sys.path.append(str(Path("gamma_pyramid_reflective/A_Pulse")))
@@ -18,7 +19,7 @@ from pulser import PulserEngine
 
 class TestDiscipline(unittest.TestCase):
     def setUp(self):
-        self.log_dir = Path(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS\gamma_pyramid_reflective\B_Evo_Log")
+        self.log_dir = PROJECT_ROOT / "gamma_pyramid_reflective" / "B_Evo_Log"
         self.violation_file = self.log_dir / "violations.json"
         
         # Clear previous logs if they exist for clean test
