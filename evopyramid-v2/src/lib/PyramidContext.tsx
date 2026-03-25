@@ -84,6 +84,8 @@ interface PyramidStateContextType {
   isConnected: boolean;
   latestZBusEvent: any;
   systemMetrics: any;
+  repairHistory: any[];
+  fetchRepairHistory: () => Promise<void>;
 }
 
 const PyramidContext = createContext<PyramidStateContextType | undefined>(undefined);
@@ -93,7 +95,15 @@ export function PyramidProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [latestZBusEvent, setLatestZBusEvent] = useState<any>(null);
   const [systemMetrics, setSystemMetrics] = useState<any>(null);
+  const [repairHistory, setRepairHistory] = useState<any[]>([]);
   const backendNodesRef = useRef<Record<string, any>>({});
+
+  const fetchRepairHistory = async () => {
+    try {
+      const res = await fetch(`${CORE_WS_URL.replace('ws://', 'http://').replace('/ws', '')}/policy/repairs`);
+      if (res.ok) setRepairHistory(await res.json());
+    } catch (e) { console.error('Failed to fetch repairs', e); }
+  };
 
   useEffect(() => {
     let socket: WebSocket | null = null;
@@ -150,7 +160,7 @@ export function PyramidProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <PyramidContext.Provider value={{ nodes, isConnected, latestZBusEvent, systemMetrics }}>
+    <PyramidContext.Provider value={{ nodes, isConnected, latestZBusEvent, systemMetrics, repairHistory, fetchRepairHistory }}>
       {children}
     </PyramidContext.Provider>
   );

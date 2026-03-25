@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldAlert, Gavel, History, Trash2, CheckCircle2, XCircle } from 'lucide-react';
+import { ShieldAlert, Gavel, History, Trash2, CheckCircle2, XCircle, Bot, Wrench } from 'lucide-react';
 import { CORE_API_BASE } from '../../lib/config';
 
 interface AuditEvent {
@@ -25,19 +25,23 @@ const AmnestyPanel: React.FC = () => {
   const [quarantinedNodes, setQuarantinedNodes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [amnestyReason, setAmnestyReason] = useState('Manual Review: Structural Integrity Verified');
+  const [activeSubTab, setActiveSubTab] = useState<'violations' | 'amnesty' | 'repairs'>('violations');
+  const [repairHistory, setRepairHistory] = useState<any[]>([]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [auditRes, amnestyRes, quarantineRes] = await Promise.all([
+      const [auditRes, amnestyRes, quarantineRes, repairRes] = await Promise.all([
         fetch(`${CORE_API_BASE}/policy/audit`),
         fetch(`${CORE_API_BASE}/policy/amnesty`),
-        fetch(`${CORE_API_BASE}/policy/quarantine`)
+        fetch(`${CORE_API_BASE}/policy/quarantine`),
+        fetch(`${CORE_API_BASE}/policy/repairs`)
       ]);
       
       setAuditLog(await auditRes.json());
       setAmnestyJournal(await amnestyRes.json());
       setQuarantinedNodes(await quarantineRes.json());
+      setRepairHistory(await repairRes.json());
     } catch (err) {
       console.error('Failed to fetch security data:', err);
     } finally {
@@ -139,9 +143,17 @@ const AmnestyPanel: React.FC = () => {
           </div>
 
           <div className="mt-2">
-            <label className="text-[9px] text-slate-500 uppercase font-bold mb-1 block px-1">Amnesty Rationale</label>
+            <label 
+              htmlFor="amnesty-rationale"
+              className="text-[9px] text-slate-500 uppercase font-bold mb-1 block px-1"
+            >
+              Amnesty Rationale
+            </label>
             <input 
+              id="amnesty-rationale"
               type="text"
+              placeholder="Enter reason for amnesty..."
+              title="Amnesty Rationale"
               value={amnestyReason}
               onChange={(e) => setAmnestyReason(e.target.value)}
               className="w-full bg-black/40 border border-white/10 focus:border-emerald-500/50 rounded-lg px-3 py-2 text-xs text-white outline-none transition-all font-mono"
@@ -152,20 +164,33 @@ const AmnestyPanel: React.FC = () => {
         {/* Right Column: Audit/History Tabs */}
         <div className="flex flex-col space-y-4 min-h-0 overflow-hidden">
           <div className="flex items-center gap-4 border-b border-white/10 pb-1">
-            <button className="text-[10px] font-bold text-blue-400 border-b-2 border-blue-500 pb-2 px-1 tracking-widest uppercase flex items-center gap-2">
-              <History className="w-3 h-3" />
+            <button 
+              onClick={() => setActiveSubTab('violations')}
+              className={`text-[10px] font-bold pb-2 px-1 tracking-widest uppercase flex items-center gap-2 transition-all ${activeSubTab === 'violations' ? 'text-blue-400 border-b-2 border-blue-500' : 'text-slate-500 hover:text-slate-300 border-b-2 border-transparent'}`}
+            >
+              <History className="w-3.5 h-3.5" />
               Violation Audit
             </button>
-            <button className="text-[10px] font-bold text-slate-500 pb-2 px-1 tracking-widest uppercase hover:text-emerald-400 transition-colors flex items-center gap-2">
-              <History className="w-3 h-3" />
+            <button 
+              onClick={() => setActiveSubTab('amnesty')}
+              className={`text-[10px] font-bold pb-2 px-1 tracking-widest uppercase flex items-center gap-2 transition-all ${activeSubTab === 'amnesty' ? 'text-emerald-400 border-b-2 border-emerald-500' : 'text-slate-500 hover:text-slate-300 border-b-2 border-transparent'}`}
+            >
+              <History className="w-3.5 h-3.5" />
               Amnesty History
+            </button>
+            <button 
+              onClick={() => setActiveSubTab('repairs')}
+              className={`text-[10px] font-bold pb-2 px-1 tracking-widest uppercase flex items-center gap-2 transition-all ${activeSubTab === 'repairs' ? 'text-amber-400 border-b-2 border-amber-500' : 'text-slate-500 hover:text-slate-300 border-b-2 border-transparent'}`}
+            >
+              <Wrench className="w-3.5 h-3.5" />
+              Repair History
             </button>
           </div>
 
           {/* Combined Scrollable List */}
           <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
-             {auditLog.slice().reverse().map((event, idx) => (
-               <div key={idx} className="p-3 bg-white/5 border border-white/10 rounded-lg text-xs group hover:bg-white/10 transition-all">
+             {activeSubTab === 'violations' && auditLog.slice().reverse().map((event, idx) => (
+               <div key={idx} className="p-3 bg-white/5 border border-white/10 rounded-lg text-xs group hover:bg-white/10 transition-all animate-in fade-in slide-in-from-right-2 duration-300">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-mono text-slate-500">{new Date(event.timestamp).toLocaleString()}</span>
                     <span className="px-1.5 py-0.5 bg-rose-500/10 text-rose-400 text-[9px] font-bold rounded uppercase border border-rose-500/20">{event.action}</span>
@@ -177,8 +202,8 @@ const AmnestyPanel: React.FC = () => {
                </div>
              ))}
 
-             {amnestyJournal.slice().reverse().map((record, idx) => (
-               <div key={`amnesty-${idx}`} className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg text-xs group">
+             {activeSubTab === 'amnesty' && amnestyJournal.slice().reverse().map((record, idx) => (
+               <div key={`amnesty-${idx}`} className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg text-xs group animate-in fade-in slide-in-from-right-2 duration-300">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-mono text-slate-500">{new Date(record.timestamp).toLocaleString()}</span>
                     <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[9px] font-bold rounded uppercase border border-emerald-500/30">AMNESTY</span>
@@ -189,6 +214,27 @@ const AmnestyPanel: React.FC = () => {
                     {record.reason}
                   </div>
                   <div className="text-slate-500 text-[9px] mt-1 italic text-right">Auth: {record.actor}</div>
+               </div>
+             ))}
+
+             {activeSubTab === 'repairs' && repairHistory.slice().reverse().map((repair, idx) => (
+               <div key={`repair-${idx}`} className="p-3 bg-amber-500/5 border border-amber-500/20 rounded-lg text-xs group animate-in fade-in slide-in-from-right-2 duration-300">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-mono text-slate-500">{new Date(repair.timestamp).toLocaleString()}</span>
+                    <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[9px] font-bold rounded uppercase border border-amber-500/30">REPAIR</span>
+                  </div>
+                  <div className="text-white font-mono mb-1">Target: <span className="text-amber-400">{repair.node_id}</span></div>
+                  <div className="text-slate-400 text-[10px] mb-2">
+                    <span className="text-slate-500 uppercase font-bold text-[9px]">Diagnosis: </span>
+                    {repair.reason}
+                  </div>
+                  <div className="p-2 bg-black/40 rounded border border-white/5 font-mono text-[9px] text-amber-200/70 whitespace-pre-wrap truncate max-h-20 overflow-hidden">
+                    {repair.repaired_payload}
+                  </div>
+                  <div className="text-slate-500 text-[9px] mt-1 italic text-right flex items-center justify-end gap-1">
+                    <Bot className="w-2.5 h-2.5 text-amber-500/50" />
+                    Z14-Cortex ({repair.provider})
+                  </div>
                </div>
              ))}
           </div>

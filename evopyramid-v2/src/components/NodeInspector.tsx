@@ -54,7 +54,15 @@ export default function NodeInspector({
     <section className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-lg rounded-2xl bg-slate-900/90 border border-white/10 backdrop-blur p-4 shadow-2xl">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="font-semibold text-sm">{node.label}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-semibold text-sm">{node.label}</h2>
+            {!!node.metadata?.repaired && (
+              <span className="px-1.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/30 text-[9px] font-bold text-blue-400 flex items-center gap-1 animate-pulse">
+                <Wrench className="w-2.5 h-2.5" />
+                REPAIRED
+              </span>
+            )}
+          </div>
           <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{node.description ?? 'No summary'}</p>
         </div>
         <button

@@ -196,6 +196,7 @@ class SystemPolicyManager:
                                 envelope.status = TaskStatus.PENDING
                                 if "error" in envelope.metadata:
                                     del envelope.metadata["error"]
+                                envelope.metadata["repaired"] = True
                                 logging.info(f"[POLICY_MANAGER] Z14 Auto-Corrector resurrected the task successfully.")
                                 return True
                         except Exception as e:

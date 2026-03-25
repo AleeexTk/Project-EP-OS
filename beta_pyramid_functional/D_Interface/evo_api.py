@@ -716,6 +716,17 @@ async def grant_amnesty(req: AmnestyRequest):
 async def get_amnesty_journal():
     return SystemPolicyManager.amnesty_journal
 
+@app.get("/policy/repairs")
+async def get_repair_history():
+    # Dynamically import to avoid circular dependency if any, 
+    # though RepairJournal is in alpha_pyramid_core
+    try:
+        from alpha_pyramid_core.SPINE.14_AUTO_CORRECTOR.auto_corrector import RepairJournal
+        RepairJournal._ensure_initialized()
+        return RepairJournal.repair_history
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 
 @app.post("/link")
 async def add_link(link: Link):
