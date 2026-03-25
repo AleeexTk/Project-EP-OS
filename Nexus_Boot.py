@@ -100,13 +100,13 @@ def main():
             if os.name == 'nt':
                 # Open in a new visible console window, no stdout redirection
                 proc = subprocess.Popen(cmd, cwd=cwd, shell=True, creationflags=subprocess.CREATE_NEW_CONSOLE)
-                procs.append((name, proc, None, None))
+                procs.append({"name": name, "proc": proc, "cmd": cmd, "cwd": cwd, "out_f": None, "err_f": None, "restarts": 0, "last_restart": 0})
             else:
                 slug = name.lower().replace(" ", "_")
                 out_log = open(root_dir / "state" / f"{slug}_stdout.log", "w")
                 err_log = open(root_dir / "state" / f"{slug}_stderr.log", "w")
                 proc = subprocess.Popen(cmd, cwd=cwd, shell=True, stdout=out_log, stderr=err_log)
-                procs.append((name, proc, out_log, err_log))
+                procs.append({"name": name, "proc": proc, "cmd": cmd, "cwd": cwd, "out_f": out_log, "err_f": err_log, "restarts": 0, "last_restart": 0})
                 
             time.sleep(1) # Stagger boot
         except Exception as e:
@@ -122,19 +122,51 @@ def main():
     
     try:
         while True:
-            for name, p, out_f, err_f in procs:
+            for p_info in procs:
+                p = p_info["proc"]
                 if p.poll() is not None:
-                    log_status(f"Cluster failure: {name} died!", "ERROR")
+                    name = p_info["name"]
+                    now = time.time()
+                    
+                    if now - p_info["last_restart"] < 10:
+                        log_status(f"Cluster {name} died! Crash loop detected. Waiting 10s before auto-restart...", "WARN")
+                        time.sleep(10 - (now - p_info["last_restart"]))
+                    
+                    log_status(f"Cluster failure: {name} died! Attempting auto-restart...", "ERROR")
+                    
+                    if p_info["out_f"]: p_info["out_f"].close()
+                    if p_info["err_f"]: p_info["err_f"].close()
+                    
+                    slug = name.lower().replace(" ", "_")
+                    try:
+                        if os.name == 'nt':
+                            new_proc = subprocess.Popen(p_info["cmd"], cwd=p_info["cwd"], shell=True, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                            p_info["proc"] = new_proc
+                        else:
+                            out_log = open(root_dir / "state" / f"{slug}_stdout.log", "a")
+                            err_log = open(root_dir / "state" / f"{slug}_stderr.log", "a")
+                            new_proc = subprocess.Popen(p_info["cmd"], cwd=p_info["cwd"], shell=True, stdout=out_log, stderr=err_log)
+                            p_info["proc"] = new_proc
+                            p_info["out_f"] = out_log
+                            p_info["err_f"] = err_log
+                            
+                        p_info["restarts"] += 1
+                        p_info["last_restart"] = time.time()
+                        log_status(f"{name} successfully restarted (Restart count: {p_info['restarts']}).", "SUCCESS")
+                    except Exception as e:
+                        log_status(f"Failed to restart {name}: {e}", "ERROR")
+                        
             time.sleep(5)
     except KeyboardInterrupt:
         print(f"\n{BColors.WARNING}[NEXUS] TEAR-DOWN INITIATED...{BColors.ENDC}")
-        for name, p, out_f, err_f in procs:
+        for p_info in procs:
+            p = p_info["proc"]
             if os.name == 'nt':
                 subprocess.run(f"taskkill /F /T /PID {p.pid}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             else:
                 p.terminate()
-            if out_f: out_f.close()
-            if err_f: err_f.close()
+            if p_info["out_f"]: p_info["out_f"].close()
+            if p_info["err_f"]: p_info["err_f"].close()
         log_status("All nodes secured.", "SUCCESS")
 
 if __name__ == "__main__":

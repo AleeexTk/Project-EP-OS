@@ -12,6 +12,15 @@ class TaskStatus(str, Enum):
     FAILED = "failed"
     CANCELLED = "cancelled"
 
+class CascadeStatus(str, Enum):
+    """Status of the Inter-level Z-Pair Cascading Validation."""
+    PENDING = "PENDING"
+    ACTIVE = "ACTIVE"
+    PASSED = "PASSED"
+    BLOCKED = "BLOCKED"
+    DEGRADED = "DEGRADED"
+    CRYSTALLIZED = "CRYSTALLIZED"
+
 class TaskEnvelope(BaseModel):
     """The formal spine-kernel message contract for EvoPyramid OS."""
     task_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -21,6 +30,7 @@ class TaskEnvelope(BaseModel):
     action: str
     payload: Dict[str, Any] = Field(default_factory=dict)
     status: TaskStatus = TaskStatus.PENDING
+    cascade_status: Optional[CascadeStatus] = None
     origin_z: int = 1   # Z-level of the source node
     metadata: Dict[str, Any] = Field(default_factory=dict)
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))

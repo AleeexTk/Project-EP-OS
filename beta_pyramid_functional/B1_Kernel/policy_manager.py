@@ -60,6 +60,20 @@ class SystemPolicyManager:
             self._log_violation(envelope)
             return False
 
+        # 4. Z-Cascade Protocol (Descending Meaning Check)
+        if envelope.action in ["manifest_node", "sync_structure", "execute_mission"] and envelope.origin_z > 5:
+            target_z = envelope.payload.get("target_z", envelope.payload.get("z_level", envelope.origin_z - 1))
+            if envelope.origin_z > target_z:
+                try:
+                    from .z_cascade import CascadeValidator
+                except ImportError:
+                    from z_cascade import CascadeValidator
+                    
+                cascade_success = CascadeValidator.validate_descent(envelope, target_z)
+                if not cascade_success:
+                    self._log_violation(envelope)
+                    return False
+
         return True
 
     def _validate_z_access(self, envelope: TaskEnvelope) -> bool:

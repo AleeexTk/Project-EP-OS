@@ -28,8 +28,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gen-meta": {
       "id": "gen-meta",
@@ -61,8 +61,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "violet",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gen-bridge": {
       "id": "gen-bridge",
@@ -95,8 +95,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "red",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gen-pear": {
       "id": "gen-pear",
@@ -128,8 +128,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "yellow",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "cr_gateway": {
       "id": "cr_gateway",
@@ -162,8 +162,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gen-async-jobs": {
       "id": "gen-async-jobs",
@@ -195,8 +195,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "green",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "agent_bus": {
       "id": "agent_bus",
@@ -209,7 +209,7 @@
         "z": 8
       },
       "layer_type": "beta",
-      "kind": "module",
+      "kind": "bus",
       "summary": "Inter-agent task routing and LLM result synchronization.",
       "state": "active",
       "canon_status": "runtime",
@@ -230,8 +230,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gen-webmcp": {
       "id": "gen-webmcp",
@@ -263,8 +263,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "green",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "chaos_engine": {
       "id": "chaos_engine",
@@ -298,8 +298,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gen-dashboard": {
       "id": "gen-dashboard",
@@ -329,8 +329,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "observer_relay": {
       "id": "observer_relay",
@@ -363,8 +363,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "netlify_deploy_beacon": {
       "id": "netlify_deploy_beacon",
@@ -396,8 +396,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "yellow",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "deploy_audit_ledger": {
       "id": "deploy_audit_ledger",
@@ -429,8 +429,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "openai_docs_hub": {
       "id": "openai_docs_hub",
@@ -463,8 +463,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "violet",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gh_ci_guardian": {
       "id": "gh_ci_guardian",
@@ -497,8 +497,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "red",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "provider_router": {
       "id": "provider_router",
@@ -531,8 +531,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "red",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "policy_bus": {
       "id": "policy_bus",
@@ -565,8 +565,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "nexus_router": {
       "id": "nexus_router",
@@ -599,8 +599,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "gh_pr_resolver": {
       "id": "gh_pr_resolver",
@@ -632,8 +632,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "green",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "resolution_stream": {
       "id": "resolution_stream",
@@ -666,8 +666,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "audit_bridge": {
       "id": "audit_bridge",
@@ -700,8 +700,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "sk_engine": {
       "id": "sk_engine",
@@ -763,8 +763,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "green",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "renegade_node": {
       "id": "renegade_node",
@@ -825,8 +825,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "green",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "chatgpt_apps_bridge": {
       "id": "chatgpt_apps_bridge",
@@ -858,8 +858,8 @@
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
+      "memory_color": "white",
+      "gravity": 1.0
     },
     "workspace_tools": {
       "id": "workspace_tools",
@@ -914,13 +914,48 @@
       "links": [],
       "children": [],
       "source_refs": [],
-      "metadata": {},
+      "metadata": {
+        "source": "filesystem-discovery",
+        "path": "gamma_pyramid_reflective/SANDBOX/1_Persistence_Test_Node",
+        "layer_folder": "gamma_pyramid_reflective"
+      },
       "runtime_canon_flag": "runtime",
       "session_url": null,
       "browser_profile_dir": null,
       "orchestrator_state": "unlinked",
       "memory_color": "white",
-      "gravity": 0.5
+      "gravity": 1.0
+    },
+    "integrity_observer": {
+      "id": "integrity_observer",
+      "title": "INTEGRITY OBSERVER",
+      "z_level": 2,
+      "sector": "SPINE",
+      "coords": {
+        "x": 9,
+        "y": 9,
+        "z": 2
+      },
+      "layer_type": "beta",
+      "kind": "module",
+      "summary": "Discovered: SPINE/2_INTEGRITY_OBSERVER",
+      "state": "idle",
+      "canon_status": "runtime",
+      "artifacts": [],
+      "links": [],
+      "children": [],
+      "source_refs": [],
+      "metadata": {
+        "source": "filesystem-discovery",
+        "path": "gamma_pyramid_reflective/SPINE/2_INTEGRITY_OBSERVER",
+        "layer_folder": "gamma_pyramid_reflective"
+      },
+      "runtime_canon_flag": "runtime",
+      "session_url": null,
+      "browser_profile_dir": null,
+      "orchestrator_state": "unlinked",
+      "memory_color": "white",
+      "gravity": 1.0
     }
   },
   "links": [],

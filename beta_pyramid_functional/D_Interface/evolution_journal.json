@@ -181,6 +181,24 @@
       "action": "manifest_node",
       "result_summary": "{'path': 'C:\\\\Users\\\\Alex Bear\\\\Desktop\\\\EvoPyramid OS\\\\beta_pyramid_functional\\\\SPINE\\\\8_Agent_Bus_Z-Bus'}",
       "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1774403666739",
+      "timestamp": "2026-03-25T01:54:28.901401+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 1, 'updated': 25, 'layers': 5, 'scanned_dirs': 26, 'discovered': 26}",
+      "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1774403669619",
+      "timestamp": "2026-03-25T01:54:29.656981+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 0, 'updated': 26, 'layers': 5, 'scanned_dirs': 26, 'discovered': 26}",
+      "status": "ACCEPTED"
     }
   ]
 }

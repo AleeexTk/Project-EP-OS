@@ -5,6 +5,7 @@ Maps agent providers to API endpoints and external session URLs.
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import urlencode
@@ -80,9 +81,41 @@ PROVIDER_REGISTRY: dict[Provider, ProviderConfig] = {
 
 class ProviderMatrix:
 
+    _circuit_breakers: dict[Provider, float] = {}
+
+    @staticmethod
+    def is_available(provider: Provider) -> bool:
+        release_time = ProviderMatrix._circuit_breakers.get(provider)
+        if release_time:
+            if time.time() > release_time:
+                del ProviderMatrix._circuit_breakers[provider]
+                return True
+            return False
+        return True
+
+    @staticmethod
+    def mark_failed(provider: Provider, cooldown_seconds: int = 60):
+        ProviderMatrix._circuit_breakers[provider] = time.time() + cooldown_seconds
+
     @staticmethod
     def get_config(provider: Provider) -> ProviderConfig:
         return PROVIDER_REGISTRY[provider]
+
+    @staticmethod
+    def get_best_available(z_level: int, sector: str) -> Provider:
+        """
+        Returns the highest scoring AVAILABLE provider for the given Z-Level.
+        """
+        scores = {}
+        for provider in PROVIDER_REGISTRY:
+            if ProviderMatrix.is_available(provider):
+                scores[provider] = ProviderMatrix.score_provider(provider, z_level, sector)
+        
+        if not scores:
+            # Fallback to local if absolutely everyone is broken
+            return Provider.OLLAMA
+            
+        return max(scores, key=scores.get)
 
     @staticmethod
     def generate_session_url(
