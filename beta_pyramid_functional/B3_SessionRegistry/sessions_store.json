@@ -1060,7 +1060,7 @@
       "task_context": null,
       "status": "active",
       "created_at": "2026-03-20T09:18:49.104879+00:00",
-      "updated_at": "2026-03-25T16:04:11.457341+00:00",
+      "updated_at": "2026-03-25T16:27:04.050029+00:00",
       "messages": [
         {
           "id": "434cdeae-8e9c-4d1f-a0c6-daa318dcb6fe",
@@ -1130,6 +1130,55 @@
           "role": "assistant",
           "content": "Быстро сверю это с текущим main: посмотрю свежий коммит по AgentWorkspace и SessionLauncher, чтобы отделить уже подтверждённое в коде от того, что пока только в описании.",
           "ts": "2026-03-25T16:04:11.457322+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "0a8709fd-32f9-41d0-949c-bc220cd7fd23",
+          "role": "user",
+          "content": "Agent Workspace (Z-Bus)",
+          "ts": "2026-03-25T16:16:53.699153+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "e62a9010-ccc4-4615-9d4f-e9395953a16f",
+          "role": "user",
+          "content": "Agent Workspace (Z-Bus)",
+          "ts": "2026-03-25T16:19:30.877966+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "baf69b46-12a3-4670-a32e-e5a5afcce090",
+          "role": "assistant",
+          "content": "I’m checking what “Agent Workspace (Z-Bus)” most likely refers to so I can answer accurately. If you’re pointing to a specific project, repo, or document, I can also work from that.",
+          "ts": "2026-03-25T16:19:45.124266+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "6b90f4fe-e2cb-4717-995b-94a7ef5f4033",
+          "role": "user",
+          "content": "Agent Workspace (Z-Bus)",
+          "ts": "2026-03-25T16:23:58.671632+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "a54bb487-df98-4fa6-9af5-889bc14dce6b",
+          "role": "assistant",
+          "content": "I’m searching your connected GitHub space for repositories that match “Agent Workspace” / “Z-Bus” so I can anchor this to something concrete.",
+          "ts": "2026-03-25T16:24:28.414558+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "71e4ff10-d248-413e-8e36-d32fa5e0ddb2",
+          "role": "user",
+          "content": "Что?",
+          "ts": "2026-03-25T16:26:38.468934+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "f57af6f9-a5e4-4121-a82a-01bdb776d28e",
+          "role": "assistant",
+          "content": "Ок, объясняю по-простому, без архитектурной каши.\n\nЧто такое Agent Workspace (Z-Bus)\n\nВ твоей системе это рабочее пространство агентов, которое стоит поверх Z-Bus.\n\nРазделим:\n\n1. Z-Bus (Agent Bus)\n\nЭто шина, по которой агенты общаются:\n\nпередают задачи\n\nотправляют результаты LLM\n\nсинхронизируют состояние\n\nделают handoff задач друг другу\n\nПроще:\nZ-Bus = как нервная система / message broker для агентов.\n\nВ твоём state это прямо написано:\n\nInter-agent task routing and LLM result synchronization. \n\npyramid_state\n\n2. Agent Workspace\n\nЭто рабочая среда агента, где он может:\n\nчитать файлы\n\nписать файлы\n\nкоммитить\n\nвидеть дерево проекта\n\nзапускать задачи\n\nвидеть результаты\n\nВ твоём state:\n\nIDE-level file tools for AI agents (Tree/Read/Write/Commit). \n\npyramid_state\n\nВ итоге\n\nAgent Workspace (Z-Bus) = система из двух частей:\n\nЧасть\tЧто делает\nZ-Bus\tСообщения, задачи, синхронизация\nWorkspace\tИнструменты агента (файлы, код, действия)\nОчень коротко\n\nAgent Workspace (Z-Bus) — это среда, где агенты работают, а Z-Bus — это шина, через которую они общаются и передают задачи.\n\nЕсли ещё проще:\n\nDashboard — видишь\nWorkspace — работаешь\nZ-Bus — агенты разговаривают\nChaos Engine — решает, что делать при сбоях\n\nЕсли хочешь, дальше можем разобрать весь SPINE слой — там как раз вся «нервная система» твоей архитектуры.",
+          "ts": "2026-03-25T16:27:04.050010+00:00",
           "agent_ref": null
         }
       ],

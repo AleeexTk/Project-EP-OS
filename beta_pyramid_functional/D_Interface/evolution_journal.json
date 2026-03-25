@@ -415,6 +415,33 @@
       "action": "sync_structure",
       "result_summary": "{'status': 'ok', 'added': 0, 'updated': 28, 'layers': 5, 'scanned_dirs': 28, 'discovered': 28}",
       "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1774455515846",
+      "timestamp": "2026-03-25T16:18:40.409708+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 0, 'updated': 28, 'layers': 5, 'scanned_dirs': 28, 'discovered': 28}",
+      "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1774455748515",
+      "timestamp": "2026-03-25T16:22:33.972631+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 0, 'updated': 28, 'layers': 5, 'scanned_dirs': 28, 'discovered': 28}",
+      "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1774455769551",
+      "timestamp": "2026-03-25T16:22:51.265034+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 0, 'updated': 28, 'layers': 5, 'scanned_dirs': 28, 'discovered': 28}",
+      "status": "ACCEPTED"
     }
   ]
 }

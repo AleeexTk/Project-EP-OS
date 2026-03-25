@@ -19,6 +19,14 @@ const PROVIDER_LABELS: Record<Provider, string> = {
 
 const PROVIDER_ORDER: Provider[] = ['gemini', 'gpt', 'claude', 'copilot', 'ollama'];
 
+const PROVIDER_DOT_CLASSES: Record<string, string> = {
+  gpt: 'bg-emerald-500 shadow-emerald-500/50 text-emerald-500',
+  gemini: 'bg-blue-500 shadow-blue-500/50 text-blue-500',
+  claude: 'bg-amber-500 shadow-amber-500/50 text-amber-500',
+  copilot: 'bg-purple-500 shadow-purple-500/50 text-purple-500',
+  ollama: 'bg-indigo-500 shadow-indigo-500/50 text-indigo-500',
+};
+
 function SessionLauncher({ node, onClose, onCreated }: SessionLauncherProps) {
   const { createSession, loadProviders, providers, loading } = useSessionRegistry();
   const [provider, setProvider] = useState<Provider>('gemini');
@@ -101,7 +109,7 @@ function SessionLauncher({ node, onClose, onCreated }: SessionLauncherProps) {
                   >
                     <div className="flex flex-col items-center gap-1.5">
                       <div className="flex items-center gap-2">
-                         <span className="w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: color, color: color }} />
+                         <span className={`w-2 h-2 rounded-full shadow-[0_0_8px_currentColor] ${PROVIDER_DOT_CLASSES[id] || 'bg-slate-500 text-slate-500'}`} />
                          <span className="font-medium">{PROVIDER_LABELS[id]}</span>
                       </div>
                       <div className="flex gap-1">

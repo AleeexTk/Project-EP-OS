@@ -1,40 +1,34 @@
 # ─────────────────────────────────────────
 #  Kernel Spine Discovery
 # ─────────────────────────────────────────
-import sys
-from pathlib import Path
-ROOT_DIR = Path(__file__).resolve().parents[2]
-
-# Bootstrap kernel path
-kernel_path = str(ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel")
-if kernel_path not in sys.path:
-    sys.path.insert(0, kernel_path)
-
-if str(ROOT_DIR) not in sys.path:
-    sys.path.insert(0, str(ROOT_DIR))
-
-try:
-    from path_discovery import initialize_kernel_paths
-    initialize_kernel_paths()
-except ImportError as e:
-    import logging
-    logging.error(f"Kernel path discovery failed: {e}")
-    sys.exit(1)
-
 # Now it is safe to import from layers
+import os
+import sys
 import json
 import logging
-import os
 import re
 import asyncio
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, List, Dict, Optional, Tuple, cast
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+
+# --- [Z14 AUTO-CORRECTOR DYNAMIC INJECTION] ---
+ROOT_DIR = Path(__file__).resolve().parents[2]
+AUTO_CORRECTOR_PATH = ROOT_DIR / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR"
+
+if str(AUTO_CORRECTOR_PATH) not in sys.path:
+    sys.path.append(str(AUTO_CORRECTOR_PATH))
+
+try:
+    import auto_corrector as AC
+except ImportError:
+    AC = None
 
 from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeState, NodeKind, LayerType, OrchestratorState
 from beta_pyramid_functional.B1_Kernel.ws_manager import manager
@@ -47,8 +41,6 @@ try:
     from beta_pyramid_functional.B2_Orchestrator.manifestor import PhysicalManifestor
     from gamma_pyramid_reflective.A_Pulse.pulser import PulserEngine
 except ImportError as e:
-    # Diagnostic print
-    print(f"DEBUG: sys.path = {sys.path}")
     raise RuntimeError(f"Critical dependency import failed: {e}")
 
 # ─────────────────────────────────────────
@@ -355,14 +347,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="EvoPyramid OS Core Engine", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173", 
-        "http://127.0.0.1:5173", 
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3001"
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -718,18 +703,13 @@ async def get_amnesty_journal():
 
 @app.get("/policy/repairs")
 async def get_repair_history():
-    # Dynamically import to avoid circular dependency if any, 
-    # though RepairJournal is in alpha_pyramid_core
+    """Returns the repair history from Z14 Auto-Corrector."""
     try:
-        import sys
-        from pathlib import Path
-        PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-        z14_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR")
-        if z14_path not in sys.path:
-            sys.path.insert(0, z14_path)
-        from auto_corrector import RepairJournal
-        RepairJournal._ensure_initialized()
-        return RepairJournal.repair_history
+        if AC:
+            AC.RepairJournal._ensure_initialized()
+            return AC.RepairJournal.repair_history
+        else:
+            return {"status": "error", "message": "Z14 Auto-Corrector module not available."}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
