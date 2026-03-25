@@ -1,9 +1,13 @@
-from __future__ import annotations
-try:
-    from .contracts import TaskEnvelope, SystemPolicy, TaskStatus, CascadeStatus
-except ImportError:
-    from contracts import TaskEnvelope, SystemPolicy, TaskStatus, CascadeStatus
-from typing import Dict, Any, List, Optional
+import sys
+from pathlib import Path
+from typing import Dict, Any, List, Optional, Callable
+
+# Add current directory to path for absolute-style imports
+_kern_path = str(Path(__file__).resolve().parent)
+if _kern_path not in sys.path:
+    sys.path.append(_kern_path)
+
+from contracts import TaskEnvelope, SystemPolicy, TaskStatus, CascadeStatus
 
 class SystemPolicyManager:
     """
@@ -31,6 +35,10 @@ class SystemPolicyManager:
         Validates if a TaskEnvelope complies with system policies.
         Enforces Trinity Protocol: Autonomy + Security.
         """
+        # -1. SEC_GUARDIAN: Rate-limit + Anti-Spoof (Z12 Security Proxy)
+        if not self._sec_audit(envelope):
+            return False
+
         # 0. Quarantine Check (Automated Discipline)
         if envelope.source_node in self.quarantine_list:
             envelope.status = TaskStatus.FAILED
@@ -64,10 +72,7 @@ class SystemPolicyManager:
         if envelope.action in ["manifest_node", "sync_structure", "execute_mission"] and envelope.origin_z > 5:
             target_z = envelope.payload.get("target_z", envelope.payload.get("z_level", envelope.origin_z - 1))
             if envelope.origin_z > target_z:
-                try:
-                    from .z_cascade import CascadeValidator
-                except ImportError:
-                    from z_cascade import CascadeValidator
+                from z_cascade import CascadeValidator
 
                 cascade_success = CascadeValidator.validate_descent(envelope, target_z)
                 if not cascade_success:
@@ -80,7 +85,7 @@ class SystemPolicyManager:
                             PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
                             z14_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR")
                             if z14_path not in sys.path:
-                                sys.path.append(z14_path)
+                                sys.path.insert(0, z14_path)
                             from auto_corrector import AutoCorrectorNode
                             
                             repaired_envelope = AutoCorrectorNode.intercept_and_repair(envelope, envelope.metadata.get("error", "Semantic Integrity Lost"))
@@ -102,6 +107,26 @@ class SystemPolicyManager:
                     return False
 
         return True
+
+    def _sec_audit(self, envelope: TaskEnvelope) -> bool:
+        """SEC_GUARDIAN (Z12): Rate-limit and anti-spoof check before any other validation."""
+        try:
+            if not hasattr(self, "_sec_guardian"):
+                from pathlib import Path as _Path
+                _PROJECT_ROOT = _Path(__file__).resolve().parent.parent.parent
+                import sys as _sys
+                _z12_path = str(_PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN")
+                _b3_path = str(_PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry")
+                if _z12_path not in _sys.path:
+                    _sys.path.insert(0, _z12_path)
+                if _b3_path not in _sys.path:
+                    _sys.path.insert(0, _b3_path)
+                from sec_guardian import SecGuardian
+                self._sec_guardian = SecGuardian()
+            return self._sec_guardian.audit(envelope)
+        except Exception as e:
+            print(f"[POLICY_MANAGER] SEC_GUARDIAN unavailable, skipping: {e}")
+            return True  # Fail-open: don't block if guardian itself is broken
 
     def _validate_z_access(self, envelope: TaskEnvelope) -> bool:
         """

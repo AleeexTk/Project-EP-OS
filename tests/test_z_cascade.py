@@ -33,25 +33,28 @@ class TestZCascadeProtocol(unittest.TestCase):
 
     def test_failed_cascade_semantic_loss(self):
         print("\n[TEST] Z-Cascade: Testing Semantic Integrity Loss (Z15 -> Z5)")
-        
+        print("[TEST] (V6: Distorted task should be intercepted and REPAIRED by Z14 Auto-Corrector)")
+
         envelope = TaskEnvelope(
             source_node="architect_z15",
             target_node="system",
             action="manifest_node",
             origin_z=15,
+            intent="Original architect intent.",
             payload={
-                "z_level": 5, 
+                "z_level": 5,
                 "simulate_semantic_loss": True
             }
         )
-        
+
         is_valid = self.pm.validate_action(envelope)
-        
-        self.assertFalse(is_valid, "Cascade should fail if semantic integrity is lost.")
-        self.assertEqual(envelope.cascade_status, CascadeStatus.BLOCKED)
-        self.assertEqual(envelope.status, TaskStatus.FAILED)
-        self.assertIn("Semantic Integrity Lost", envelope.metadata.get("cascade_error", ""))
-        print("[TEST] SUCCESS: Monument blocked the distorted transition.")
+
+        # V6 behaviour: Z14 Auto-Corrector intercepts the block and repairs the task.
+        # Valid result is now True (repaired), not False (blocked).
+        self.assertTrue(is_valid, "V6: Z14 should intercept Monument block and repair the task.")
+        self.assertEqual(envelope.cascade_status, CascadeStatus.CRYSTALLIZED,
+                         "After repair, task should be CRYSTALLIZED — not BLOCKED.")
+        print("[TEST] SUCCESS: Monument blocked, Z14 intercepted, task was CRYSTALLIZED.")
 
 if __name__ == "__main__":
     unittest.main()

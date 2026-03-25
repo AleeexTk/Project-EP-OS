@@ -1,9 +1,14 @@
 import logging
+import sys
+from pathlib import Path
 from typing import Optional
-try:
-    from .contracts import TaskEnvelope, CascadeStatus, TaskStatus
-except ImportError:
-    from contracts import TaskEnvelope, CascadeStatus, TaskStatus
+
+# Ensure B1_Kernel is in path for absolute-style imports
+_kern_path = str(Path(__file__).resolve().parent)
+if _kern_path not in sys.path:
+    sys.path.append(_kern_path)
+
+from contracts import TaskEnvelope, CascadeStatus, TaskStatus
 
 class Observer:
     @staticmethod

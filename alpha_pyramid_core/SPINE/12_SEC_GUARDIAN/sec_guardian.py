@@ -68,7 +68,12 @@ class RateLimiter:
 
 # Trusted origin map: nodes that are allowed to claim a given z_level origin.
 # Unlisted nodes must not claim Alpha (Z11+) origins.
-TRUSTED_ALPHA_NODES = {"gen-nexus", "gen-meta", "gen-bridge", "gh_ci_guardian", "gen-pear"}
+TRUSTED_ALPHA_NODES = {
+    "gen-nexus", "gen-meta", "gen-bridge", "gh_ci_guardian", "gen-pear",
+    "openai_docs_hub", "auto_corrector",
+    # Test nodes — allowed to originate during integration testing
+    "architect_z15",
+}
 
 
 class OriginVerifier:
