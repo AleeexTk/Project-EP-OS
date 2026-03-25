@@ -26,9 +26,9 @@ const MainHeader: React.FC<MainHeaderProps> = ({
       <div className="pointer-events-auto">
         <div className="flex items-center gap-2">
           <Radar className="w-4 h-4 text-emerald-400" />
-          <h1 className="text-sm md:text-base font-semibold tracking-wide">EvoPyramid UX Core</h1>
+          <h1 className="text-sm md:text-base font-semibold tracking-wide">EP-OS Global Control Plane</h1>
         </div>
-        <p className="text-[10px] text-slate-400 mt-0.5">Project structure + AI agent control from one interface</p>
+        <p className="text-[10px] text-slate-400 mt-0.5">Consolidated Web Control Plane | Local AI Runtime Orchestration</p>
       </div>
 
       <div className="flex items-center gap-2 md:gap-3 pointer-events-auto">

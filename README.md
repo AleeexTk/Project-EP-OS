@@ -1,6 +1,12 @@
-# EvoPyramid OS
+# EvoPyramid OS: The Hybrid Architectural System
 
-EvoPyramid OS is a local-first architecture workspace where a 3D pyramid view is synchronized with real project directories. It features a self-healing kernel with semantic integrity protection.
+EP-OS is an operating architectural system where projects execute in **Runtime Nodes**, are governed by a shared **Pyramid Canon**, and are managed via a visual **Web Control Plane**.
+
+## The Hybrid Model
+
+- **Local Runtime Node**: Stateful project execution (files, memory, local agents).
+- **Shared Canon**: The Z-Architecture rules, contracts, and semantic logic.
+- **Web Control Plane**: Remote orchestration, 3D visualization, and audit console.
 
 ## Canonical Flow (V6)
 
