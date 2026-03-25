@@ -53,13 +53,24 @@ class PulserEngine:
             await asyncio.sleep(10)
 
     def _calculate_compliance(self) -> float:
-        """Reads the violation log and calculates a score."""
+        """Reads the violation log, counts per-node infractions, and enforces quarantine."""
         log_path = Path(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS\gamma_pyramid_reflective\B_Evo_Log\violations.json")
         try:
             if log_path.exists():
                 with open(log_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     self.violation_count = len(data)
+                    
+                    # Automated Discipline Logic
+                    node_violations = {}
+                    for v in data:
+                        src = v.get("source")
+                        if src:
+                            node_violations[src] = node_violations.get(src, 0) + 1
+                    
+                    for node_id, count in node_violations.items():
+                        if count >= 3:
+                            self._enforce_quarantine(node_id)
             
             # Simple scoring: Starts at 1.0, drops 0.05 per violation
             score = max(0.0, 1.0 - (self.violation_count * 0.05))
@@ -67,6 +78,16 @@ class PulserEngine:
         except Exception as e:
             logging.error(f"[PULSER] Compliance Calc Error: {e}")
             return 1.0
+
+    def _enforce_quarantine(self, node_id: str):
+        """Places a node into quarantine lock if not already locked."""
+        node = self.state.nodes.get(node_id)
+        if node and getattr(node, "state", None) != "locked":
+            node.state = "locked"
+            if not getattr(node, "metadata", None):
+                node.metadata = {}
+            node.metadata["quarantined"] = True
+            logging.warning(f"[PULSER] [DISCIPLINE] Node '{node_id}' placed in QUARANTINE due to excessive violations (>=3).")
 
     async def self_heal_pulse(self):
         """Background task for structural self-healing."""

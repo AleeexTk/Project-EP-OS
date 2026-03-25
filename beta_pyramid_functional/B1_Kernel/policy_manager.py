@@ -15,6 +15,12 @@ class SystemPolicyManager:
         self.policy = default_policy or SystemPolicy()
         self.audit_log: List[Dict[str, Any]] = []
         self.reporting_hooks: List[Callable[[Dict[str, Any]], None]] = []
+        self.quarantine_list: set[str] = set()
+
+    def quarantine_node(self, node_id: str):
+        """Places a node into quarantine, blocking all of its actions."""
+        self.quarantine_list.add(node_id)
+        print(f"[POLICY_MANAGER] Node '{node_id}' placed in QUARANTINE.")
 
     def register_reporter(self, hook: Callable[[Dict[str, Any]], None]):
         """Registers a callback for security/architectural violations."""
@@ -25,6 +31,13 @@ class SystemPolicyManager:
         Validates if a TaskEnvelope complies with system policies.
         Enforces Trinity Protocol: Autonomy + Security.
         """
+        # 0. Quarantine Check (Automated Discipline)
+        if envelope.source_node in self.quarantine_list:
+            envelope.status = TaskStatus.FAILED
+            envelope.metadata["error"] = f"QuarantineViolation: Node '{envelope.source_node}' is in quarantine and cannot perform actions."
+            self._log_violation(envelope)
+            return False
+
         # 1. Z-Level Hierarchy Check (The 'Iron Guardian' constraint)
         if not self._validate_z_access(envelope):
             return False

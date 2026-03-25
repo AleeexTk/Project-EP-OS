@@ -1,7 +1,7 @@
-# EVO-PYRAMID ARCHITECTURAL AUDIT (V8.1)
+# EVO-PYRAMID ARCHITECTURAL AUDIT (V9.0 - Unified Trinity)
 
-**Project Status:** 🟢 OPERATIONAL (L5 Autonomy - Strategic Hardening)
-**Last Update:** 2026-03-19
+**Project Status:** 🟢 OPERATIONAL (L5 Autonomy - Reflective Hardening)
+**Last Update:** 2026-03-25
 
 ---
 
@@ -29,13 +29,15 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 - **Key Modules**:
   - `B2_Orchestrator/mission_coordinator.py`: Strategic task decomposition (Z10/Z17).
   - `B1_Kernel/SK_Engine`: Semantic memory core (ProjectCortex).
+  - `B1_Kernel/policy_manager.py`: The Iron Guardian enforcing Z-Level rules.
 
 ### LAYER 3: γ_Pyramid_Reflective (Z1–Z4)
 
-- **Purpose**: Defines *what was done* and how to improve.
+- **Purpose**: Defines *what was done*, observing rules, and acting as the moral mirror.
 - **Key Modules**:
   - `SPINE/4_OBSERVER_RELAY`: Functional system-state monitoring (Z4).
-  - `A_Pulse`: Node health and reality anchoring (Z3).
+  - `A_Pulse/pulser.py`: Node health, reality anchoring, and Compliance Score metrics (Z3).
+  - `SPINE/2_INTEGRITY_OBSERVER/integrity_observer.py`: Archival of system architectural violations (Z2).
 
 ---
 
@@ -49,13 +51,13 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 | **Synthesis Agent** | ✅ Strategic | 100% | Pydantic-based proposals (Z14) matured; meta-reasoning verified. |
 | **Node Generator** | ✅ Active | 100% | Autonomous node scaffolding (Z15) functional. |
 | **Observer Relay** | ✅ Functional | 100% | Z4 pulse active; system state mirrored to ProjectCortex. |
-| **Z7 Stability** | ✅ Healthy | 100% | Ghost node pruning completed; structural integrity verified. |
+| **Integrity Bridge** | ✅ Reflective | 100% | Z2 Observer tracking violations; Z3 Pulse calculating `compliance_score`. |
 
 ---
 
 ## 4. ARCHITECTURAL CONCLUSION
 
-The project has transitioned from a **UI Shell** to a **Strategic Agent OS**.
+The project has transitioned from a **UI Shell** to a **Reflective Agent OS**.
 
 **Key Milestones Achieved:**
 
@@ -63,5 +65,6 @@ The project has transitioned from a **UI Shell** to a **Strategic Agent OS**.
 - [x] **Global Synthesis (V7.0)**: Meta-Optimization via SynthesisAgent (Z14).
 - [x] **Neural Autogenesis (V8.0)**: Autonomous Node Scaffolding (Z15).
 - [x] **Strategic Hardening (V8.1)**: LLM-driven planning and functional Observer Relay.
+- [x] **Unified Trinity & Integrity Bridge (V9.0 / V4.1)**: Cross-pyramid synchronization, policy hooks, compliance metrics, and reflective violation archival.
 
-**The system is now Self-Aware and Strategically Autonomous (L5).**
+**The system is now Self-Aware, Strategically Autonomous (L5), and ethically observant.**

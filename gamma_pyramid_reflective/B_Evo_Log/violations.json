@@ -1,11 +1,38 @@
 [
   {
-    "task_id": "5b7279d3-2164-49c8-a9e3-6dbffa604d5e",
+    "task_id": "53609871-bd9d-4119-8d39-0b2d80e10ba2",
     "action": "manifest_node",
     "error": "Z-Violation: Node at Z5 cannot manifest Z15 (High-Pyramid).",
-    "timestamp": "2026-03-24T23:43:39.986584+00:00",
-    "source": "test_node_z5",
+    "timestamp": "2026-03-25T00:02:03.463423+00:00",
+    "source": "rogue_agent_z5",
     "target": "system",
+    "origin_z": 5
+  },
+  {
+    "task_id": "d172d216-a3b3-4bb8-8c96-21279f91f9c0",
+    "action": "manifest_node",
+    "error": "Z-Violation: Node at Z5 cannot manifest Z15 (High-Pyramid).",
+    "timestamp": "2026-03-25T00:02:03.466160+00:00",
+    "source": "rogue_agent_z5",
+    "target": "system",
+    "origin_z": 5
+  },
+  {
+    "task_id": "786bc163-ab3b-4f5d-a9bf-6391a1bbf8ea",
+    "action": "manifest_node",
+    "error": "Z-Violation: Node at Z5 cannot manifest Z15 (High-Pyramid).",
+    "timestamp": "2026-03-25T00:02:03.467147+00:00",
+    "source": "rogue_agent_z5",
+    "target": "system",
+    "origin_z": 5
+  },
+  {
+    "task_id": "1b582fd8-3f46-4181-9efd-54a9126f174a",
+    "action": "read_data",
+    "error": "QuarantineViolation: Node 'rogue_agent_z5' is in quarantine and cannot perform actions.",
+    "timestamp": "2026-03-25T00:02:03.526697+00:00",
+    "source": "rogue_agent_z5",
+    "target": "another_z5",
     "origin_z": 5
   }
 ]
