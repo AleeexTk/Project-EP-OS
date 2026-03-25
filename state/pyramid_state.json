@@ -766,6 +766,37 @@
       "memory_color": "green",
       "gravity": 0.5
     },
+    "renegade_node": {
+      "id": "renegade_node",
+      "title": "Renegade",
+      "z_level": 17,
+      "sector": "SPINE",
+      "coords": {
+        "x": 0,
+        "y": 0,
+        "z": 17
+      },
+      "layer_type": "alpha",
+      "kind": "module",
+      "summary": "Attempted illegal Z17 manifestation",
+      "state": "error",
+      "canon_status": "runtime",
+      "artifacts": [],
+      "links": [],
+      "children": [],
+      "source_refs": [],
+      "metadata": {
+        "source": "filesystem-discovery",
+        "path": "alpha_pyramid_core/SPINE/17_Renegade",
+        "layer_folder": "alpha_pyramid_core"
+      },
+      "runtime_canon_flag": "runtime",
+      "session_url": null,
+      "browser_profile_dir": null,
+      "orchestrator_state": "unlinked",
+      "memory_color": "blue",
+      "gravity": 0.5
+    },
     "legit_node": {
       "id": "legit_node",
       "title": "Legit Local Node",

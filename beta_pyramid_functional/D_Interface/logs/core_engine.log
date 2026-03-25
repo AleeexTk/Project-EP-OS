@@ -6569,3 +6569,183 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-03-25 01:53:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
 2026-03-25 01:53:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
 2026-03-25 01:53:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:54:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:54:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:54:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:54:41,315 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:54:41,315 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:54:41,316 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:55:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:55:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:55:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:55:41,128 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:55:41,129 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:55:41,131 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:56:11,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:56:11,126 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:56:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:56:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:56:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:56:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:57:11,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:57:11,126 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:57:11,127 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:57:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:57:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:57:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:58:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:58:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:58:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:58:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:58:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:58:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:59:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:59:11,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:59:11,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 01:59:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 01:59:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 01:59:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:00:11,128 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:00:11,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:00:11,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:00:41,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:00:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:00:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:01:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:01:11,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:01:11,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:01:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:01:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:01:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:02:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:02:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:02:11,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:02:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:02:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:02:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:03:11,243 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:03:11,244 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:03:11,245 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:03:41,128 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:03:41,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:03:41,130 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:04:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:04:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:04:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:04:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:04:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:04:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:05:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:05:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:05:11,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:05:41,613 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:05:41,613 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:05:41,614 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:06:11,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:06:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:06:11,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:06:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:06:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:06:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:07:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:07:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:07:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:07:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:07:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:07:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:08:11,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:08:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:08:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:08:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:08:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:08:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:09:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:09:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:09:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:09:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:09:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:09:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:10:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:10:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:10:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:10:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:10:41,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:10:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:11:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:11:11,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:11:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:11:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:11:41,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:11:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:12:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:12:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:12:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:12:41,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:12:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:12:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:13:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:13:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:13:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:13:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:13:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:13:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:14:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:14:11,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:14:11,132 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:14:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:14:41,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:14:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:15:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:15:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:15:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:15:41,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:15:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:15:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:16:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:16:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:16:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:16:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:16:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:16:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:17:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:17:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:17:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:17:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:17:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:17:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:18:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:18:11,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:18:11,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:18:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:18:41,128 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:18:41,129 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:19:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:19:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:19:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:19:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:19:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:19:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:20:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:20:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:20:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:20:41,126 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:20:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:20:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:21:11,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:21:11,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:21:11,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:21:41,127 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:21:41,127 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:21:41,128 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:22:15,156 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:22:15,156 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:22:15,157 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:22:44,236 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:22:44,237 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:22:44,239 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:23:13,732 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:23:13,732 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:23:13,734 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])
+2026-03-25 02:23:41,945 [INFO] [Z-Bus] Routing Event: BRIDGE_HEARTBEAT (Payload keys: ['status', 'provider', 'sessions_bound'])
+2026-03-25 02:23:41,945 [INFO] [Truth Sync] Bridge Heartbeat. System State -> ONLINE.
+2026-03-25 02:23:41,946 [INFO] [Z-Bus] Routing Event: TAB_DISCOVERED (Payload keys: ['count', 'url', 'title', 'tab_id'])

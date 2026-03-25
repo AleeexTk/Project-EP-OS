@@ -43,15 +43,15 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 
 ## 3. COMPONENT HEALTH TABLE
 
-| Component | Status | Health | Audit Notes |
-| :--- | :--- | :--- | :--- |
-| **Hybrid Runtime** | ✅ Active | 100% | `SupervisedTaskRouter` with resilient Cloud-to-Local fallback. |
-| **Cognitive Memory** | ✅ L1 Active | 100% | `ProjectCortex` integrated into PEAR; semantic recall verified. |
-| **Mission Coordinator** | ✅ Strategic | 100% | LLM-driven decomposition (Z17 Architect) active & verified. |
-| **Synthesis Agent** | ✅ Strategic | 100% | Pydantic-based proposals (Z14) matured; meta-reasoning verified. |
-| **Node Generator** | ✅ Active | 100% | Autonomous node scaffolding (Z15) functional. |
-| **Observer Relay** | ✅ Functional | 100% | Z4 pulse active; system state mirrored to ProjectCortex. |
-| **Integrity Bridge** | ✅ Reflective | 100% | Z2 Observer tracking violations; Z3 Pulse calculating `compliance_score`. |
+| Component | Status | Health | Last Tested | Audit Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Hybrid Runtime** | ✅ Active | 100% | 2026-03-25 | `SupervisedTaskRouter` with resilient Cloud-to-Local fallback. |
+| **Cognitive Memory** | ✅ L1 Active | 100% | 2026-03-25 | `ProjectCortex` integrated into PEAR; semantic recall verified. |
+| **Mission Coordinator** | ✅ Strategic | 100% | 2026-03-25 | LLM-driven decomposition (Z17 Architect) active & verified. |
+| **Synthesis Agent** | ✅ Strategic | 100% | 2026-03-25 | Pydantic-based proposals (Z14) matured; meta-reasoning verified. |
+| **Node Generator** | ✅ Active | 100% | 2026-03-25 | Autonomous node scaffolding (Z15) functional. |
+| **Observer Relay** | ✅ Functional | 100% | 2026-03-25 | Z4 pulse active; system state mirrored to ProjectCortex. |
+| **Integrity Bridge** | ✅ Reflective | 100% | 2026-03-25 | Z2 Observer tracking violations; Z3 Pulse calculating `compliance_score`. |
 
 ---
 
