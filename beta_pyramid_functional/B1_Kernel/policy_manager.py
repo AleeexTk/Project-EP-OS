@@ -5,7 +5,7 @@ from typing import Dict, Any, List, Optional, Callable
 # Add current directory to path for absolute-style imports
 _kern_path = str(Path(__file__).resolve().parent)
 if _kern_path not in sys.path:
-    sys.path.append(_kern_path)
+    sys.path.insert(0, _kern_path)
 
 from contracts import TaskEnvelope, SystemPolicy, TaskStatus, CascadeStatus
 
@@ -25,6 +25,10 @@ class SystemPolicyManager:
         """Places a node into quarantine, blocking all of its actions."""
         self.quarantine_list.add(node_id)
         print(f"[POLICY_MANAGER] Node '{node_id}' placed in QUARANTINE.")
+
+    def model_copy(self, deep=True):
+        """Pydantic v2 compatibility for manual copies if needed."""
+        return super().model_copy(deep=deep)
 
     def register_reporter(self, hook: Callable[[Dict[str, Any]], None]):
         """Registers a callback for security/architectural violations."""
@@ -125,8 +129,10 @@ class SystemPolicyManager:
                 self._sec_guardian = SecGuardian()
             return self._sec_guardian.audit(envelope)
         except Exception as e:
-            print(f"[POLICY_MANAGER] SEC_GUARDIAN unavailable, skipping: {e}")
-            return True  # Fail-open: don't block if guardian itself is broken
+            print(f"[POLICY_MANAGER] CRITICAL: SEC_GUARDIAN initialization failed: {e}")
+            envelope.status = TaskStatus.FAILED
+            envelope.metadata["error"] = f"SecurityServiceUnavailable: {e}"
+            return False  # Fail-closed: block actions if guardian is broken
 
     def _validate_z_access(self, envelope: TaskEnvelope) -> bool:
         """

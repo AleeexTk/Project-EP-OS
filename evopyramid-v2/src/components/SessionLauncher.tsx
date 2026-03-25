@@ -49,7 +49,7 @@ function SessionLauncher({ node, onClose, onCreated }: SessionLauncherProps) {
     const payload: SessionCreatePayload = {
       node_id: node.id,
       node_z: node.z,
-      node_sector: node.sector,
+      node_sector: node.sector.toUpperCase(),
       provider,
       task_title: taskTitle.trim(),
       task_context: taskContext.trim() || undefined,

@@ -56,7 +56,7 @@ const MessageRenderer = ({ msg }: { msg: any }) => {
 };
 
 export default function AgentWorkspace({ sessionId, onClose, onSessionChange }: AgentWorkspaceProps) {
-  const { sessions, loadSessions } = useSessionRegistry();
+  const { sessions, loadSessions, dispatchPrompt } = useSessionRegistry();
   const { latestZBusEvent } = usePyramidState();
 
   const [bridgeHealth, setBridgeHealth] = useState({
@@ -83,6 +83,7 @@ export default function AgentWorkspace({ sessionId, onClose, onSessionChange }: 
   const [isQuantumMode, setIsQuantumMode] = useState(false);
   const [activeTab, setActiveTab] = useState<'truth' | 'workspace'>('truth');
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
+  const [pendingMessages, setPendingMessages] = useState<any[]>([]);
 
   useEffect(() => { loadSessions(); }, []);
   useEffect(() => { if (sessionId && sessionId !== activeSessionId) setActiveSessionId(sessionId); }, [sessionId]);
@@ -104,32 +105,43 @@ export default function AgentWorkspace({ sessionId, onClose, onSessionChange }: 
         if (prov === 'gemini' || prov === 'ollama') {
             setBridgeHealth(prev => ({ ...prev, status: 'DIRECT API', provider: prov.toUpperCase(), tabAttached: true, authOk: true, severity: 'info' }));
         }
-    } else if (topic === 'PROMPT_ACCEPTED') {
+    } else if (topic === 'PROMPT_ACCEPTED' || topic === 'SESSION_CREATED') {
       loadSessions();
       setBridgeHealth(prev => ({ ...prev, lastError: null, lastErrorTopic: null, severity: 'info' }));
-      setStreamData({ active: true, content: '', latency: 0, startTime: Date.now(), status: 'running' });
+      if (topic === 'PROMPT_ACCEPTED') {
+          setStreamData({ active: true, content: '', latency: 0, startTime: Date.now(), status: 'running' });
+      }
     } else if (topic === 'TOKEN_STREAM') {
       setStreamData(prev => ({ ...prev, active: true, status: 'running', content: payload?.content ?? (prev.content + (payload?.delta || '')) }));
-    } else if (topic === 'RESPONSE_COMPLETE') {
+    } else if (topic === 'RESPONSE_COMPLETE' || topic === 'SESSION_MESSAGE' || topic === 'SESSION_STATUS_CHANGED') {
       loadSessions();
-      setStreamData(prev => ({ ...prev, active: false, status: 'completed', content: payload?.content || prev.content, latency: prev.startTime > 0 ? Date.now() - prev.startTime : 0 }));
+      setPendingMessages([]); // Clear optimistic messages on sync
+      if (topic === 'RESPONSE_COMPLETE') {
+          setStreamData(prev => ({ ...prev, active: false, status: 'completed', content: payload?.content || prev.content, latency: prev.startTime > 0 ? Date.now() - prev.startTime : 0 }));
+      }
     }
   }, [latestZBusEvent]);
 
   const handleDispatch = async () => {
     if (!promptDraft.trim() || !activeSessionId) return;
-    setStreamData({ active: false, content: 'Dispatching...', latency: 0, startTime: 0, status: 'idle' });
+    
+    // --- Optimistic UI Update ---
+    const userPrompt = promptDraft.trim();
+    setPromptDraft('');
+    setPendingMessages(prev => [...prev, { id: 'pending-' + Date.now(), role: 'user', content: userPrompt }]);
+    setStreamData({ active: true, content: '', latency: 0, startTime: Date.now(), status: 'running' });
+
     try {
-      const response = await fetch(`${CORE_API_BASE}/v1/prompt`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: promptDraft, session_ids: [activeSessionId], routing: isQuantumMode ? 'quantum' : 'single' })
-      });
-      const data = await response.json();
-      if (data.status === 'dispatched') setPromptDraft('');
-      else setBridgeHealth(prev => ({ ...prev, lastError: 'API Dispatch Failed', severity: 'error' }));
+      const data = await dispatchPrompt(activeSessionId, userPrompt, isQuantumMode ? 'quantum' : 'single');
+      if (data?.status !== 'dispatched') {
+          setBridgeHealth(prev => ({ ...prev, lastError: data?.errors?.join(', ') || 'API Dispatch Failed', severity: 'error' }));
+          setStreamData(prev => ({ ...prev, active: false, status: 'failed' }));
+          setPendingMessages(prev => prev.filter(m => !m.id.startsWith('pending-')));
+      }
     } catch (e: any) {
       setBridgeHealth(prev => ({ ...prev, lastError: e.message, severity: 'error' }));
+      setStreamData(prev => ({ ...prev, active: false, status: 'failed' }));
+      setPendingMessages(prev => prev.filter(m => !m.id.startsWith('pending-')));
     }
   };
 
@@ -181,6 +193,13 @@ export default function AgentWorkspace({ sessionId, onClose, onSessionChange }: 
               {selectedSession?.messages?.map(msg => (
                 <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[85%] rounded-xl p-3 ${msg.role === 'user' ? 'bg-indigo-600/20 border border-indigo-500/30' : 'bg-slate-800/50 border border-white/5'}`}>
+                    <MessageRenderer msg={msg} />
+                  </div>
+                </div>
+              ))}
+              {pendingMessages.map(msg => (
+                <div key={msg.id} className="flex justify-end opacity-70 italic">
+                  <div className="max-w-[85%] rounded-xl p-3 bg-indigo-600/10 border border-indigo-500/20">
                     <MessageRenderer msg={msg} />
                   </div>
                 </div>

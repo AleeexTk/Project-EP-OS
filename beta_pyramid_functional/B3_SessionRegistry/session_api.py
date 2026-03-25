@@ -94,14 +94,19 @@ async def create_session(req: SessionCreateRequest):
     session = SessionRegistry.create(req_with_url)
 
     await manager.broadcast({
-        "event": "session.created",
-        "session_id": session.id,
-        "node_id": session.node_id,
-        "node_z": session.node_z,
-        "provider": session.provider,
-        "task_title": session.task_title,
-        "status": session.status,
-        "external_url": session.external_url,
+        "type": "zbus_event",
+        "data": {
+            "topic": "SESSION_CREATED",
+            "session_id": session.id,
+            "payload": {
+                "node_id": session.node_id,
+                "node_z": session.node_z,
+                "provider": session.provider,
+                "task_title": session.task_title,
+                "status": session.status,
+                "external_url": session.external_url,
+            }
+        }
     })
     return session
 
@@ -144,12 +149,17 @@ async def add_message(session_id: str, req: MessageCreateRequest, ai: bool = Fal
         raise HTTPException(404, detail=f"Session {session_id} not found")
 
     await manager.broadcast({
-        "event": "session.message",
-        "session_id": session_id,
-        "role": req.role,
-        "content": req.content[:150] + ("..." if len(req.content) > 150 else ""),
-        "node_id": session.node_id,
-        "provider": session.provider,
+        "type": "zbus_event",
+        "data": {
+            "topic": "SESSION_MESSAGE",
+            "session_id": session_id,
+            "payload": {
+                "role": req.role,
+                "content": req.content[:150] + ("..." if len(req.content) > 150 else ""),
+                "node_id": session.node_id,
+                "provider": session.provider,
+            }
+        }
     })
 
     if ai and req.role == "user":
@@ -212,11 +222,16 @@ async def update_status(session_id: str, req: StatusUpdateRequest):
         raise HTTPException(404, detail=f"Session {session_id} not found")
 
     await manager.broadcast({
-        "event": "session.status_changed",
-        "session_id": session_id,
-        "node_id": session.node_id,
-        "new_status": req.status,
-        "provider": session.provider,
+        "type": "zbus_event",
+        "data": {
+            "topic": "SESSION_STATUS_CHANGED",
+            "session_id": session_id,
+            "payload": {
+                "node_id": session.node_id,
+                "new_status": req.status,
+                "provider": session.provider,
+            }
+        }
     })
     return session
 

@@ -224,10 +224,13 @@ async def lifespan(app: FastAPI):
                 elif topic in ("AUTH_ERROR", "SESSION_TAB_MISSING", "DOM_ERROR", "BRIDGE_ERROR"):
                     logging.warning(f"[Bridge] {topic}: {payload.get('detail', '')}")
                     await manager.broadcast({
-                        "event": "bridge.error",
-                        "topic": topic,
-                        "session_id": session_id,
-                        "detail": payload.get("detail", ""),
+                        "type": "zbus_event",
+                        "data": {
+                            "topic": topic,
+                            "session_id": session_id,
+                            "payload": payload,
+                            "timestamp": datetime.now(timezone.utc).isoformat()
+                        }
                     })
 
                 # 4. Universal LLM Routing (Backend execution for API providers)
@@ -690,12 +693,15 @@ class PromptRequest(BaseModel):
 
 @app.post("/v1/prompt")
 async def trigger_prompt(req: PromptRequest):
-    """Evo API v1: Unified prompt routing dispatch."""
+    """Evo API v1: Unified prompt routing dispatch with Policy Enforcement."""
     try:
         from zbus import zbus
+        from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
+        from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
     except ImportError:
-        return {"status": "error", "message": "Z-Bus not available"}
+        return {"status": "error", "message": "Critical kernel modules not available"}
 
+    policy_mgr = SystemPolicyManager()
     task_id = str(uuid.uuid4())
     dispatched: list[str] = []
     errors: list[str] = []
@@ -706,6 +712,22 @@ async def trigger_prompt(req: PromptRequest):
             session = SessionRegistry.get(sid)
             if not session:
                 errors.append(f"{sid}: session not found")
+                continue
+
+            # --- Hardening: Performance Policy Check ---
+            # Create a virtual envelope for the prompt dispatch
+            envelope = TaskEnvelope(
+                task_id=task_id,
+                action="prompt_dispatch",
+                source_node=f"session_{sid}",
+                target_node="LLM_ORCHESTRATOR",
+                origin_z=session.node_z,
+                payload={"provider": session.provider, "prompt_len": len(req.prompt)},
+                timestamp=datetime.now(timezone.utc)
+            )
+            
+            if not policy_mgr.validate_action(envelope):
+                errors.append(f"{sid}: {envelope.metadata.get('error', 'Security Policy Violation')}")
                 continue
 
             # ① Prep Prompt (Quantum Mode Wrap)
@@ -720,18 +742,16 @@ async def trigger_prompt(req: PromptRequest):
                     f"TASK: {req.prompt}"
                 )
 
-            # ② Save the user prompt to session memory BEFORE dispatching
-            #    so both sides of the conversation are always recorded.
+            # ② Save the user prompt to session memory
             SessionRegistry.add_message(
                 sid,
                 MessageCreateRequest(role="user", content=final_prompt)
             )
-            logging.info(f"[Memory] Saved user prompt → session {sid}")
 
             provider = session.provider
             external_url = str(session.external_url or "").strip()
 
-            # ③ Dispatch to Z-Bus, passing external_url so bridge can bind the tab
+            # ③ Dispatch to Z-Bus
             await zbus.dispatch_llm_task(
                 task_id=task_id,
                 session_id=sid,

@@ -1,15 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Activity, Layers3, PanelRightOpen, Radar, RefreshCw, ShieldCheck, Sparkles, Table2 } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import EvoPyramid from './components/EvoPyramid';
 import ArchitectTable from './components/ArchitectTable';
 import SessionLauncher from './components/SessionLauncher';
 import AgentWorkspace from './components/AgentWorkspace';
-import KernelMonitor from './components/KernelMonitor';
-import ObserverBanner from './components/ObserverBanner';
 import NodeInspector from './components/NodeInspector';
+import ObserverBanner from './components/ObserverBanner';
 import SwarmTerminalPanel from './components/SwarmTerminalPanel';
 import ZBusAlert from './components/ZBusAlert';
 import PyramidScene from './components/PyramidScene';
+
+// New Layout Components
+import MainHeader from './components/Layout/MainHeader';
+import NavigationTabs from './components/Layout/NavigationTabs';
+import SidebarControls from './components/Layout/SidebarControls';
 
 import { CORE_API_BASE } from './lib/config';
 import { EvoNode } from './lib/evo';
@@ -80,31 +84,36 @@ function App() {
   const hasAutoSyncedRef = useRef(false);
 
   const dispatchKernelTask = useCallback(async (action: string, payload: any = {}) => {
-    const envelope = {
-      task_id: `ux-${Date.now()}`,
-      source_node: 'EvoPyramid_UX_Core',
-      target_node: 'gen-nexus',
-      action: action,
-      payload: payload,
-      timestamp: new Date().toISOString(),
-      metadata: { origin: 'ux-interface' }
-    };
+    try {
+      const envelope = {
+        task_id: `ux-${Date.now()}`,
+        source_node: 'EvoPyramid_UX_Core',
+        target_node: 'gen-nexus',
+        action: action,
+        payload: payload,
+        timestamp: new Date().toISOString(),
+        metadata: { origin: 'ux-interface' }
+      };
 
-    const response = await fetch(`${CORE_API_BASE}/kernel/dispatch`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(envelope),
-    });
+      const response = await fetch(`${CORE_API_BASE}/kernel/dispatch`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(envelope),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Dispatch failed: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Dispatch failed: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      if (result.status === 'REJECTED' || result.status === 'FAILED') {
+        throw new Error(`${result.metadata?.error || result.reason || 'Kernel Rejected'}`);
+      }
+      return result;
+    } catch (err: any) {
+      console.error(`[KERNEL_DISPATCH_ERROR] ${err.message}`);
+      throw err;
     }
-    
-    const result = await response.json();
-    if (result.status === 'REJECTED') {
-      throw new Error(`Kernel Rejected: ${result.reason}`);
-    }
-    return result;
   }, []);
 
   const syncNodeToCore = useCallback(async (node: EvoNode) => {
@@ -172,10 +181,8 @@ function App() {
   }, [activeSessionId, sessions]);
 
   useEffect(() => {
-    if (!notice) {
-      return;
-    }
-    const timer = window.setTimeout(() => setNotice(null), 3500);
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(null), 4000);
     return () => clearTimeout(timer);
   }, [notice]);
 
@@ -199,30 +206,22 @@ function App() {
   };
 
   const handleManifestSelectedNode = async () => {
-    if (!selectedNode) {
-      return;
-    }
+    if (!selectedNode) return;
     try {
       await syncNodeToCore(selectedNode);
       setNotice(`Manifested: ${getProjectPathForNode(selectedNode)}`);
-    } catch {
-      setNotice(`Manifest failed: ${selectedNode.id}`);
+    } catch (err: any) {
+      setNotice(`Manifest failed: ${err.message}`);
     }
   };
 
   const handleSyncFromStructure = useCallback(async () => {
-    if (syncingStructure) {
-      return;
-    }
-
+    if (syncingStructure) return;
     setSyncingStructure(true);
     try {
       const data = await dispatchKernelTask('sync_structure', { update_existing: true });
       const stats = data.result || {};
-      const added = Number(stats.added ?? 0);
-      const updated = Number(stats.updated ?? 0);
-      const scannedDirs = Number(stats.scanned_dirs ?? 0);
-      setNotice(`Structure sync: +${added}, updated ${updated}, scanned ${scannedDirs}`);
+      setNotice(`Structure sync: +${stats.added ?? 0}, updated ${stats.updated ?? 0}`);
     } catch (err: any) {
       setNotice(err.message || 'Structure sync failed');
     } finally {
@@ -231,21 +230,14 @@ function App() {
   }, [syncingStructure, dispatchKernelTask]);
 
   const handleCanonGuard = useCallback(async () => {
-    if (guardingCanon) {
-      return;
-    }
-
+    if (guardingCanon) return;
     setGuardingCanon(true);
     try {
       const data = await dispatchKernelTask('apply_canon_guard', { update_existing: true, prune_missing: false });
       const res = data.result || {};
       const sync = res.sync || {};
       const summary = res.guard?.summary || {};
-      const added = Number(sync.added ?? 0);
-      const updated = Number(sync.updated ?? 0);
-      const drifted = Number(summary.drifted ?? 0);
-      const missing = Number(summary.missing_in_state ?? 0);
-      setNotice(`Canon guard: +${added}, updated ${updated}, drift ${drifted}, missing ${missing}`);
+      setNotice(`Canon guard: +${sync.added ?? 0}, update ${sync.updated ?? 0}, drift ${summary.drifted ?? 0}`);
     } catch (err: any) {
       setNotice(err.message || 'Canon guard failed');
     } finally {
@@ -254,9 +246,7 @@ function App() {
   }, [guardingCanon, dispatchKernelTask]);
 
   useEffect(() => {
-    if (hasAutoSyncedRef.current) {
-      return;
-    }
+    if (hasAutoSyncedRef.current) return;
     hasAutoSyncedRef.current = true;
     void handleSyncFromStructure();
   }, [handleSyncFromStructure]);
@@ -265,100 +255,26 @@ function App() {
   const memoryBlocks = systemMetrics?.memory_total ?? 0;
 
   return (
-    <div className="app-shell flex h-screen text-slate-100 overflow-hidden">
-      <main className={`pyramid-stage relative h-full transition-all duration-300 ${assistantOpen ? 'w-full lg:w-[60%]' : 'w-full'}`}>
-        <header className="absolute top-0 left-0 right-0 z-40 px-4 md:px-6 py-4 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <Radar className="w-4 h-4 text-emerald-400" />
-              <h1 className="text-sm md:text-base font-semibold tracking-wide">EvoPyramid UX Core</h1>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-0.5">Project structure + AI agent control from one interface</p>
-          </div>
+    <div className="app-shell flex h-screen text-slate-100 overflow-hidden font-sans selection:bg-emerald-500/30">
+      <main className={`pyramid-stage relative h-full transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${assistantOpen ? 'w-full lg:w-[60%]' : 'w-full'}`}>
+        
+        <MainHeader 
+          isConnected={isConnected}
+          swarmConnected={swarmConnected}
+          healthPct={healthPct}
+          memoryBlocks={memoryBlocks}
+          activeSessionCount={activeSessionCount}
+          totalSessions={sessions.length}
+          onOpenAssistant={() => setAssistantOpen(true)}
+        />
 
-          <div className="flex items-center gap-2 md:gap-3">
-            <KernelMonitor />
-            
-            {/* Universal LLM Metrics Widget */}
-            {(healthPct !== null || memoryBlocks > 0) && (
-              <div className="hidden md:flex items-center gap-3 text-[10px] px-3 py-1.5 rounded-full bg-black/40 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)] backdrop-blur">
-                {healthPct !== null && (
-                  <div className="flex items-center gap-1.5" title="System Health (ObserverRelay)">
-                    <Activity className={`w-3.5 h-3.5 ${healthPct >= 90 ? 'text-emerald-400' : healthPct >= 60 ? 'text-amber-400' : 'text-rose-400'}`} />
-                    <span className="font-mono text-slate-200">{healthPct}%</span>
-                  </div>
-                )}
-                {healthPct !== null && memoryBlocks > 0 && <span className="text-slate-600">|</span>}
-                {memoryBlocks > 0 && (
-                  <div className="flex items-center gap-1.5" title="Cognitive Cortex Size (Blocks)">
-                    <Layers3 className="w-3.5 h-3.5 text-blue-400" />
-                    <span className="font-mono text-slate-200">{memoryBlocks} ENG</span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="hidden md:flex items-center gap-2 text-[10px] px-2 py-1 rounded-full bg-black/30 border border-white/10">
-              <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-              <span>CORE</span>
-              <span className={`w-2 h-2 rounded-full ${swarmConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-              <span>SWARM</span>
-              <span className="text-slate-500">|</span>
-              <span>{activeSessionCount} active</span>
-              <span>{sessions.length} total</span>
-            </div>
-            <button
-              onClick={() => setAssistantOpen(true)}
-              className="p-2 rounded-lg bg-white/10 hover:bg-white/15 border border-white/10"
-              title="Open assistant"
-            >
-              <PanelRightOpen className="w-4 h-4" />
-            </button>
-          </div>
-        </header>
-
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1 p-1 rounded-full bg-black/35 border border-white/10">
-          <button
-            onClick={() => {
-              setActiveTab('core');
-              setSelectedNodeId(null);
-            }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1.5 ${activeTab === 'core' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-          >
-            <Layers3 className="w-3.5 h-3.5" />
-            Core
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('genesis');
-              setSelectedNodeId(null);
-            }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1.5 ${activeTab === 'genesis' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Genesis
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('nexus');
-              setSelectedNodeId(null);
-            }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1.5 ${activeTab === 'nexus' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-          >
-            <Radar className="w-3.5 h-3.5" />
-            Nexus
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('table');
-              setSelectedNodeId(null);
-            }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1.5 ${activeTab === 'table' ? 'bg-violet-600 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-          >
-            <Table2 className="w-3.5 h-3.5" />
-            Table
-          </button>
-        </div>
+        <NavigationTabs 
+          activeTab={activeTab}
+          onTabChange={(tab) => {
+            setActiveTab(tab);
+            setSelectedNodeId(null);
+          }}
+        />
 
         <ObserverBanner 
           visible={showObserverBanner}
@@ -396,84 +312,23 @@ function App() {
         )}
 
         {activeTab !== 'table' && activeTab !== 'nexus' && (
-          <>
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center gap-3 p-2 rounded-xl bg-black/30 border border-white/10 backdrop-blur">
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={panY}
-                onChange={(e) => {
-                  setPanY(Number(e.target.value));
-                  setActiveZLevel(0);
-                }}
-                aria-label="Pan Y"
-                className="slider-vertical h-36 w-2"
-              />
-              <input
-                type="range"
-                min={0}
-                max={17}
-                step={1}
-                value={activeZLevel}
-                onChange={(e) => setActiveZLevel(Number(e.target.value))}
-                aria-label="Z level"
-                className="slider-vertical h-36 w-2"
-              />
-              <span className="text-[10px] font-mono text-slate-300">{activeZLevel === 0 ? 'ALL' : `Z${activeZLevel}`}</span>
-            </div>
-
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-5 z-30 w-[45%] hidden md:block">
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={panX}
-                onChange={(e) => setPanX(Number(e.target.value))}
-                aria-label="Pan X"
-                className="w-full"
-              />
-            </div>
-
-            <div className="absolute right-4 top-[118px] z-40 rounded-xl bg-black/30 border border-white/10 px-2 py-1.5 backdrop-blur">
-              <div className="flex items-center gap-2">
-                <select
-                  value={viewMode}
-                  title="Pyramid View Mode"
-                  onChange={(e) => setViewMode(e.target.value as ViewMode)}
-                  className="bg-transparent text-[11px] text-slate-200 outline-none"
-                >
-                  <option value="structure">Structure</option>
-                  <option value="directory">Directory</option>
-                  <option value="active">Active</option>
-                  <option value="collaboration">Collaboration</option>
-                  <option value="canon">Canon</option>
-                </select>
-                <button
-                  onClick={() => {
-                    void handleSyncFromStructure();
-                  }}
-                  disabled={syncingStructure}
-                  className="px-2 py-1 rounded-md border border-emerald-500/30 bg-emerald-500/15 text-emerald-200 text-[10px] font-semibold inline-flex items-center gap-1 disabled:opacity-60"
-                  title="Sync missing modules from project structure"
-                >
-                  <RefreshCw className={`w-3 h-3 ${syncingStructure ? 'animate-spin' : ''}`} />
-                  {syncingStructure ? 'Syncing' : 'Sync'}
-                </button>
-                <button
-                  onClick={() => {
-                    void handleCanonGuard();
-                  }}
-                  disabled={guardingCanon}
-                  className="px-2 py-1 rounded-md border border-blue-500/35 bg-blue-500/15 text-blue-200 text-[10px] font-semibold inline-flex items-center gap-1 disabled:opacity-60"
-                  title="Canon guard: validate and align pyramid with folder structure"
-                >
-                  <ShieldCheck className={`w-3 h-3 ${guardingCanon ? 'animate-pulse' : ''}`} />
-                  {guardingCanon ? 'Guarding' : 'Guard'}
-                </button>
-              </div>
-            </div>
-          </>
+          <SidebarControls 
+            panX={panX}
+            panY={panY}
+            activeZLevel={activeZLevel}
+            viewMode={viewMode}
+            syncingStructure={syncingStructure}
+            guardingCanon={guardingCanon}
+            onPanXChange={setPanX}
+            onPanYChange={(val) => {
+              setPanY(val);
+              setActiveZLevel(0);
+            }}
+            onZLevelChange={setActiveZLevel}
+            onViewModeChange={setViewMode}
+            onSync={handleSyncFromStructure}
+            onGuard={handleCanonGuard}
+          />
         )}
 
         {selectedNode && (
@@ -488,9 +343,9 @@ function App() {
         )}
 
         {notice && (
-          <div className="absolute top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-slate-900 border border-emerald-500/30 text-[11px] flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            {notice}
+          <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-full bg-slate-900/90 border border-emerald-500/40 text-[11px] font-medium flex items-center gap-2 shadow-[0_4px_20px_rgba(16,185,129,0.2)] backdrop-blur animate-float">
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span className="text-emerald-50 text-shadow-sm">{notice}</span>
           </div>
         )}
 
@@ -504,8 +359,8 @@ function App() {
 
       {assistantOpen && (
         <>
-          <div className="fixed inset-0 z-30 bg-black/50 lg:hidden" onClick={() => setAssistantOpen(false)} />
-          <aside className="fixed inset-y-0 right-0 z-40 w-full max-w-[460px] lg:static lg:max-w-none lg:w-[40%] border-l border-white/10">
+          <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity duration-300" onClick={() => setAssistantOpen(false)} />
+          <aside className="fixed inset-y-0 right-0 z-40 w-full max-w-[480px] lg:static lg:max-w-none lg:w-[40%] border-l border-white/10 bg-[#050b18]/80 backdrop-blur-xl shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
             <AgentWorkspace
               sessionId={activeSessionId}
               onClose={() => setAssistantOpen(false)}

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { SESSION_API_BASE } from './config';
+import { CORE_API_BASE, SESSION_API_BASE } from './config';
 
 export type Provider = 'gpt' | 'gemini' | 'claude' | 'copilot' | 'ollama';
 export type SessionStatus = 'pending' | 'active' | 'waiting' | 'review' | 'done' | 'paused' | 'conflict';
@@ -158,6 +158,24 @@ export function useSessionRegistry() {
       setProviders(data);
     }
   }, [apiCall]);
+  
+  const dispatchPrompt = useCallback(
+    async (sessionId: string, prompt: string, routing: 'single' | 'quantum' = 'single') => {
+      try {
+        const response = await fetch(`${CORE_API_BASE}/v1/prompt`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, session_ids: [sessionId], routing })
+        });
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Prompt dispatch failed');
+        return null;
+      }
+    },
+    []
+  );
 
   const openInBrowser = useCallback(
     async (provider: Provider, taskTitle?: string, nodeId?: string, existingUrl?: string) => {
@@ -203,6 +221,7 @@ export function useSessionRegistry() {
     updateStatus,
     deleteSession,
     loadProviders,
+    dispatchPrompt,
     openInBrowser,
   };
 }

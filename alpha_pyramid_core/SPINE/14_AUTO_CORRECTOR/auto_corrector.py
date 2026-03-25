@@ -29,7 +29,7 @@ class AutoCorrectorNode:
         """
         logger.warning(f"[Z14_AUTO_CORRECTOR] Intercepting blocked task from {envelope.source_node}. Reason: {rejection_reason}")
         
-        repaired_envelope = envelope.copy(deep=True)
+        repaired_envelope = envelope.model_copy(deep=True)
         
         # Retrieve best provider for Z14 logic repair
         provider = ProviderMatrix.get_best_available(14, "SPINE")

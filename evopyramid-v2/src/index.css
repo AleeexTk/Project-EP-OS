@@ -27,21 +27,22 @@ input[type="range"] {
 }
 
 :root {
-  --ep-bg-base: #071024;
-  --ep-bg-deep: #0d1d3f;
-  --ep-bg-night: #102651;
+  --ep-bg-base: #070b1e;
+  --ep-bg-deep: #0a142f;
+  --ep-bg-night: #050b18;
+  --ep-emerald: #10b981;
+  --ep-blue: #3b82f6;
+  --ep-glass-bg: rgba(0, 0, 0, 0.35);
+  --ep-glass-border: rgba(255, 255, 255, 0.08);
 }
 
 .app-shell {
   background:
-    radial-gradient(1000px 620px at 16% 14%, rgba(59, 130, 246, 0.28), transparent 60%),
-    radial-gradient(840px 560px at 78% 70%, rgba(45, 212, 191, 0.18), transparent 62%),
+    radial-gradient(1200px 800px at 15% 15%, rgba(59, 130, 246, 0.15), transparent 70%),
+    radial-gradient(1000px 700px at 85% 85%, rgba(16, 185, 129, 0.1), transparent 70%),
+    radial-gradient(800px 600px at 50% 50%, rgba(99, 102, 241, 0.05), transparent 70%),
     linear-gradient(160deg, var(--ep-bg-base) 0%, var(--ep-bg-deep) 45%, var(--ep-bg-night) 100%);
-}
-
-.pyramid-stage {
-  position: relative;
-  overflow: hidden;
+  background-attachment: fixed;
 }
 
 .pyramid-stage::after {
@@ -50,19 +51,74 @@ input[type="range"] {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
-  background-size: 44px 44px;
-  opacity: 0.38;
-  -webkit-mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0.9) 0%, transparent 80%);
-  mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0.9) 0%, transparent 80%);
+    linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.5;
+  -webkit-mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 1) 0%, transparent 90%);
+  mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 1) 0%, transparent 90%);
+  z-index: 1;
 }
 
-/* Provider Identity Dots */
+/* Premium UI Elements */
+.glass-panel {
+  background: var(--ep-glass-bg);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--ep-glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+.text-gradient {
+  background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animations */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Footer & Provider Dots */
 .provider-dot { 
   display: inline-block;
-  width: 0.5rem; /* 8px */
-  height: 0.5rem; /* 8px */
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 9999px;
 }
 .provider-dot-gpt { background-color: #10a37f; }
