@@ -53,15 +53,22 @@ const MainHeader: React.FC<MainHeaderProps> = ({
           </div>
         )}
 
-        <div className="hidden md:flex items-center gap-2 text-[10px] px-2 py-1 rounded-full bg-black/30 border border-white/10 backdrop-blur-sm">
-          <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 shadow-[0_0_5px_#10b981]' : 'bg-rose-500 shadow-[0_0_5px_#f43f5e]'}`} />
-          <span>CORE</span>
-          <span className={`w-2 h-2 rounded-full ${swarmConnected ? 'bg-emerald-500 shadow-[0_0_5px_#10b981]' : 'bg-rose-500 shadow-[0_0_5px_#f43f5e]'}`} />
-          <span>SWARM</span>
-          <span className="text-slate-500">|</span>
-          <span>{activeSessionCount} active</span>
-          <span className="text-slate-500">/</span>
-          <span>{totalSessions}</span>
+        <div className="hidden md:flex items-center gap-2 text-[10px] px-2.5 py-1 rounded-full bg-black/30 border border-white/10 backdrop-blur-sm transition-all duration-300">
+          <div className="flex items-center gap-1.5" title="Core Connection Status">
+            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-rose-500 shadow-[0_0_8px_#f43f5e] animate-pulse'}`} />
+            <span className={isConnected ? 'text-slate-300' : 'text-rose-400 font-bold'}>{isConnected ? 'CORE' : 'CORE OFFLINE'}</span>
+          </div>
+          <span className="text-white/10 mx-0.5">|</span>
+          <div className="flex items-center gap-1.5" title="Swarm Network Status">
+            <span className={`w-2 h-2 rounded-full ${swarmConnected ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-amber-500/50'}`} />
+            <span className={swarmConnected ? 'text-slate-300' : 'text-slate-500'}>SWARM</span>
+          </div>
+          <span className="text-white/10 mx-0.5 ml-1">|</span>
+          <div className="flex items-center gap-1 px-1">
+            <span className="text-emerald-400/80 font-mono">{activeSessionCount}</span>
+            <span className="text-white/20">/</span>
+            <span className="text-slate-400 font-mono">{totalSessions}</span>
+          </div>
         </div>
         
         <button

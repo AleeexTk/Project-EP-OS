@@ -1,4 +1,7 @@
 import sys
+import json
+import os
+import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Callable
 
@@ -15,17 +18,59 @@ class SystemPolicyManager:
     Part of the Iron Guardian (Provocateur) runtime layer.
     """
     
+    # Filesystem paths for persistence
+    _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+    _LOG_FILE = _PROJECT_ROOT / "gamma_pyramid_reflective" / "B_Evo_Log" / "violations.json"
+    _QUARANTINE_FILE = _PROJECT_ROOT / "gamma_pyramid_reflective" / "B_Evo_Log" / "quarantine.json"
+
+    # Persistent class-level storage
     audit_log: List[Dict[str, Any]] = []
     quarantine_list: set[str] = set()
+    
+    _initialized = False
 
     def __init__(self, default_policy: Optional[SystemPolicy] = None):
         self.policy = default_policy or SystemPolicy()
         self.reporting_hooks: List[Callable[[Dict[str, Any]], None]] = []
+        SystemPolicyManager._ensure_initialized()
+
+    @classmethod
+    def _ensure_initialized(cls):
+        """Loads existing audit logs and quarantine list from disk if not already done."""
+        if not cls._initialized:
+            try:
+                # Load Violations
+                if cls._LOG_FILE.exists():
+                    with open(cls._LOG_FILE, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        if isinstance(data, list):
+                            cls.audit_log = data
+                
+                # Load Quarantine
+                if cls._QUARANTINE_FILE.exists():
+                    with open(cls._QUARANTINE_FILE, "r", encoding="utf-8") as f:
+                        q_data = json.load(f)
+                        if isinstance(q_data, list):
+                            cls.quarantine_list = set(q_data)
+            except Exception as e:
+                logging.error(f"[POLICY_MANAGER] Failed to load persistent data: {e}")
+            cls._initialized = True
 
     def quarantine_node(self, node_id: str):
         """Places a node into quarantine, blocking all of its actions."""
-        self.quarantine_list.add(node_id)
-        print(f"[POLICY_MANAGER] Node '{node_id}' placed in QUARANTINE.")
+        if node_id not in self.quarantine_list:
+            self.quarantine_list.add(node_id)
+            self._save_quarantine()
+            logging.info(f"[POLICY_MANAGER] Node '{node_id}' placed in QUARANTINE.")
+
+    def _save_quarantine(self):
+        """Saves the current quarantine list to disk."""
+        try:
+            os.makedirs(os.path.dirname(self._QUARANTINE_FILE), exist_ok=True)
+            with open(self._QUARANTINE_FILE, "w", encoding="utf-8") as f:
+                json.dump(list(self.quarantine_list), f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            logging.error(f"[POLICY_MANAGER] Failed to save quarantine list: {e}")
 
     def model_copy(self, deep=True):
         """Pydantic v2 compatibility for manual copies if needed."""
@@ -82,7 +127,7 @@ class SystemPolicyManager:
                 cascade_success = CascadeValidator.validate_descent(envelope, target_z)
                 if not cascade_success:
                     if envelope.cascade_status == CascadeStatus.BLOCKED:
-                        print(f"[POLICY_MANAGER] Task blocked by Monument. Handing over to Z14_AUTO_CORRECTOR...")
+                        logging.warning(f"[POLICY_MANAGER] Task blocked by Monument. Handing over to Z14_AUTO_CORRECTOR...")
                         try:
                             import sys
                             from pathlib import Path
@@ -103,10 +148,10 @@ class SystemPolicyManager:
                                 envelope.status = TaskStatus.PENDING
                                 if "error" in envelope.metadata:
                                     del envelope.metadata["error"]
-                                print(f"[POLICY_MANAGER] Z14 Auto-Corrector resurrected the task successfully.")
+                                logging.info(f"[POLICY_MANAGER] Z14 Auto-Corrector resurrected the task successfully.")
                                 return True
                         except Exception as e:
-                            print(f"[POLICY_MANAGER] Auto-Corrector bypass failed: {e}")
+                            logging.error(f"[POLICY_MANAGER] Auto-Corrector bypass failed: {e}")
 
                     self._log_violation(envelope)
                     return False
@@ -130,7 +175,7 @@ class SystemPolicyManager:
                 self._sec_guardian = SecGuardian()
             return self._sec_guardian.audit(envelope)
         except Exception as e:
-            print(f"[POLICY_MANAGER] CRITICAL: SEC_GUARDIAN initialization failed: {e}")
+            logging.error(f"[POLICY_MANAGER] CRITICAL: SEC_GUARDIAN initialization failed: {e}")
             envelope.status = TaskStatus.FAILED
             envelope.metadata["error"] = f"SecurityServiceUnavailable: {e}"
             return False  # Fail-closed: block actions if guardian is broken
@@ -161,9 +206,20 @@ class SystemPolicyManager:
         }
         self.audit_log.append(violation_event)
         
+        # Persistent save to disk
+        try:
+            os.makedirs(os.path.dirname(self._LOG_FILE), exist_ok=True)
+            with open(self._LOG_FILE, "w", encoding="utf-8") as f:
+                json.dump(self.audit_log, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            logging.error(f"[POLICY_MANAGER] Failed to save audit log: {e}")
+            
         # Trigger external reporters (Reflective Layer)
         for hook in self.reporting_hooks:
             try:
                 hook(violation_event)
             except Exception as e:
-                print(f"[POLICY_MANAGER] Error in reporting hook: {e}")
+                logging.error(f"[POLICY_MANAGER] Error in reporting hook: {e}")
+
+# Auto-initialize on module load to ensure persistent data is available to all components
+SystemPolicyManager._ensure_initialized()
