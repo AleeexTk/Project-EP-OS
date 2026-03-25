@@ -2,7 +2,7 @@
 
 ## Статус
 
-**Canonical Protocol / EvoPyramid Validation Layer**
+## Core Mechanism
 
 ## Назначение
 

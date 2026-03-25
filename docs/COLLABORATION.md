@@ -1,8 +1,21 @@
-﻿# Collaboration Protocol
+# Collaboration Protocol
 
 This project can be worked on by multiple active sessions safely if everyone follows a lock-first workflow.
 
+## Communication Style
+
+- Keep responses concise.
+
+## Naming Conventions
+
+- Use snake_case for Python.
+
+## Code Quality
+
+- No silent failures.
+
 ## Rules
+
 1. Claim lock(s) before editing any file.
 2. One owner per file path at a time.
 3. Keep lock TTL short (default 90 minutes); renew if needed.
@@ -10,6 +23,7 @@ This project can be worked on by multiple active sessions safely if everyone fol
 5. Write handoff notes to `state/session_handoff.md`.
 
 ## Commands
+
 - Claim lock:
   `powershell -ExecutionPolicy Bypass -File .\tools\collab\Lock-File.ps1 -Owner "session-a" -Path "evopyramid-v2/src/App.tsx" -Task "UI sync button"`
 - Release lock:
@@ -18,7 +32,8 @@ This project can be worked on by multiple active sessions safely if everyone fol
   `powershell -ExecutionPolicy Bypass -File .\tools\collab\List-Locks.ps1`
 
 ## Suggested ownership split
+
 - Session A: UI/UX and `evopyramid-v2/*`
-- Session B: API/core and `β_Pyramid_Functional/*`
+- Session B: API/core and `beta_pyramid_functional/*`
 
 Adjust split per sprint, but keep lock discipline strict.
