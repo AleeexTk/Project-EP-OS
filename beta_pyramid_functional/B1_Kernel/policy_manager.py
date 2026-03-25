@@ -184,7 +184,7 @@ class SystemPolicyManager:
                             z14_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR")
                             if z14_path not in sys.path:
                                 sys.path.insert(0, z14_path)
-                            from auto_corrector import AutoCorrectorNode
+                            from z14_policy_corrector import AutoCorrectorNode
                             
                             repaired_envelope = AutoCorrectorNode.intercept_and_repair(envelope, envelope.metadata.get("error", "Semantic Integrity Lost"))
                             

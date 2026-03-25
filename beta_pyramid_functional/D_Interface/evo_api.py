@@ -20,13 +20,15 @@ from pydantic import BaseModel
 
 # --- [Z14 AUTO-CORRECTOR DYNAMIC INJECTION] ---
 ROOT_DIR = Path(__file__).resolve().parents[2]
-AUTO_CORRECTOR_PATH = ROOT_DIR / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR"
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
+AUTO_CORRECTOR_PATH = ROOT_DIR / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR"
 if str(AUTO_CORRECTOR_PATH) not in sys.path:
     sys.path.append(str(AUTO_CORRECTOR_PATH))
 
 try:
-    import auto_corrector as AC
+    import z14_policy_corrector as AC
 except ImportError:
     AC = None
 
@@ -410,7 +412,8 @@ def _load_manifest(manifest_path: Path) -> Dict[str, Any]:
             with open(manifest_path, "r", encoding="utf-8-sig") as f:
                 data = json.load(f)
                 return data if isinstance(data, dict) else {}
-    except: pass
+    except Exception as e:
+        logging.error(f"Failed to load manifest at {manifest_path}: {e}")
     return {}
 
 def _node_from_structure_dir(layer_dir: Path, sector_dir: Path, node_dir: Path) -> Optional[Node]:

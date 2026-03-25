@@ -735,37 +735,6 @@
       "memory_color": "yellow",
       "gravity": 0.5
     },
-    "test_stress_node": {
-      "id": "test_stress_node",
-      "title": "Stress Test Node",
-      "z_level": 5,
-      "sector": "GREEN",
-      "coords": {
-        "x": 5,
-        "y": 5,
-        "z": 5
-      },
-      "layer_type": "beta",
-      "kind": "module",
-      "summary": "Node for testing manifestor.py extraction",
-      "state": "active",
-      "canon_status": "runtime",
-      "artifacts": [],
-      "links": [],
-      "children": [],
-      "source_refs": [],
-      "metadata": {
-        "source": "filesystem-discovery",
-        "path": "beta_pyramid_functional/GREEN/5_Stress_Test_Node",
-        "layer_folder": "beta_pyramid_functional"
-      },
-      "runtime_canon_flag": "runtime",
-      "session_url": null,
-      "browser_profile_dir": null,
-      "orchestrator_state": "unlinked",
-      "memory_color": "white",
-      "gravity": 1.0
-    },
     "legit_node": {
       "id": "legit_node",
       "title": "Legit Local Node",
@@ -989,7 +958,48 @@
       "gravity": 1.0
     }
   },
-  "links": [],
+  "links": [
+    {
+      "source_id": "gen-nexus",
+      "target_id": "gen-meta",
+      "link_type": "orchestrates"
+    },
+    {
+      "source_id": "gen-meta",
+      "target_id": "gen-bridge",
+      "link_type": "orchestrates"
+    },
+    {
+      "source_id": "gen-bridge",
+      "target_id": "gh_ci_guardian",
+      "link_type": "orchestrates"
+    },
+    {
+      "source_id": "gen-pear",
+      "target_id": "gen-async-jobs",
+      "link_type": "orchestrates"
+    },
+    {
+      "source_id": "gen-async-jobs",
+      "target_id": "gen-webmcp",
+      "link_type": "orchestrates"
+    },
+    {
+      "source_id": "gen-webmcp",
+      "target_id": "gen-dashboard",
+      "link_type": "orchestrates"
+    },
+    {
+      "source_id": "gen-dashboard",
+      "target_id": "netlify_deploy_beacon",
+      "link_type": "orchestrates"
+    },
+    {
+      "source_id": "netlify_deploy_beacon",
+      "target_id": "deploy_audit_ledger",
+      "link_type": "orchestrates"
+    }
+  ],
   "system_metrics": {
     "health_pct": 0.0,
     "health_status": "offline",

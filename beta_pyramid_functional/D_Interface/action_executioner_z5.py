@@ -7,7 +7,7 @@ Subscribes to Z8 Agent Bus for 'action_executioner' pulses.
 import logging
 from typing import Dict, Any
 
-from β_Pyramid_Functional.agent_bus_z8 import get_bus
+from beta_pyramid_functional.agent_bus_z8 import get_bus
 
 logger = logging.getLogger(__name__)
 

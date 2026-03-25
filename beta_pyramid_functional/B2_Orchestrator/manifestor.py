@@ -101,8 +101,8 @@ class PhysicalManifestor:
                     )
                     if any(marker in existing_text for marker in legacy_markers):
                         entry_point.unlink()
-                except Exception:
-                    pass
+                except Exception as e:
+                    logging.debug(f"[MANIFESTOR] Failed to remove legacy markers from {entry_point}: {e}")
 
             if not entry_point.exists():
                 is_genesis = (node.id or "").startswith("gen-")
@@ -224,8 +224,8 @@ class PhysicalManifestor:
                     if any(marker in current_text for marker in legacy_markers) and node_id in current_state.nodes:
                         node_dir = Path(PhysicalManifestor.manifest_node(current_state.nodes[node_id]))
                         index_py = node_dir / "index.py"
-                except Exception:
-                    pass
+                except Exception as e:
+                    logging.debug(f"[MANIFESTOR] Failed to check/repair legacy markers: {e}")
 
             if not index_py.exists() and node_id in current_state.nodes:
                 node_dir = Path(PhysicalManifestor.manifest_node(current_state.nodes[node_id]))

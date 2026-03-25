@@ -11,7 +11,7 @@ import json
 import math
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parents[4]
+ROOT_DIR = Path(__file__).resolve().parents[3]
 STATE_FILE = ROOT_DIR / "state" / "pyramid_state.json"
 
 

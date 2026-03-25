@@ -4,7 +4,7 @@ import json
 from typing import Callable, Awaitable
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parents[3]
+ROOT_DIR = Path(__file__).resolve().parents[2]
 
 class PulserEngine:
     """

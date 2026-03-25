@@ -13,8 +13,8 @@ from pathlib import Path
 import asyncio
 
 # ── Root resolution ───────────────────────────────────────────────────────────
-ROOT_DIR = Path(__file__).resolve().parents[4]  # α_Pyramid_Core/SPINE/17_.../index.py
-sys.path.insert(0, str(ROOT_DIR / "α_Pyramid_Core"))
+ROOT_DIR = Path(__file__).resolve().parents[3]  # alpha_pyramid_core/SPINE/17_.../index.py
+sys.path.insert(0, str(ROOT_DIR / "alpha_pyramid_core"))
 sys.path.insert(0, str(ROOT_DIR))
 
 

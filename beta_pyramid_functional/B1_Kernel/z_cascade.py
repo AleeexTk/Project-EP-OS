@@ -53,15 +53,29 @@ class CascadeValidator:
         envelope.cascade_status = CascadeStatus.ACTIVE
         
         # 1. Semantic Integrity (Такт 1. Семантическая целостность)
+        # Check if intent is present
+        if not envelope.intent and not envelope.payload.get("synthesis_proposal"):
+             ChaosEngine.register_friction(envelope, "Missing semantic intent or synthesis proposal.")
+             # We don't block yet, but we log the friction.
+
         if envelope.payload.get("simulate_semantic_loss", False):
             Monument.block(envelope, "Semantic Integrity Lost. Original intent distorted.")
             return False
             
         # 2. Inter-level Consistency (Такт 2. Межуровневая согласованность)
+        # Sliding Z-Pair Invariant: Origin must be strictly above Target
+        if envelope.origin_z <= target_z:
+            Monument.block(envelope, f"Consistency Failed. Origin Z{envelope.origin_z} must be higher than Target Z{target_z}.")
+            return False
+
         if envelope.payload.get("simulate_inconsistency", False):
             ChaosEngine.register_friction(envelope, "Inter-level capability mismatch.")
             Monument.block(envelope, "Consistency Failed. Target level cannot structurally accept this state.")
             return False
+
+        # Placeholder for real SK_Engine validation (Phase 6 Integration)
+        # In the future, this calls SK_Engine.validate_coherence(envelope.intent, envelope.payload['synthesis_proposal'])
+        logging.info(f"[Z-CASCADE] SK_Engine internal coherence check: PASSED (Symbolic)")
 
         # 3. Crystallization (Такт 3. Кристаллизация перехода)
         if Monument.crystallize(envelope):

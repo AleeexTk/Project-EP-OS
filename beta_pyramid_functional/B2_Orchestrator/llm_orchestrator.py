@@ -518,7 +518,7 @@ class AgentOrchestrator:
             )
         
         # Log context for debugging
-        print(f"\n[ORCHESTRATOR DEBUG] Generated System Context for {session.node_id}:\n{ctx}\n")
+        logging.debug(f"\n[ORCHESTRATOR DEBUG] Generated System Context for {session.node_id}:\n{ctx}\n")
         return ctx
 
     @staticmethod

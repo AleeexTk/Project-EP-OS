@@ -1,13 +1,14 @@
 from __future__ import annotations
-print("SESSION API STARTING")
+import logging
+# Session Registry API - Z9 - Beta layer.
+logger = logging.getLogger(__name__)
+logger.info("SESSION API STARTING")
 """
-Session Registry API - Z9 - Beta layer.
 FastAPI routes for agent-session lifecycle and Swarm Terminal streaming.
 """
 
 import asyncio
 import json
-import logging
 import os
 import re
 import sys

@@ -22,7 +22,7 @@ class PEARSeed:
             "status": "seed_planted"
         }
         
-        target_path = self.root_dir / "α_Pyramid_Core" / "C_Intent" / f"pulse_{self.pulse_id}.json"
+        target_path = self.root_dir / "alpha_pyramid_core" / "C_Intent" / f"pulse_{self.pulse_id}.json"
         with open(target_path, "w", encoding="utf-8") as f:
             json.dump(seed_data, f, indent=2, ensure_ascii=False)
             
