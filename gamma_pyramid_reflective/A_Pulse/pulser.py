@@ -20,13 +20,13 @@ class PulserEngine:
 
     async def anchor_pulse(self):
         """Background task to sync physical reality with visual state."""
-        from manifestor import RealityAnchor
+        from beta_pyramid_functional.B2_Orchestrator.manifestor import RealityAnchor
         while self.is_running:
             try:
                 changed = False
                 for node_id, node in self.state.nodes.items():
                     health = RealityAnchor.calculate_node_health(node_id)
-                    from models import NodeState
+                    from alpha_pyramid_core.B_Structure.models import NodeState
                     # Transition logic
                     new_state = NodeState.ACTIVE if health > 0.7 else NodeState.IDLE if health > 0.3 else NodeState.ERROR
 
@@ -94,7 +94,7 @@ class PulserEngine:
         import shutil
         while self.is_running:
             try:
-                from reality_monitor_z3 import RealityMonitor
+                from gamma_pyramid_reflective.A_Pulse.reality_monitor_z3 import RealityMonitor
                 monitor = RealityMonitor()
                 report = monitor.check_integrity()
                 if report["status"] != "HEALTHY":
@@ -110,7 +110,7 @@ class PulserEngine:
                         nodes_to_purge.append(node_id)
                 
                 if nodes_to_purge:
-                    from manifestor import PhysicalManifestor
+                    from beta_pyramid_functional.B2_Orchestrator.manifestor import PhysicalManifestor
                     for node_id in nodes_to_purge:
                         try:
                             # 1. Resolve physical path

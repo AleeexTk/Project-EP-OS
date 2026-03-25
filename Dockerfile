@@ -24,5 +24,6 @@ COPY . .
 # Expose port (default FastAPI port)
 EXPOSE 8000
 
-# Use uvicorn to run the app
-CMD ["uvicorn", "beta_pyramid_functional.D_Interface.evo_api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use uvicorn to run the app with proxy headers for cloud deployment
+# Run uvicorn on the port provided by Cloud Run ($PORT)
+CMD ["sh", "-c", "uvicorn beta_pyramid_functional.D_Interface.evo_api:app --host 0.0.0.0 --port ${PORT:-8080} --proxy-headers"]

@@ -57,6 +57,16 @@ logging.basicConfig(
 STATE_DIR = ROOT_DIR / "state"
 STATE_FILE = STATE_DIR / "pyramid_state.json"
 
+# --- [CORS CONFIGURATION] ---
+# Essential for V2 Cloud Deployment (Netlify/Render)
+env_origins = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else []
+allowed_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",  # Vite default
+    "http://127.0.0.1:5173",
+] + [o.strip() for o in env_origins if o.strip()]
+
 def load_state() -> PyramidState:
     try:
         if STATE_FILE.exists():
@@ -153,7 +163,7 @@ async def lifespan(app: FastAPI):
     # Initialize Z-Bus
     zbus_task = None
     try:
-        from zbus import zbus
+        from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         from beta_pyramid_functional.B1_Kernel.ws_manager import manager as global_manager
         zbus_task = asyncio.create_task(zbus.run_worker(global_manager, current_state))
         
@@ -488,7 +498,7 @@ async def health():
 @app.get("/health/audit")
 async def health_audit():
     try:
-        from reality_monitor_z3 import RealityMonitor
+        from gamma_pyramid_reflective.A_Pulse.reality_monitor_z3 import RealityMonitor
         return RealityMonitor().check_integrity()
     except Exception as e:
         return {"status": "ERROR", "message": str(e)}
@@ -496,7 +506,7 @@ async def health_audit():
 @app.get("/health/seven")
 async def health_seven():
     try:
-        from reality_monitor_z3 import RealityMonitor
+        from gamma_pyramid_reflective.A_Pulse.reality_monitor_z3 import RealityMonitor
         return RealityMonitor.perform_seven_audit()
     except Exception as e:
         return {"status": "ERROR", "message": str(e)}
@@ -507,7 +517,7 @@ async def health_kernel():
     Returns the status of the Spine-Kernel and active security policies.
     """
     try:
-        from policy_manager import SystemPolicyManager
+        from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
         policy_mgr = SystemPolicyManager()
         return {
             "status": "ONLINE",
@@ -526,7 +536,7 @@ async def kernel_dispatch(envelope: TaskEnvelope):
     Enforces security policies defined in the Kernel.
     """
     try:
-        from policy_manager import SystemPolicyManager
+        from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
         policy_mgr = SystemPolicyManager()
         
         if not policy_mgr.validate_action(envelope):
@@ -728,7 +738,7 @@ async def zbus_publish(event: dict):
     Calls the internal zbus broadcast mechanism.
     """
     try:
-        from zbus import zbus
+        from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         await zbus.broadcast_event(event)
         return {"status": "event_broadcasted"}
     except Exception as e:
@@ -744,7 +754,7 @@ class PromptRequest(BaseModel):
 async def trigger_prompt(req: PromptRequest):
     """Evo API v1: Unified prompt routing dispatch with Policy Enforcement."""
     try:
-        from zbus import zbus
+        from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
         from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
     except ImportError:
@@ -829,7 +839,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     await websocket.send_json({"type": "full_state", "data": current_state.model_dump()})
     try:
-        from zbus import zbus
+        from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         while True:
             data = await websocket.receive_text()
             try:

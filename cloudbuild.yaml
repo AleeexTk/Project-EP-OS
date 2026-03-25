@@ -1,0 +1,28 @@
+steps:
+  # 1. Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/ep-os-d287b/evopyramid-core', '.']
+
+  # 2. Push the image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/ep-os-d287b/evopyramid-core']
+
+  # 3. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'evopyramid-core'
+      - '--image'
+      - 'gcr.io/ep-os-d287b/evopyramid-core'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'ALLOWED_ORIGINS=https://ep-os-d287b.firebaseapp.com,https://ep-os-d287b.web.app'
+
+images:
+  - 'gcr.io/ep-os-d287b/evopyramid-core'
