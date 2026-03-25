@@ -4,6 +4,8 @@ import json
 from typing import Callable, Awaitable
 from pathlib import Path
 
+ROOT_DIR = Path(__file__).resolve().parents[3]
+
 class PulserEngine:
     """
     Background worker engine for EvoPyramid.
@@ -54,7 +56,11 @@ class PulserEngine:
 
     def _calculate_compliance(self) -> float:
         """Reads the violation log, counts per-node infractions, and enforces quarantine."""
-        log_path = Path(r"c:\Users\Alex Bear\Desktop\EvoPyramid OS\gamma_pyramid_reflective\B_Evo_Log\violations.json")
+        from pathlib import Path
+        # Resolve path relative to project root (App root is /app in container)
+        # ROOT_DIR here should be the project root
+        project_root = Path(__file__).resolve().parents[3]
+        log_path = project_root / "gamma_pyramid_reflective" / "B_Evo_Log" / "violations.json"
         try:
             if log_path.exists():
                 with open(log_path, "r", encoding="utf-8") as f:

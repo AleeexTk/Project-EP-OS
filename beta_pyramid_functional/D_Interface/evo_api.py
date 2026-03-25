@@ -60,12 +60,15 @@ STATE_FILE = STATE_DIR / "pyramid_state.json"
 # --- [CORS CONFIGURATION] ---
 # Essential for V2 Cloud Deployment (Netlify/Render)
 env_origins = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else []
-allowed_origins = [
+raw_origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://localhost:5173",  # Vite default
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
 ] + [o.strip() for o in env_origins if o.strip()]
+
+# Normalize: No trailing slashes, unique origins
+allowed_origins = list(set(o.rstrip('/') for o in raw_origins))
 
 def load_state() -> PyramidState:
     try:
