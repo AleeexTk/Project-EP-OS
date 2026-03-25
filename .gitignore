@@ -34,3 +34,8 @@ evo_data/tmp*
 *.log
 *.pem
 tmp/
+beta_pyramid_functional_backup/
+*.log
+beta_pyramid_functional/B3_SessionRegistry/*.log
+beta_pyramid_functional/D_Interface/logs/
+evo_data/
