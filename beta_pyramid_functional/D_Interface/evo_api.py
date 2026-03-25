@@ -319,10 +319,20 @@ async def lifespan(app: FastAPI):
                      except Exception:
                          pass
 
+                # Audit violations from PolicyManager (Persistent)
+                try:
+                    from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
+                    metrics["audit_violations"] = len(SystemPolicyManager.audit_log)
+                except Exception:
+                    metrics["audit_violations"] = 0
+
                 if metrics:
                     current_state.system_metrics = metrics
-                    # Full state broadcast is handled by other events (like pulser) periodically, 
-                    # but we could also broadcast a lightweight metrics update if needed.
+                    # Broadast metrics update to all connected UIs
+                    await manager.broadcast({
+                        "type": "system_metrics_update",
+                        "data": metrics
+                    })
             except Exception as e:
                 logging.error(f"Metrics poller error: {e}")
             

@@ -191,6 +191,8 @@ export function usePyramidState() {
               [message.data.id]: message.data,
             };
             applySnapshot(nextSnapshot);
+          } else if (message.type === 'system_metrics_update') {
+            setSystemMetrics(message.data);
           } else if (message.type === 'zbus_event') {
             setLatestZBusEvent(message.data);
           }

@@ -15,11 +15,12 @@ class SystemPolicyManager:
     Part of the Iron Guardian (Provocateur) runtime layer.
     """
     
+    audit_log: List[Dict[str, Any]] = []
+    quarantine_list: set[str] = set()
+
     def __init__(self, default_policy: Optional[SystemPolicy] = None):
         self.policy = default_policy or SystemPolicy()
-        self.audit_log: List[Dict[str, Any]] = []
         self.reporting_hooks: List[Callable[[Dict[str, Any]], None]] = []
-        self.quarantine_list: set[str] = set()
 
     def quarantine_node(self, node_id: str):
         """Places a node into quarantine, blocking all of its actions."""

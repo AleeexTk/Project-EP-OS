@@ -1,32 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { ShieldCheck, Activity, AlertCircle } from 'lucide-react';
-import { CORE_API_BASE } from '../lib/config';
+import { usePyramidState } from '../lib/usePyramidState';
 
 export default function KernelMonitor() {
-  const [status, setStatus] = useState<any>(null);
+  const { isConnected, systemMetrics } = usePyramidState();
+  const [violations, setViolations] = useState(0);
 
   useEffect(() => {
-    const fetchKernel = async () => {
-      try {
-        const r = await fetch(`${CORE_API_BASE}/health/kernel`);
-        if (r.ok) setStatus(await r.json());
-      } catch {
-        setStatus(null);
-      }
-    };
-    fetchKernel();
-    const t = setInterval(fetchKernel, 15000);
-    return () => clearInterval(t);
-  }, []);
+    if (systemMetrics?.audit_violations !== undefined) {
+      setViolations(systemMetrics.audit_violations);
+    }
+  }, [systemMetrics]);
 
-  if (!status) return null;
+  if (!isConnected) return null;
 
-  const hasViolations = status.audit_violations > 0;
+  const hasViolations = violations > 0;
 
   return (
-    <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px]">
+    <div className={`flex items-center gap-2 px-2 py-1 rounded-full transition-all duration-500 border ${hasViolations ? 'bg-rose-500/10 border-rose-500/30' : 'bg-blue-500/10 border-blue-500/20'} text-[10px]`}>
       <div className="relative">
-        <Activity className={`w-3.5 h-3.5 ${status.status === 'ONLINE' ? 'text-blue-400 animate-pulse' : 'text-slate-500'}`} />
+        <Activity className={`w-3.5 h-3.5 ${isConnected ? 'text-blue-400 animate-pulse' : 'text-slate-500'}`} />
         {hasViolations && (
           <div className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full animate-ping" />
         )}
@@ -36,7 +29,7 @@ export default function KernelMonitor() {
       {hasViolations ? (
         <span className="text-rose-400 font-bold flex items-center gap-1">
           <AlertCircle className="w-3 h-3" />
-          VIOLATIONS: {status.audit_violations}
+          VIOLATIONS: {violations}
         </span>
       ) : (
         <span className="text-emerald-400 font-medium">PROTECTED</span>
