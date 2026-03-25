@@ -1,7 +1,7 @@
 import React from 'react';
-import { Layers3, Radar, Sparkles, Table2 } from 'lucide-react';
+import { Layers3, Radar, Sparkles, Table2, ShieldAlert } from 'lucide-react';
 
-type TabId = 'core' | 'nexus' | 'genesis' | 'table';
+type TabId = 'core' | 'nexus' | 'genesis' | 'table' | 'security';
 
 interface NavigationTabsProps {
   activeTab: TabId;
@@ -38,6 +38,13 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ activeTab, onTabChange 
       >
         <Table2 className="w-3.5 h-3.5" />
         Table
+      </button>
+      <button
+        onClick={() => onTabChange('security')}
+        className={`px-3 py-1.5 rounded-full text-[11px] font-semibold flex items-center gap-1.5 transition-all duration-300 ${activeTab === 'security' ? 'bg-rose-600 text-white shadow-[0_0_15px_rgba(225,29,72,0.4)]' : 'text-slate-300 hover:bg-white/10'}`}
+      >
+        <ShieldAlert className="w-3.5 h-3.5" />
+        Security
       </button>
     </div>
   );

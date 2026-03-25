@@ -674,6 +674,48 @@ async def patch_node_status(node_id: str, patch: NodeStatusPatch):
         "runtime_canon_flag": node.runtime_canon_flag
     }
 
+# ─────────────────────────────────────────
+#  Policy & Amnesty Management
+# ─────────────────────────────────────────
+
+class AmnestyRequest(BaseModel):
+    node_id: str
+    reason: str
+    actor: str = "SystemAdmin"
+
+@app.get("/policy/audit")
+async def get_policy_audit():
+    return SystemPolicyManager.audit_log
+
+@app.delete("/policy/audit")
+async def clear_policy_audit():
+    SystemPolicyManager().clear_audit_log()
+    return {"status": "ok", "message": "Audit log cleared"}
+
+@app.get("/policy/quarantine")
+async def get_quarantined_nodes():
+    return list(SystemPolicyManager.quarantine_list)
+
+@app.post("/policy/quarantine/{node_id}")
+async def apply_quarantine(node_id: str):
+    SystemPolicyManager().quarantine_node(node_id)
+    if node_id in current_state.nodes:
+        current_state.nodes[node_id].state = "quarantined"
+        await manager.broadcast({"type": "node_update", "data": current_state.nodes[node_id].model_dump()})
+    return {"status": "ok", "node_id": node_id}
+
+@app.post("/policy/amnesty")
+async def grant_amnesty(req: AmnestyRequest):
+    SystemPolicyManager().unquarantine_node(req.node_id, reason=req.reason, actor=req.actor)
+    if req.node_id in current_state.nodes:
+        current_state.nodes[req.node_id].state = "idle"
+        await manager.broadcast({"type": "node_update", "data": current_state.nodes[req.node_id].model_dump()})
+    return {"status": "ok", "node_id": req.node_id, "message": "Amnesty granted"}
+
+@app.get("/policy/amnesty")
+async def get_amnesty_journal():
+    return SystemPolicyManager.amnesty_journal
+
 
 @app.post("/link")
 async def add_link(link: Link):

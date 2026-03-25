@@ -14,6 +14,7 @@ import PyramidScene from './components/PyramidScene';
 import MainHeader from './components/Layout/MainHeader';
 import NavigationTabs from './components/Layout/NavigationTabs';
 import SidebarControls from './components/Layout/SidebarControls';
+import AmnestyPanel from './components/Security/AmnestyPanel';
 
 import { CORE_API_BASE } from './lib/config';
 import { EvoNode } from './lib/evo';
@@ -22,7 +23,7 @@ import { usePyramidState } from './lib/usePyramidState';
 import { PyramidProvider } from './lib/PyramidContext';
 import { AgentSession, useSessionRegistry } from './lib/useSessionRegistry';
 
-type TabId = 'core' | 'nexus' | 'genesis' | 'table';
+type TabId = 'core' | 'nexus' | 'genesis' | 'table' | 'security';
 type ViewMode = 'structure' | 'directory' | 'active' | 'collaboration' | 'canon';
 
 const PROVIDER_COLORS: Record<string, string> = {
@@ -298,6 +299,10 @@ function App() {
               onSelectNode={setSelectedNodeId}
             />
           </div>
+        ) : activeTab === 'security' ? (
+          <div className="h-full pt-24 pb-6 px-3 md:px-6 max-w-6xl mx-auto">
+            <AmnestyPanel />
+          </div>
         ) : (
           <div className="h-full">
             <EvoPyramid
@@ -312,7 +317,7 @@ function App() {
           </div>
         )}
 
-        {activeTab !== 'table' && activeTab !== 'nexus' && (
+        {activeTab !== 'table' && activeTab !== 'nexus' && activeTab !== 'security' && (
           <SidebarControls 
             panX={panX}
             panY={panY}

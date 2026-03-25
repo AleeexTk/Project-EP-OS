@@ -22,10 +22,12 @@ class SystemPolicyManager:
     _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
     _LOG_FILE = _PROJECT_ROOT / "gamma_pyramid_reflective" / "B_Evo_Log" / "violations.json"
     _QUARANTINE_FILE = _PROJECT_ROOT / "gamma_pyramid_reflective" / "B_Evo_Log" / "quarantine.json"
+    _AMNESTY_FILE = _PROJECT_ROOT / "gamma_pyramid_reflective" / "B_Evo_Log" / "amnesty.json"
 
     # Persistent class-level storage
     audit_log: List[Dict[str, Any]] = []
     quarantine_list: set[str] = set()
+    amnesty_journal: List[Dict[str, Any]] = []
     
     _initialized = False
 
@@ -52,6 +54,13 @@ class SystemPolicyManager:
                         q_data = json.load(f)
                         if isinstance(q_data, list):
                             cls.quarantine_list = set(q_data)
+                
+                # Load Amnesty Journal
+                if cls._AMNESTY_FILE.exists():
+                    with open(cls._AMNESTY_FILE, "r", encoding="utf-8") as f:
+                        a_data = json.load(f)
+                        if isinstance(a_data, list):
+                            cls.amnesty_journal = a_data
             except Exception as e:
                 logging.error(f"[POLICY_MANAGER] Failed to load persistent data: {e}")
             cls._initialized = True
@@ -62,6 +71,45 @@ class SystemPolicyManager:
             self.quarantine_list.add(node_id)
             self._save_quarantine()
             logging.info(f"[POLICY_MANAGER] Node '{node_id}' placed in QUARANTINE.")
+
+    def unquarantine_node(self, node_id: str, reason: str = "Manual Admin Amnesty", actor: str = "SystemAdmin"):
+        """Removes a node from quarantine (Amnesty Protocol)."""
+        if node_id in self.quarantine_list:
+            self.quarantine_list.remove(node_id)
+            self._save_quarantine()
+            
+            # Record in Amnesty Journal
+            from datetime import datetime
+            record = {
+                "node_id": node_id,
+                "timestamp": datetime.now().isoformat(),
+                "reason": reason,
+                "actor": actor
+            }
+            self.amnesty_journal.append(record)
+            self._save_amnesty()
+            
+            logging.info(f"[POLICY_MANAGER] Node '{node_id}' RELEASED from quarantine by {actor}. Reason: {reason}")
+
+    def _save_amnesty(self):
+        """Saves the amnesty journal to disk."""
+        try:
+            os.makedirs(os.path.dirname(self._AMNESTY_FILE), exist_ok=True)
+            with open(self._AMNESTY_FILE, "w", encoding="utf-8") as f:
+                json.dump(self.amnesty_journal, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            logging.error(f"[POLICY_MANAGER] Failed to save amnesty journal: {e}")
+
+    def clear_audit_log(self):
+        """Clears the persistent audit log."""
+        self.audit_log = []
+        try:
+            if self._LOG_FILE.exists():
+                with open(self._LOG_FILE, "w", encoding="utf-8") as f:
+                    json.dump([], f)
+            logging.info("[POLICY_MANAGER] Audit log CLEARED.")
+        except Exception as e:
+            logging.error(f"[POLICY_MANAGER] Failed to clear audit log: {e}")
 
     def _save_quarantine(self):
         """Saves the current quarantine list to disk."""
