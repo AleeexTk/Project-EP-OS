@@ -86,17 +86,32 @@ function SessionLauncher({ node, onClose, onCreated }: SessionLauncherProps) {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
               {PROVIDER_ORDER.map((id) => {
                 const active = provider === id;
-                const providerColor = providers[id]?.color_primary ?? '#94a3b8';
+                const hasApi = providers[id]?.has_api;
+                const color = providers[id]?.color_primary ?? '#94a3b8';
+                
                 return (
                   <button
                     key={id}
                     onClick={() => setProvider(id)}
-                    className={`px-3 py-2 rounded-lg border text-[12px] transition-colors ${active ? 'border-emerald-400 bg-emerald-500/10 text-emerald-100' : 'border-white/10 bg-black/20 text-slate-300 hover:bg-white/5'}`}
+                    className={`group relative px-3 py-2.5 rounded-xl border text-[12px] transition-all duration-200 ${
+                      active 
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
+                        : 'border-white/5 bg-black/40 text-slate-400 hover:border-white/20 hover:bg-white/5'
+                    }`}
                   >
-                    <span className="inline-flex items-center gap-2">
-                      <span className={`provider-dot provider-dot-${id}`} />
-                      {PROVIDER_LABELS[id]}
-                    </span>
+                    <div className="flex flex-col items-center gap-1.5">
+                      <div className="flex items-center gap-2">
+                         <span className="w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: color, color: color }} />
+                         <span className="font-medium">{PROVIDER_LABELS[id]}</span>
+                      </div>
+                      <div className="flex gap-1">
+                        {hasApi ? (
+                          <span className="text-[8px] px-1 bg-blue-500/20 text-blue-300 rounded border border-blue-500/30 uppercase font-bold">API</span>
+                        ) : (
+                          <span className="text-[8px] px-1 bg-amber-500/20 text-amber-300 rounded border border-amber-500/30 uppercase font-bold">Bridge</span>
+                        )}
+                      </div>
+                    </div>
                   </button>
                 );
               })}
