@@ -217,6 +217,24 @@
       "action": "sync_structure",
       "result_summary": "{'status': 'ok', 'added': 0, 'updated': 26, 'layers': 5, 'scanned_dirs': 26, 'discovered': 26}",
       "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1774425231175",
+      "timestamp": "2026-03-25T07:53:51.230871+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 2, 'updated': 26, 'layers': 5, 'scanned_dirs': 28, 'discovered': 28}",
+      "status": "ACCEPTED"
+    },
+    {
+      "task_id": "ux-1774425476364",
+      "timestamp": "2026-03-25T07:57:56.386238+00:00",
+      "source": "EvoPyramid_UX_Core",
+      "origin_z": 1,
+      "action": "sync_structure",
+      "result_summary": "{'status': 'ok', 'added': 0, 'updated': 28, 'layers': 5, 'scanned_dirs': 28, 'discovered': 28}",
+      "status": "ACCEPTED"
     }
   ]
 }

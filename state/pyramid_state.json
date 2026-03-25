@@ -766,37 +766,6 @@
       "memory_color": "white",
       "gravity": 1.0
     },
-    "renegade_node": {
-      "id": "renegade_node",
-      "title": "Renegade",
-      "z_level": 17,
-      "sector": "SPINE",
-      "coords": {
-        "x": 0,
-        "y": 0,
-        "z": 17
-      },
-      "layer_type": "alpha",
-      "kind": "module",
-      "summary": "Attempted illegal Z17 manifestation",
-      "state": "error",
-      "canon_status": "runtime",
-      "artifacts": [],
-      "links": [],
-      "children": [],
-      "source_refs": [],
-      "metadata": {
-        "source": "filesystem-discovery",
-        "path": "alpha_pyramid_core/SPINE/17_Renegade",
-        "layer_folder": "alpha_pyramid_core"
-      },
-      "runtime_canon_flag": "runtime",
-      "session_url": null,
-      "browser_profile_dir": null,
-      "orchestrator_state": "unlinked",
-      "memory_color": "blue",
-      "gravity": 0.5
-    },
     "legit_node": {
       "id": "legit_node",
       "title": "Legit Local Node",
@@ -949,6 +918,68 @@
         "source": "filesystem-discovery",
         "path": "gamma_pyramid_reflective/SPINE/2_INTEGRITY_OBSERVER",
         "layer_folder": "gamma_pyramid_reflective"
+      },
+      "runtime_canon_flag": "runtime",
+      "session_url": null,
+      "browser_profile_dir": null,
+      "orchestrator_state": "unlinked",
+      "memory_color": "white",
+      "gravity": 1.0
+    },
+    "sec_guardian": {
+      "id": "sec_guardian",
+      "title": "SEC GUARDIAN",
+      "z_level": 12,
+      "sector": "SPINE",
+      "coords": {
+        "x": 9,
+        "y": 9,
+        "z": 12
+      },
+      "layer_type": "beta",
+      "kind": "module",
+      "summary": "Discovered: SPINE/12_SEC_GUARDIAN",
+      "state": "idle",
+      "canon_status": "runtime",
+      "artifacts": [],
+      "links": [],
+      "children": [],
+      "source_refs": [],
+      "metadata": {
+        "source": "filesystem-discovery",
+        "path": "alpha_pyramid_core/SPINE/12_SEC_GUARDIAN",
+        "layer_folder": "alpha_pyramid_core"
+      },
+      "runtime_canon_flag": "runtime",
+      "session_url": null,
+      "browser_profile_dir": null,
+      "orchestrator_state": "unlinked",
+      "memory_color": "white",
+      "gravity": 1.0
+    },
+    "auto_corrector": {
+      "id": "auto_corrector",
+      "title": "AUTO CORRECTOR",
+      "z_level": 14,
+      "sector": "SPINE",
+      "coords": {
+        "x": 9,
+        "y": 9,
+        "z": 14
+      },
+      "layer_type": "beta",
+      "kind": "module",
+      "summary": "Discovered: SPINE/14_AUTO_CORRECTOR",
+      "state": "idle",
+      "canon_status": "runtime",
+      "artifacts": [],
+      "links": [],
+      "children": [],
+      "source_refs": [],
+      "metadata": {
+        "source": "filesystem-discovery",
+        "path": "alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR",
+        "layer_folder": "alpha_pyramid_core"
       },
       "runtime_canon_flag": "runtime",
       "session_url": null,
