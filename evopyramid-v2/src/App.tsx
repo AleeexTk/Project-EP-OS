@@ -19,6 +19,7 @@ import { CORE_API_BASE } from './lib/config';
 import { EvoNode } from './lib/evo';
 import { useSwarmTerminal } from './lib/useSwarmTerminal';
 import { usePyramidState } from './lib/usePyramidState';
+import { PyramidProvider } from './lib/PyramidContext';
 import { AgentSession, useSessionRegistry } from './lib/useSessionRegistry';
 
 type TabId = 'core' | 'nexus' | 'genesis' | 'table';
@@ -377,7 +378,13 @@ function App() {
   );
 }
 
-export default App;
+export default function WrappedApp() {
+  return (
+    <PyramidProvider>
+      <App />
+    </PyramidProvider>
+  );
+}
 
 
 
