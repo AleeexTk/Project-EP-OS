@@ -7,5 +7,14 @@
     "source": "test_node_z5",
     "target": "system",
     "origin_z": 5
+  },
+  {
+    "task_id": "ux-1774450351551",
+    "action": "manifest_node",
+    "error": "Z-Violation: Node at Z1 cannot manifest Z17 (High-Pyramid).",
+    "timestamp": "2026-03-25T14:52:31.551000+00:00",
+    "source": "EvoPyramid_UX_Core",
+    "target": "gen-nexus",
+    "origin_z": 1
   }
 ]

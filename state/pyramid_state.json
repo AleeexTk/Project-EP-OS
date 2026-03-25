@@ -993,7 +993,7 @@
   "system_metrics": {
     "health_pct": 0.0,
     "health_status": "offline",
-    "audit_violations": 0
+    "audit_violations": 1
   },
   "bridge_health": "online",
   "latest_bridge_event": null

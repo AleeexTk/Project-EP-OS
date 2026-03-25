@@ -98,7 +98,9 @@ const AmnestyPanel: React.FC = () => {
           </div>
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Security & Amnesty Hub</h2>
-            <p className="text-xs text-rose-400/70 font-mono italic">Trinity Integrity Protocol V4.1</p>
+            <p className="text-xs text-rose-400 font-mono italic opacity-80 mt-1">
+              Trinity Integrity Protocol V4.2
+            </p>
           </div>
         </div>
         <button 

@@ -721,7 +721,13 @@ async def get_repair_history():
     # Dynamically import to avoid circular dependency if any, 
     # though RepairJournal is in alpha_pyramid_core
     try:
-        from alpha_pyramid_core.SPINE.14_AUTO_CORRECTOR.auto_corrector import RepairJournal
+        import sys
+        from pathlib import Path
+        PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+        z14_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR")
+        if z14_path not in sys.path:
+            sys.path.insert(0, z14_path)
+        from auto_corrector import RepairJournal
         RepairJournal._ensure_initialized()
         return RepairJournal.repair_history
     except Exception as e:

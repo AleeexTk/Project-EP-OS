@@ -4,5 +4,11 @@
     "timestamp": "2026-03-25T16:20:23.507598",
     "reason": "API Test Success",
     "actor": "Tester"
+  },
+  {
+    "node_id": "ROGUE_NODE_001",
+    "timestamp": "2026-03-25T16:50:28.280988",
+    "reason": "Manual Review: Structural Integrity Verified",
+    "actor": "Pyramid_Admin"
   }
 ]
