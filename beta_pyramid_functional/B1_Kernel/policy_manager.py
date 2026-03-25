@@ -1,8 +1,8 @@
 from __future__ import annotations
 try:
-    from .contracts import TaskEnvelope, SystemPolicy, TaskStatus
+    from .contracts import TaskEnvelope, SystemPolicy, TaskStatus, CascadeStatus
 except ImportError:
-    from contracts import TaskEnvelope, SystemPolicy, TaskStatus
+    from contracts import TaskEnvelope, SystemPolicy, TaskStatus, CascadeStatus
 from typing import Dict, Any, List, Optional
 
 class SystemPolicyManager:
@@ -68,9 +68,36 @@ class SystemPolicyManager:
                     from .z_cascade import CascadeValidator
                 except ImportError:
                     from z_cascade import CascadeValidator
-                    
+
                 cascade_success = CascadeValidator.validate_descent(envelope, target_z)
                 if not cascade_success:
+                    if envelope.cascade_status == CascadeStatus.BLOCKED:
+                        print(f"[POLICY_MANAGER] Task blocked by Monument. Handing over to Z14_AUTO_CORRECTOR...")
+                        try:
+                            import sys
+                            from pathlib import Path
+                            # policy_manager.py -> B1_Kernel -> beta_pyramid_functional -> PROJECT_ROOT
+                            PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+                            z14_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR")
+                            if z14_path not in sys.path:
+                                sys.path.append(z14_path)
+                            from auto_corrector import AutoCorrectorNode
+                            
+                            repaired_envelope = AutoCorrectorNode.intercept_and_repair(envelope, envelope.metadata.get("error", "Semantic Integrity Lost"))
+                            
+                            # Second pass validation on repaired envelope
+                            if CascadeValidator.validate_descent(repaired_envelope, target_z):
+                                # Success! Mutate original envelope to match repaired logic
+                                envelope.payload["synthesis_proposal"] = repaired_envelope.payload.get("synthesis_proposal")
+                                envelope.cascade_status = CascadeStatus.CRYSTALLIZED
+                                envelope.status = TaskStatus.PENDING
+                                if "error" in envelope.metadata:
+                                    del envelope.metadata["error"]
+                                print(f"[POLICY_MANAGER] Z14 Auto-Corrector resurrected the task successfully.")
+                                return True
+                        except Exception as e:
+                            print(f"[POLICY_MANAGER] Auto-Corrector bypass failed: {e}")
+
                     self._log_violation(envelope)
                     return False
 

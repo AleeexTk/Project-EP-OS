@@ -32,6 +32,7 @@ class TaskEnvelope(BaseModel):
     status: TaskStatus = TaskStatus.PENDING
     cascade_status: Optional[CascadeStatus] = None
     origin_z: int = 1   # Z-level of the source node
+    intent: Optional[str] = None  # Original Architect's intent (canonical goal)
     metadata: Dict[str, Any] = Field(default_factory=dict)
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
 

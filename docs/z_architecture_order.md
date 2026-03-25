@@ -36,7 +36,8 @@
 | `openai_docs_hub` | OpenAI Docs Hub | PURPLE | `alpha_pyramid_core/PURPLE/15_OPENAI_DOCS_HUB` | ✅ Есть |
 
 **Z14 — INFRA** (между Z15 и Z13): ✅ **ЕСТЬ**
-> Файл: `alpha_pyramid_core/SPINE/14_POLICY_BUS/index.py`
+> Узел 1: `alpha_pyramid_core/SPINE/14_POLICY_BUS/index.py`
+> Узел 2 (Промотирован): `alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR/auto_corrector.py` (Авто-Адвокат Z-Каскада)
 
 ---
 
@@ -47,7 +48,8 @@
 | `gen-bridge` | EVO BRIDGE | RED | `alpha_pyramid_core/RED/13_EVO_BRIDGE` | ✅ Есть |
 
 **Z12 — INFRA** (между Z13 и Z11): ✅ **ЕСТЬ**
-> Файл: `alpha_pyramid_core/RED/12_PROVIDER_ROUTER/index.py`
+> Узел 1: `alpha_pyramid_core/RED/12_PROVIDER_ROUTER/index.py`
+> Узел 2 (Промотирован): `alpha_pyramid_core/SPINE/12_SEC_GUARDIAN/index.py` (Агент-прокси для безопасности)
 
 ---
 
@@ -187,8 +189,10 @@ Z17  SPINE  gen-nexus          [GLOBAL NEXUS]        ← вершина
 Z16  SPINE  nexus_router       [BOOT ROUTER]         ✅
 Z15  PURPLE gen-meta           [EVO META]
 Z14  SPINE  policy_bus         [POLICY BUS]          ✅
+Z14  SPINE  auto_corrector     [AUTO CORRECTOR]      ✅ В РАЗРАБОТКЕ
 Z13  RED    gen-bridge         [EVO BRIDGE]
 Z12  RED    provider_router    [PROVIDER ROUTER]     ✅
+Z12  SPINE  sec_guardian       [SEC GUARDIAN]        ✅ В РАЗРАБОТКЕ
 Z11  GOLD   gen-pear           [PEAR LOOP]
 Z10  SPINE  cr_gateway         [CR GATEWAY]          ✅
 ─────────── Alpha / Beta boundary ───────────────────

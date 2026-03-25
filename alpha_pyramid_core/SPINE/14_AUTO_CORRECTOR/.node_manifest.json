@@ -1,0 +1,9 @@
+{
+  "node_id": "auto_corrector",
+  "title": "AUTO CORRECTOR",
+  "z_level": 14,
+  "sector": "SPINE",
+  "layer": "alpha",
+  "description": "Z-Cascade Auto-Advocate that repairs blocked tasks.",
+  "status": "active"
+}
