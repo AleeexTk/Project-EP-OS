@@ -90,7 +90,8 @@ class PulserEngine:
             logging.warning(f"[PULSER] [DISCIPLINE] Node '{node_id}' placed in QUARANTINE due to excessive violations (>=3).")
 
     async def self_heal_pulse(self):
-        """Background task for structural self-healing."""
+        """Background task for structural self-healing and Garbage Collection."""
+        import shutil
         while self.is_running:
             try:
                 from reality_monitor_z3 import RealityMonitor
@@ -98,7 +99,46 @@ class PulserEngine:
                 report = monitor.check_integrity()
                 if report["status"] != "HEALTHY":
                     logging.warning(f"[PULSER] [HEALER] Integrity issues found: {len(report['issues'])}")
-                    # Potential for auto-triggering repair here if configured
+                    
+                # V4.3 Garbage Collector (Executioner) Logic
+                nodes_to_purge = []
+                for node_id, node in list(self.state.nodes.items()):
+                    is_locked = getattr(node, "state", None) == "locked"
+                    is_renegade = "renegade" in node_id.lower() or "rogue" in node_id.lower()
+                    
+                    if is_locked or is_renegade:
+                        nodes_to_purge.append(node_id)
+                
+                if nodes_to_purge:
+                    from manifestor import PhysicalManifestor
+                    for node_id in nodes_to_purge:
+                        try:
+                            # 1. Resolve physical path
+                            node_dir = PhysicalManifestor.resolve_node_dir(node_id)
+                            # 2. Delete physical folder
+                            if node_dir and node_dir.exists():
+                                shutil.rmtree(node_dir)
+                                logging.warning(f"[PULSER] [EXECUTIONER] Physically annihilated folder for '{node_id}'.")
+                            else:
+                                logging.warning(f"[PULSER] [EXECUTIONER] Folder for '{node_id}' not found. Removing from matrix only.")
+                            
+                            # 3. Erase from state matrix
+                            del self.state.nodes[node_id]
+                            logging.warning(f"[PULSER] [EXECUTIONER] Erased '{node_id}' from state matrix.")
+                        except Exception as purge_err:
+                            logging.error(f"[PULSER] [EXECUTIONER] Failed to purge '{node_id}': {purge_err}")
+                            
+                    # Trigger broadcast and save state
+                    self.save_state(self.state)
+                    await self.manager.broadcast({
+                        "type": "STATE_UPDATE", 
+                        "state": self.state.model_dump(),
+                        "metrics": {
+                            "compliance_score": self._calculate_compliance(),
+                            "resilience_index": max(0.0, 1.0 - (self.violation_count * 0.1))
+                        }
+                    })
+                    
             except Exception as e:
                 logging.error(f"[PULSER] Self-Heal Pulse Error: {e}")
             await asyncio.sleep(300)
