@@ -32,3 +32,5 @@ Thumbs.db
 # Generated Data
 evo_data/tmp*
 *.log
+*.pem
+tmp/
