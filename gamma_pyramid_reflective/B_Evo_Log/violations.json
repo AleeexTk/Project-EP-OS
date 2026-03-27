@@ -1,18 +1,9 @@
 [
   {
-    "task_id": "f684e5bb-9c4c-4007-a8c1-9226035d04e6",
+    "task_id": "ux-1774482363358",
     "action": "manifest_node",
-    "error": "Z-Violation: Node at Z5 cannot manifest Z15 (High-Pyramid).",
-    "timestamp": "2026-03-25T08:33:53.238853+00:00",
-    "source": "test_node_z5",
-    "target": "system",
-    "origin_z": 5
-  },
-  {
-    "task_id": "ux-1774450351551",
-    "action": "manifest_node",
-    "error": "Z-Violation: Node at Z1 cannot manifest Z17 (High-Pyramid).",
-    "timestamp": "2026-03-25T14:52:31.551000+00:00",
+    "error": "Z-Violation: Node at Z1 cannot manifest Z16 (High-Pyramid).",
+    "timestamp": "2026-03-25T23:46:03.358000+00:00",
     "source": "EvoPyramid_UX_Core",
     "target": "gen-nexus",
     "origin_z": 1

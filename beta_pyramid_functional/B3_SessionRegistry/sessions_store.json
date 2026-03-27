@@ -1324,6 +1324,72 @@
       "bridge_status": "connected",
       "supervisor_enabled": true,
       "focusable": true
+    },
+    "sess_fe54635d": {
+      "id": "sess_fe54635d",
+      "node_id": "nexus_router",
+      "node_z": 16,
+      "node_sector": "SPINE",
+      "provider": "copilot",
+      "account_hint": "@AleeexTk",
+      "model_hint": null,
+      "task_title": "репо AleeexTk/Project-EP-OS",
+      "task_context": "Ориентирование и координация агентов пирамиды. + Консультация AlexCreator",
+      "status": "active",
+      "created_at": "2026-03-25T23:20:13.292262+00:00",
+      "updated_at": "2026-03-25T23:20:13.292308+00:00",
+      "messages": [],
+      "external_url": "https://github.com/copilot/c/3309fc85-78bf-4c3e-8378-007b4d0aa44f",
+      "external_origin": "github.com",
+      "external_title": null,
+      "bridge_mode": "hybrid",
+      "bridge_status": "connected",
+      "supervisor_enabled": true,
+      "focusable": true
+    },
+    "sess_6375426a": {
+      "id": "sess_6375426a",
+      "node_id": "deploy_audit_ledger",
+      "node_z": 1,
+      "node_sector": "SPINE",
+      "provider": "ollama",
+      "account_hint": null,
+      "model_hint": null,
+      "task_title": "Audit Ledger on Z1 network within SPINE",
+      "task_context": null,
+      "status": "active",
+      "created_at": "2026-03-25T23:56:37.941621+00:00",
+      "updated_at": "2026-03-26T00:01:13.318823+00:00",
+      "messages": [
+        {
+          "id": "b72b2223-2417-4943-b785-75a54028562e",
+          "role": "user",
+          "content": "привет",
+          "ts": "2026-03-25T23:57:18.726616+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "c444b3b2-6b7c-453e-9d0f-681b40aa7fa4",
+          "role": "assistant",
+          "content": "Привет! Чем помочь?",
+          "ts": "2026-03-25T23:58:14.828011+00:00",
+          "agent_ref": null
+        },
+        {
+          "id": "acc0a463-c135-45e4-afef-b0dd96d26bac",
+          "role": "assistant",
+          "content": "⚠ AI Orchestration Error: timed out",
+          "ts": "2026-03-26T00:01:13.318790+00:00",
+          "agent_ref": null
+        }
+      ],
+      "external_url": "http://127.0.0.1:53237/c/019d2766-6924-72c5-aa6b-4d0077345244",
+      "external_origin": "127.0.0.1:53237",
+      "external_title": null,
+      "bridge_mode": "hybrid",
+      "bridge_status": "connected",
+      "supervisor_enabled": true,
+      "focusable": true
     }
   }
 }
