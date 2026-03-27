@@ -55,6 +55,7 @@ python -m unittest discover -s tests -p "test_*.py"
 
 ## Documentation
 
+- **[EP-OS Canonical Execution Model](docs/ep_os_canonical_execution_model.md)** — The Hybrid Truth and layer separation.
 - **[Z-Architecture Order & Z-Levels](docs/z_architecture_order.md)** — Z1 to Z17 tiering.
 - **[Project Architectural Audit](docs/PROJECT_AUDIT.md)** — Structural health and milestones.
 - **[Trinity Protocol](docs/trinity_protocol.md)** — Triad role interactions.
