@@ -120,9 +120,6 @@ class SystemPolicyManager:
         except Exception as e:
             logging.error(f"[POLICY_MANAGER] Failed to save quarantine list: {e}")
 
-    def model_copy(self, deep=True):
-        """Pydantic v2 compatibility for manual copies if needed."""
-        return super().model_copy(deep=deep)
 
     def register_reporter(self, hook: Callable[[Dict[str, Any]], None]):
         """Registers a callback for security/architectural violations."""

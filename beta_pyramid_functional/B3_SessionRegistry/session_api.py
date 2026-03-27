@@ -18,7 +18,7 @@ from typing import Any, List, Optional
 from urllib import error as urlerror
 from urllib import request as urlrequest
 
-import google.generativeai as genai
+
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field

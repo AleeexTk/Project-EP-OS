@@ -47,9 +47,9 @@ class SystemConfig:
     SK2_SIMILARITY_THRESHOLD = 0.15
     SK3_CLUSTER_THRESHOLD = 0.3
     
-    # Пути данных
-    DATA_DIR = Path("evo_data")
-    BACKUP_DIR = Path("evo_backups")
+    # Пути данных — absolute, anchored to this file to avoid cwd pollution
+    DATA_DIR = Path(__file__).resolve().parents[4] / "evo_data"
+    BACKUP_DIR = Path(__file__).resolve().parents[4] / "evo_backups"
     
     @classmethod
     def validate(cls):
@@ -352,6 +352,7 @@ class HealthChecker:
     def check_persistence(persistence: 'QuantumPersistence') -> Dict:
         """Проверка целостности хранилища"""
         issues = []
+        warnings = []  # FIX: was missing, caused NameError on line referencing warnings.append
         
         # Проверка файлов
         main_file = persistence.base_dir / "blocks.json"
@@ -383,6 +384,7 @@ class HealthChecker:
         return {
             "status": status,
             "issues": issues,
+            "warnings": warnings,
             "total_blocks": persistence.get_stats()["total_blocks"],
             "check_timestamp": time.time()
         }

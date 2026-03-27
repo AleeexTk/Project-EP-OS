@@ -9,7 +9,7 @@ from typing import Any, List, Optional, Dict
 from urllib import error as urlerror
 from urllib import request as urlrequest
 
-import google.generativeai as genai
+from google import genai
 
 from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex
 from beta_pyramid_functional.B3_SessionRegistry.session_models import AgentSession, Provider
@@ -48,10 +48,13 @@ def _normalize_model_name(raw_name: Any) -> Optional[str]:
 
 
 def _supports_generate_content(model: Any) -> bool:
+    """Check if a model from the new google-genai SDK supports content generation."""
+    # In the new SDK, model names are strings in ListModelsResponse items
+    # Check supported_generation_methods if available (new SDK exposes it)
     methods = getattr(model, "supported_generation_methods", None)
-    if not methods:
-        return True
-    return any("generatecontent" in str(method).lower() for method in methods)
+    if methods is None:
+        return True  # assume yes if the field is absent
+    return any("generateContent" in str(m) for m in methods)
 
 
 def _model_names_from_registry(models: List[Any]) -> List[str]:
@@ -59,7 +62,8 @@ def _model_names_from_registry(models: List[Any]) -> List[str]:
     for model in models:
         if not _supports_generate_content(model):
             continue
-        raw_name = getattr(model, "name", None) or getattr(model, "model_name", None)
+        # New SDK: model.name is like 'models/gemini-2.0-flash'
+        raw_name = getattr(model, "name", None) or getattr(model, "display_name", None)
         normalized = _normalize_model_name(raw_name)
         if normalized and normalized not in names:
             names.append(normalized)
@@ -86,7 +90,8 @@ async def _resolve_gemini_model(model_hint: Optional[str], force_refresh: bool =
 
         available: List[str] = []
         try:
-            registry = await asyncio.to_thread(lambda: list(genai.list_models()))
+            _tmp_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY", ""))
+            registry = await asyncio.to_thread(lambda: list(_tmp_client.models.list()))
             available = _model_names_from_registry(registry)
         except Exception as exc:
             logger.warning("Gemini model discovery failed: %s", exc)
@@ -532,10 +537,31 @@ class AgentOrchestrator:
         return history
 
     @staticmethod
-    async def _send(model_name: str, system_ctx: str, history: List[dict], user_message: str) -> str:
-        model = genai.GenerativeModel(model_name)
-        chat = model.start_chat(history=history)
-        response = await asyncio.to_thread(chat.send_message, f"{system_ctx}\n\nUSER: {user_message}")
+    async def _send(api_key: str, model_name: str, system_ctx: str, history: List[dict], user_message: str) -> str:
+        """Send a message via the new google-genai SDK (V2)."""
+        client = genai.Client(api_key=api_key)
+
+        # Build contents list: system instruction + history + current user message
+        contents: List[dict] = []
+        # System context as first user turn (new SDK style)
+        contents.append({"role": "user", "parts": [{"text": system_ctx}]})
+        contents.append({"role": "model", "parts": [{"text": "Understood. I am ready to assist as the EvoPyramid assistant."}]})
+
+        # Append conversation history
+        for turn in history:
+            role = turn.get("role", "user")
+            parts = turn.get("parts", [])
+            text = parts[0] if isinstance(parts, list) and parts else str(parts)
+            contents.append({"role": role, "parts": [{"text": text}]})
+
+        # Final user message
+        contents.append({"role": "user", "parts": [{"text": user_message}]})
+
+        response = await asyncio.to_thread(
+            client.models.generate_content,
+            model=model_name,
+            contents=contents,
+        )
         return response.text
 
     @staticmethod
@@ -700,11 +726,10 @@ class AgentOrchestrator:
                         retry_seconds = max(1, int(_GEMINI_QUOTA_BLOCK_UNTIL - now))
                         return _quota_cooldown_message(session, retry_seconds, _GEMINI_QUOTA_BLOCK_REASON)
 
-                    genai.configure(api_key=api_key)
                     history = AgentOrchestrator._history(session)
                     last_msg = session.messages[-1].content
                     model_name = await _resolve_gemini_model(session.model_hint)
-                    response_text = await AgentOrchestrator._send(model_name, system_ctx, history, last_msg)
+                    response_text = await AgentOrchestrator._send(api_key, model_name, system_ctx, history, last_msg)
 
             # Unified Post-processing Evaluation
             evaluation = await OllamaSupervisor.evaluate_response(response_text)

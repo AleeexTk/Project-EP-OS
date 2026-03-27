@@ -4,7 +4,7 @@ from pathlib import Path
 
 API_URL = "http://localhost:8000"
 
-def test_endpoint(name, method, endpoint, payload=None):
+def _call_endpoint(name, method, endpoint, payload=None):
     print(f"Testing {name} [{method} {endpoint}]...")
     try:
         if method == "GET":
@@ -26,27 +26,27 @@ def main():
     print("--- EVOPYRAMID E2E API AUDIT ---")
     
     # 1. Sessions
-    test_endpoint("Session List", "GET", "/v1/sessions")
-    test_endpoint("Providers", "GET", "/v1/providers")
+    _call_endpoint("Session List", "GET", "/v1/sessions")
+    _call_endpoint("Providers", "GET", "/v1/providers")
     
     # 2. Workspace Tree
-    tree = test_endpoint("Workspace Tree", "GET", "/v1/workspace/tree")
+    tree = _call_endpoint("Workspace Tree", "GET", "/v1/workspace/tree")
     if tree:
         print(f"  Project Root: {tree.get('name')}")
     
     # 3. Workspace Read
-    test_endpoint("Read init file", "GET", "/v1/workspace/file?path=beta_pyramid_functional/__init__.py")
+    _call_endpoint("Read init file", "GET", "/v1/workspace/file?path=beta_pyramid_functional/__init__.py")
     
     # 4. Staging & Commit Cycle
     test_path = "tmp/e2e_test_file.txt"
-    staged = test_endpoint("Stage File Write", "POST", "/v1/workspace/file", {
+    staged = _call_endpoint("Stage File Write", "POST", "/v1/workspace/file", {
         "path": test_path,
         "content": "E2E Test Success",
         "overwrite": True
     })
     
     if staged:
-        test_endpoint("Commit File Write", "POST", "/v1/workspace/commit", {
+        _call_endpoint("Commit File Write", "POST", "/v1/workspace/commit", {
             "path": test_path,
             "content": "E2E Test Success - Final",
             "overwrite": True

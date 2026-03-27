@@ -26,14 +26,19 @@ class TestIntegrityBridge(unittest.TestCase):
         if self.violation_file.exists():
             with open(self.violation_file, "w", encoding="utf-8") as f:
                 json.dump([], f)
+                
+        # Also clear the class-level audit log from SystemPolicyManager
+        SystemPolicyManager.audit_log = []
+        SystemPolicyManager._initialized = False
 
     def test_end_to_end_violation(self):
         print("\n[TEST] Running End-to-End Integrity Bridge Test...")
         
         # 1. Setup Kernel and Observer
         pm = SystemPolicyManager()
+        # Verify observer is instantiated, but DO NOT register it as a reporter
+        # because SystemPolicyManager._log_violation already writes to the same violations.json file.
         obs = IntegrityObserver(str(self.log_dir))
-        pm.register_reporter(obs.report_violation)
         
         # 2. Trigger a Z-Level Violation (Z5 node trying to manifest Z15)
         envelope = TaskEnvelope(
