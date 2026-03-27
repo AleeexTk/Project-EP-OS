@@ -286,6 +286,73 @@ async def lifespan(app: FastAPI):
         zbus.subscribe("PROMPT_DISPATCH", zbus_truth_sync_handler)
         zbus.subscribe("prompt.dispatch", zbus_truth_sync_handler)
         logging.info("Z-Bus Truth Layer Sync subscribers registered.")
+
+        # --- Z-Bus Execution Worker ---
+        async def zbus_execute_task_handler(event_dict):
+            payload = event_dict.get("payload", {})
+            task_id = payload.get("task_id")
+            envelope_data = payload.get("envelope")
+            if not task_id or not envelope_data: return
+            
+            try:
+                from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope
+                from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
+                envelope = TaskEnvelope(**envelope_data)
+                policy_mgr = SystemPolicyManager()
+                
+                if not policy_mgr.validate_action(envelope):
+                    await zbus.publish({
+                        "topic": "TASK_RESULT",
+                        "payload": {
+                            "task_id": task_id,
+                            "status": "REJECTED",
+                            "reason": envelope.metadata.get("error", "Policy violation")
+                        }
+                    })
+                    return
+                
+                # Execution
+                result = {}
+                if envelope.action == "manifest_node":
+                    from alpha_pyramid_core.B_Structure.models import Node
+                    node = Node(**envelope.payload)
+                    current_state.nodes[node.id] = node
+                    save_state(current_state)
+                    path = PhysicalManifestor.manifest_node(node)
+                    await manager.broadcast({"type": "node_update", "data": node.model_dump(), "manifest_path": path})
+                    result = {"path": path}
+                elif envelope.action == "sync_structure":
+                    update_existing = envelope.payload.get("update_existing", False)
+                    result = await sync_modules(update_existing=update_existing)
+                elif envelope.action == "apply_canon_guard":
+                    update_existing = envelope.payload.get("update_existing", True)
+                    prune_missing = envelope.payload.get("prune_missing", False)
+                    result = await guard_apply(update_existing=update_existing, prune_missing=prune_missing)
+                
+                _log_to_journal(envelope, status="ACCEPTED", result=result)
+                
+                await zbus.publish({
+                    "topic": "TASK_RESULT",
+                    "payload": {
+                        "task_id": task_id,
+                        "status": "ACCEPTED",
+                        "orchestrator": "Z-Bus Event Loop (Z16/Z14)",
+                        "result": result
+                    }
+                })
+            except Exception as e:
+                logging.error(f"[Z-Bus Executor] Task {task_id} failed: {e}")
+                await zbus.publish({
+                    "topic": "TASK_RESULT",
+                    "payload": {
+                        "task_id": task_id,
+                        "status": "ERROR",
+                        "message": str(e)
+                    }
+                })
+                
+        zbus.subscribe("EXECUTE_TASK", zbus_execute_task_handler)
+        logging.info("Z-Bus Execution Engine active.")
         
     except ImportError:
         logging.warning("Z-Bus module not found. Orchestrator communication offline.")
@@ -539,53 +606,22 @@ async def health_kernel():
 async def kernel_dispatch(envelope: TaskEnvelope):
     """
     Mandatory dispatch gate for all autonomous tasks.
-    Enforces security policies defined in the Kernel.
+    Dispatches tasks via the Z-Bus Nexus Router (Hybrid Model Canon).
     """
     try:
-        from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
-        policy_mgr = SystemPolicyManager()
+        import importlib
+        router_module = importlib.import_module("alpha_pyramid_core.SPINE.16_NEXUS_ROUTER.index")
+        get_router = router_module.get_router
+        from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         
-        if not policy_mgr.validate_action(envelope):
-            return {
-                "status": "REJECTED",
-                "task_id": envelope.task_id,
-                "reason": envelope.metadata.get("error", "Policy violation")
-            }
-            
-        # Action Execution Logic
-        result = {}
-        if envelope.action == "manifest_node":
-            from models import Node
-            node_data = envelope.payload
-            node = Node(**node_data)
-            current_state.nodes[node.id] = node
-            save_state(current_state)
-            path = PhysicalManifestor.manifest_node(node)
-            await manager.broadcast({"type": "node_update", "data": node.model_dump(), "manifest_path": path})
-            result = {"path": path}
-            
-        elif envelope.action == "sync_structure":
-            update_existing = envelope.payload.get("update_existing", False)
-            sync_res = await sync_modules(update_existing=update_existing)
-            result = sync_res
-            
-        elif envelope.action == "apply_canon_guard":
-            update_existing = envelope.payload.get("update_existing", True)
-            prune_missing = envelope.payload.get("prune_missing", False)
-            guard_res = await guard_apply(update_existing=update_existing, prune_missing=prune_missing)
-            result = guard_res
+        router = get_router(zbus)
         
-        # Log to Evolution Journal
-        _log_to_journal(envelope, status="ACCEPTED", result=result)
-
-        return {
-            "status": "ACCEPTED",
-            "task_id": envelope.task_id,
-            "orchestrator": "Spine-V2-Hardened",
-            "result": result
-        }
+        # We wait for the Z-Bus to execute and return the result via Future
+        result_payload = await router.dispatch_sync(envelope)
+        return result_payload
+        
     except Exception as e:
-        return {"status": "ERROR", "message": f"Dispatch failure: {e}"}
+        return {"status": "ERROR", "message": f"Router exception: {e}"}
 
 @app.post("/sync/discover-modules")
 async def sync_modules(update_existing: bool = False):
