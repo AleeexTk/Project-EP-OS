@@ -39,3 +39,4 @@ beta_pyramid_functional_backup/
 beta_pyramid_functional/B3_SessionRegistry/*.log
 beta_pyramid_functional/D_Interface/logs/
 evo_data/
+**/sessions_store.json
