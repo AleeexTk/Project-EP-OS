@@ -87,7 +87,7 @@ class AutoCorrectorNode:
             if not api_key:
                 raise RuntimeError("ANTHROPIC_API_KEY is not set")
             payload = {
-                "model": os.getenv("ANTHROPIC_MODEL", "").strip() or "claude-sonnet-4-5",
+                "model": os.getenv("ANTHROPIC_MODEL", "").strip() or "claude-sonnet-4-20250514",
                 "max_tokens": 512,
                 "messages": [{"role": "user", "content": prompt}],
             }
@@ -158,20 +158,6 @@ class AutoCorrectorNode:
         
         original_intent = repaired_envelope.intent or ""
         original_proposal = str(repaired_envelope.payload.get("synthesis_proposal", "") or "")
-        error_signature = f"{rejection_reason}::{original_intent}"
-
-        # Try cognitive recall first to bypass LLM when this pattern was already healed
-        recalled_proposal = None
-        try:
-            from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
-            bridge = asyncio.run(CognitiveBridge.get_instance())
-            recalled = asyncio.run(bridge.recall_healing_pattern(error_signature))
-            if recalled and recalled.get("content"):
-                content = str(recalled.get("content", ""))
-                recalled_proposal = content.split("[OUTCOME]", 1)[1].strip() if "[OUTCOME]" in content else content.strip()
-                logger.info(f"[Z14_AUTO_CORRECTOR] Reused healed pattern from CognitiveBridge for signature '{error_signature[:80]}'.")
-        except Exception as e:
-            logger.debug(f"[Z14_AUTO_CORRECTOR] Cognitive recall unavailable: {e}")
         
         if not original_intent:
             repaired_proposal = "Restored semantic alignment."
@@ -190,21 +176,6 @@ class AutoCorrectorNode:
             except Exception as e:
                 logger.error(f"[Z14_AUTO_CORRECTOR] LLM rewrite failed with {provider.value}: {e}")
                 repaired_proposal = original_intent
-
-        # Persist successful healing pattern for future recall
-        try:
-            from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
-            bridge = asyncio.run(CognitiveBridge.get_instance())
-            asyncio.run(
-                bridge.store_decision(
-                    topic=error_signature,
-                    outcome=repaired_proposal,
-                    z_level=14,
-                    tags=["heal", "resolution"],
-                )
-            )
-        except Exception as e:
-            logger.debug(f"[Z14_AUTO_CORRECTOR] Failed to store healing pattern: {e}")
             
         logger.info(f"[Z14_AUTO_CORRECTOR] Synthesis Proposal rewritten with {provider.value} provider logic.")
         
