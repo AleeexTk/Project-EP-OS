@@ -17,6 +17,8 @@ sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegist
 
 import json
 import os
+import urllib.request
+import urllib.error
 from datetime import datetime
 from typing import List, Dict, Any
 
@@ -70,6 +72,77 @@ class RepairJournal:
 
 class AutoCorrectorNode:
     @staticmethod
+    def _rewrite_with_provider(provider, original_intent: str, current_proposal: str, rejection_reason: str) -> str:
+        prompt = (
+            "Rewrite the synthesis_proposal so it strictly aligns with the original intent.\n"
+            "Return only the repaired synthesis_proposal text.\n\n"
+            f"Original intent:\n{original_intent}\n\n"
+            f"Current synthesis_proposal:\n{current_proposal}\n\n"
+            f"Rejection reason:\n{rejection_reason}\n"
+        )
+
+        if provider.value == "claude":
+            api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
+            if not api_key:
+                raise RuntimeError("ANTHROPIC_API_KEY is not set")
+            payload = {
+                "model": os.getenv("ANTHROPIC_MODEL", "").strip() or "claude-sonnet-4-5",
+                "max_tokens": 512,
+                "messages": [{"role": "user", "content": prompt}],
+            }
+            req = urllib.request.Request(
+                "https://api.anthropic.com/v1/messages",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={
+                    "Content-Type": "application/json",
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                result = json.loads(resp.read().decode("utf-8"))
+            blocks = result.get("content", [])
+            return "".join(b.get("text", "") for b in blocks if b.get("type") == "text").strip()
+
+        if provider.value == "gpt":
+            api_key = os.getenv("OPENAI_API_KEY", "").strip()
+            if not api_key:
+                raise RuntimeError("OPENAI_API_KEY is not set")
+            payload = {
+                "model": os.getenv("OPENAI_MODEL", "").strip() or "gpt-4o-mini",
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.2,
+            }
+            req = urllib.request.Request(
+                "https://api.openai.com/v1/chat/completions",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {api_key}",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                result = json.loads(resp.read().decode("utf-8"))
+            return result["choices"][0]["message"]["content"].strip()
+
+        api_key = os.getenv("GEMINI_API_KEY", "").strip()
+        if not api_key:
+            raise RuntimeError("GEMINI_API_KEY is not set")
+        model = os.getenv("GEMINI_MODEL", "").strip() or "gemini-2.0-flash"
+        payload = {"contents": [{"parts": [{"text": prompt}]}]}
+        endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+        req = urllib.request.Request(
+            endpoint,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        candidates = result.get("candidates", [])
+        parts = candidates[0].get("content", {}).get("parts", []) if candidates else []
+        return "".join(p.get("text", "") for p in parts).strip()
+
+    @staticmethod
     def intercept_and_repair(envelope: TaskEnvelope, rejection_reason: str) -> TaskEnvelope:
         """
         Takes a blocked envelope, uses an LLM (or fallback logic) to rewrite
@@ -82,14 +155,24 @@ class AutoCorrectorNode:
         # Retrieve best provider for Z14 logic repair
         provider = ProviderMatrix.get_best_available(14, "SPINE")
         
-        # In a full run, we would call ProviderMatrix / LLM here.
-        # For foundational implementation, we perform a deterministic repair based on original intent.
         original_intent = repaired_envelope.intent or ""
+        original_proposal = str(repaired_envelope.payload.get("synthesis_proposal", "") or "")
         
         if not original_intent:
             repaired_proposal = "Restored semantic alignment."
         else:
-            repaired_proposal = original_intent # Direct injection of the Architect's intent
+            try:
+                repaired_proposal = AutoCorrectorNode._rewrite_with_provider(
+                    provider=provider,
+                    original_intent=original_intent,
+                    current_proposal=original_proposal,
+                    rejection_reason=rejection_reason,
+                )
+                if not repaired_proposal:
+                    repaired_proposal = original_intent
+            except Exception as e:
+                logger.error(f"[Z14_AUTO_CORRECTOR] LLM rewrite failed with {provider.value}: {e}")
+                repaired_proposal = original_intent
             
         logger.info(f"[Z14_AUTO_CORRECTOR] Synthesis Proposal rewritten with {provider.value} provider logic.")
         
