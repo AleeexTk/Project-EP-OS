@@ -86,7 +86,7 @@ class AutoCorrectorNode:
             if not api_key:
                 raise RuntimeError("ANTHROPIC_API_KEY is not set")
             payload = {
-                "model": os.getenv("ANTHROPIC_MODEL", "").strip() or "claude-sonnet-4-5",
+                "model": os.getenv("ANTHROPIC_MODEL", "").strip() or "claude-sonnet-4-20250514",
                 "max_tokens": 512,
                 "messages": [{"role": "user", "content": prompt}],
             }
