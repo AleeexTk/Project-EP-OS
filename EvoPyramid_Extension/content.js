@@ -10,12 +10,46 @@ function emitToZBus(topic, payload, session_id, task_id, severity = "info") {
             timestamp: new Date().toISOString(),
             topic,
             session_id,
-            provider_id: "gpt",
+            provider_id: getProviderConfig().providerId,
             task_id,
             severity,
             payload
         }
     });
+}
+
+
+// ─── Provider-specific selectors ────────────────────────────────────────────
+function getProviderConfig() {
+    const host = window.location.hostname;
+
+    if (host.includes('claude.ai')) {
+        return {
+            providerId: 'claude',
+            promptSelectors: [
+                'div[contenteditable="true"].ProseMirror',
+                'div[contenteditable="true"]'
+            ],
+            sendSelectors: [
+                'button[aria-label="Send Message"]',
+                'button[data-testid="send-button"]'
+            ]
+        };
+    }
+
+    return {
+        providerId: 'gpt',
+        promptSelectors: [
+            '#prompt-textarea',
+            '[data-testid="prompt-textarea"]',
+            'div[contenteditable="true"]',
+            'textarea'
+        ],
+        sendSelectors: [
+            'button[data-testid="send-button"]',
+            'button[aria-label="Send prompt"]'
+        ]
+    };
 }
 
 // ─── Auth check ──────────────────────────────────────────────────────────────
@@ -71,15 +105,13 @@ function injectTextReact(element, text) {
 
 // ─── Find prompt area ────────────────────────────────────────────────────────
 function findPromptArea() {
-    // Primary: ChatGPT stable test IDs
-    const byId = document.querySelector('#prompt-textarea');
-    if (byId) return byId;
+    const config = getProviderConfig();
 
-    // Secondary: contenteditable with data-testid
-    const byTestId = document.querySelector('[data-testid="prompt-textarea"]');
-    if (byTestId) return byTestId;
+    for (const selector of config.promptSelectors) {
+        const el = document.querySelector(selector);
+        if (el) return el;
+    }
 
-    // Tertiary: any focused contenteditable in main area
     const allEditable = [...document.querySelectorAll('div[contenteditable="true"]')];
     const mainArea = document.querySelector('main');
     if (mainArea) {
@@ -87,7 +119,6 @@ function findPromptArea() {
         if (inMain) return inMain;
     }
 
-    // Fallback: any textarea
     return document.querySelector('textarea');
 }
 
@@ -133,8 +164,9 @@ function executeChatGPTFlow(promptText, sessionId, taskId) {
 
     // 4. Wait for React to process, then click Send
     setTimeout(() => {
-        const sendBtn = document.querySelector('button[data-testid="send-button"]') ||
-                        document.querySelector('button[aria-label="Send prompt"]');
+        const sendBtn = getProviderConfig().sendSelectors
+            .map(selector => document.querySelector(selector))
+            .find(Boolean);
 
         const getLatest = () => {
             const msgs = document.querySelectorAll('div[data-message-author-role="assistant"]');
@@ -156,8 +188,9 @@ function executeChatGPTFlow(promptText, sessionId, taskId) {
         } else if (sendBtn && sendBtn.disabled) {
             // Text may not have registered — retry once after a longer wait
             setTimeout(() => {
-                const retryBtn = document.querySelector('button[data-testid="send-button"]') ||
-                                 document.querySelector('button[aria-label="Send prompt"]');
+                const retryBtn = getProviderConfig().sendSelectors
+                    .map(selector => document.querySelector(selector))
+                    .find(Boolean);
                 if (retryBtn && !retryBtn.disabled) {
                     const prevMsg = getLatest();
                     triggerClick(retryBtn);
