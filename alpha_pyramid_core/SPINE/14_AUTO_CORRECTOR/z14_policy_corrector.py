@@ -4,6 +4,7 @@ Intercepts and repairs tasks blocked by the Z-Cascade Monument.
 """
 
 from __future__ import annotations
+import asyncio
 import copy
 import logging
 import sys
@@ -160,6 +161,8 @@ class AutoCorrectorNode:
         
         if not original_intent:
             repaired_proposal = "Restored semantic alignment."
+        elif recalled_proposal:
+            repaired_proposal = recalled_proposal
         else:
             try:
                 repaired_proposal = AutoCorrectorNode._rewrite_with_provider(
