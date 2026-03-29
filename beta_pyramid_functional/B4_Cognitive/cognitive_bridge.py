@@ -9,6 +9,8 @@ Wraps ProjectCortex (SK_Engine) and provides:
 - Singleton access via CognitiveBridge.get_instance()
 """
 
+from __future__ import annotations
+
 import asyncio
 import logging
 import uuid
