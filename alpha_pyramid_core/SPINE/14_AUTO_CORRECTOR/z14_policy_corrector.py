@@ -25,6 +25,7 @@ from typing import List, Dict, Any
 
 from contracts import TaskEnvelope, CascadeStatus, TaskStatus
 from provider_matrix import ProviderMatrix
+from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
 
 logger = logging.getLogger("AUTO_CORRECTOR")
 
@@ -72,6 +73,18 @@ class RepairJournal:
             logger.error(f"[REPAIR_JOURNAL] Failed to save history: {e}")
 
 class AutoCorrectorNode:
+    @staticmethod
+    def _run_async(coro):
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            return asyncio.run(coro)
+        return loop.run_until_complete(coro)
+
+    @staticmethod
+    def _build_error_signature(rejection_reason: str, original_intent: str) -> str:
+        return f"{rejection_reason}|{original_intent}".strip()
+
     @staticmethod
     def _rewrite_with_provider(provider, original_intent: str, current_proposal: str, rejection_reason: str) -> str:
         prompt = (
@@ -158,6 +171,17 @@ class AutoCorrectorNode:
         
         original_intent = repaired_envelope.intent or ""
         original_proposal = str(repaired_envelope.payload.get("synthesis_proposal", "") or "")
+        error_signature = AutoCorrectorNode._build_error_signature(rejection_reason, original_intent)
+        recalled_proposal = None
+        try:
+            bridge = AutoCorrectorNode._run_async(CognitiveBridge.get_instance())
+            recalled_memory = AutoCorrectorNode._run_async(bridge.recall_healing_pattern(error_signature))
+            if recalled_memory and isinstance(recalled_memory, dict):
+                content = str(recalled_memory.get("content", ""))
+                if "[OUTCOME]" in content:
+                    recalled_proposal = content.split("[OUTCOME]", 1)[1].strip()
+        except Exception as e:
+            logger.warning(f"[Z14_AUTO_CORRECTOR] Memory recall unavailable: {e}")
         
         if not original_intent:
             repaired_proposal = "Restored semantic alignment."
@@ -193,5 +217,18 @@ class AutoCorrectorNode:
             provider=provider.value,
             reason=rejection_reason
         )
+
+        try:
+            bridge = AutoCorrectorNode._run_async(CognitiveBridge.get_instance())
+            AutoCorrectorNode._run_async(
+                bridge.store_decision(
+                    topic=error_signature,
+                    outcome=repaired_proposal,
+                    z_level=14,
+                    tags=["heal", "z14_auto_corrector"],
+                )
+            )
+        except Exception as e:
+            logger.warning(f"[Z14_AUTO_CORRECTOR] Memory store unavailable: {e}")
         
         return repaired_envelope
