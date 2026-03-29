@@ -164,13 +164,16 @@ class CognitiveBridge:
         Returns:
             The persisted QuantumBlock.
         """
-        all_tags = list(set(["session_memory"] + (tags or [])))
+        if not CognitiveBridge._cache_loaded:
+            CognitiveBridge._load_healing_cache()
+
+        all_tags = sorted(set(["session_memory"] + (tags or [])))
 
         block = QuantumBlock(
             id=f"mem_{uuid.uuid4().hex[:10]}",
             hyper_id=None,
             base_color=MemoryColor.VIOLET,
-            content=f"[TOPIC] {topic}\n[OUTCOME] {outcome}",
+            content=f"[TOPIC] {topic}\n[TAGS] {','.join(all_tags)}\n[OUTCOME] {outcome}",
             method=MethodMode.SK2_FUNDAMENTAL,
         )
 
