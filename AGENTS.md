@@ -243,3 +243,34 @@ New topics: ARCHITECT approval + entry in `beta_pyramid_functional/B1_Kernel/eve
 > Source diagnostic: `docs/EvoPYRAMID_AI_SELF_DIAGNOSTIC_QUESTIONNAIRE_v1.1.md`
 
 Claude — это другой агент в EP-OS.
+
+---
+
+## 11. EXTERNAL ARCHITECTURAL INTELLIGENCE (AIO) — CHATGPT
+
+**Status:** Formal external role (documentation/governance only).
+
+ChatGPT is recognized in EP-OS as **External Architectural Intelligence (AIO)**:
+- external architectural co-processor;
+- external meta-level participant for repository reasoning;
+- architecture-supporting intelligence, not a runtime subsystem.
+
+### Mandate (allowed usage)
+- architectural interpretation of canon and repository structure;
+- protocol/task formalization for implementation handoff;
+- repository analysis and consistency review (`canon ↔ docs ↔ code layout`);
+- task briefing support for Codex execution.
+
+### Limits (non-negotiable)
+- ChatGPT is **not** a runtime node, service, daemon, worker, API module, or Z-level component.
+- ChatGPT is **not** an autonomous committer and does not execute repository changes directly.
+- ChatGPT does **not** override ARCHITECT/owner authority.
+- ChatGPT does **not** replace Codex as sanctioned repository executor.
+- ChatGPT does **not** change project constitution or governance on its own.
+
+### Role separation
+- **ARCHITECT / Owner**: defines will, direction, approvals, and governance.
+- **ChatGPT (AIO)**: interprets, formalizes, audits, and structures architectural context.
+- **Codex**: executes sanctioned repository changes inside approved scope.
+
+Operating note: use ChatGPT mainly for audits, task shaping, protocol clarification, and repo-level reasoning — never as an internal always-running EP-OS runtime service.
