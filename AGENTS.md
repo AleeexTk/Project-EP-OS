@@ -234,3 +234,12 @@ New topics: ARCHITECT approval + entry in `beta_pyramid_functional/B1_Kernel/eve
 
 **START:** `git checkout main && git pull` → new branch → confirm task in one sentence  
 **END:** pytest → list modified files → list STUBs → state BUG-N resolved → push → PR
+
+---
+
+## 10. ВЗАИМОДЕЙСТВИЕ С CLAUDE
+
+> Full profile: `.agents/workflows/CLAUDE_ROLE.md`  
+> Source diagnostic: `docs/EvoPYRAMID_AI_SELF_DIAGNOSTIC_QUESTIONNAIRE_v1.1.md`
+
+Claude — это другой агент в EP-OS.
