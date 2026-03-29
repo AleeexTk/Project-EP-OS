@@ -1,14 +1,16 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any, List
 
 # Ensure B1_Kernel is in path for absolute-style imports
 _kern_path = str(Path(__file__).resolve().parent)
 if _kern_path not in sys.path:
     sys.path.append(_kern_path)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 from contracts import TaskEnvelope, CascadeStatus, TaskStatus
+from events import create_event, EventType, EventSeverity
 
 class Observer:
     @staticmethod
@@ -85,3 +87,97 @@ class CascadeValidator:
         else:
             Monument.block(envelope, "Crystallization Failed. Invariant broken.")
             return False
+
+
+class ZCascadePipeline:
+    """
+    Minimal orchestrated Z17→Z1 cascading pipeline.
+    Uses existing SystemPolicyManager + CascadeValidator path (including Z14 repair).
+    """
+
+    @staticmethod
+    def run_z17_to_z1(envelope: TaskEnvelope, policy_manager=None) -> Dict[str, Any]:
+        if envelope.origin_z != 17:
+            raise ValueError("ZCascadePipeline requires envelope.origin_z == 17")
+
+        from policy_manager import SystemPolicyManager
+
+        manager = policy_manager or SystemPolicyManager()
+        try:
+            z12_dir = PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN"
+            if str(z12_dir) not in sys.path:
+                sys.path.insert(0, str(z12_dir))
+            from sec_guardian import SecGuardian
+            manager._sec_guardian = SecGuardian(max_rps=64, window=60)
+        except Exception:
+            # Keep default guardian behavior if import path is unavailable.
+            pass
+        task_id = envelope.task_id
+        trace_id = envelope.trace_id
+        pair_results: List[Dict[str, Any]] = []
+        runtime_audit: List[Dict[str, Any]] = []
+
+        def _audit_hook(event: Dict[str, Any]):
+            if event.get("task_id") == task_id:
+                runtime_audit.append(event)
+
+        manager.register_reporter(_audit_hook)
+
+        for upper_z in range(17, 1, -1):
+            lower_z = upper_z - 1
+            pair_id = f"Z{upper_z}->Z{lower_z}"
+
+            pair_envelope = envelope.model_copy(deep=True)
+            pair_envelope.origin_z = upper_z
+            pair_envelope.payload["target_z"] = lower_z
+            pair_envelope.payload["z_level"] = lower_z
+            pair_envelope.metadata["pair_id"] = pair_id
+            pair_envelope.metadata["cascade_trace"] = trace_id
+            pair_envelope.cascade_status = CascadeStatus.PENDING
+
+            pair_ok = manager.validate_action(pair_envelope)
+            pair_event = create_event(
+                event_type=EventType.NODE_PROGRESS if pair_ok else EventType.NODE_FAILURE,
+                trace_id=trace_id,
+                node_id=f"z{upper_z}_pair_validator",
+                task_id=task_id,
+                severity=EventSeverity.INFO if pair_ok else EventSeverity.ERROR,
+                payload={
+                    "pair_id": pair_id,
+                    "repaired": bool(pair_envelope.metadata.get("repaired", False)),
+                    "cascade_status": str(pair_envelope.cascade_status),
+                    "error": pair_envelope.metadata.get("error"),
+                },
+            )
+
+            pair_results.append(
+                {
+                    "pair_id": pair_id,
+                    "ok": pair_ok,
+                    "cascade_status": pair_envelope.cascade_status,
+                    "repaired": bool(pair_envelope.metadata.get("repaired", False)),
+                    "error": pair_envelope.metadata.get("error"),
+                    "event": pair_event.model_dump(),
+                }
+            )
+
+            if not pair_ok:
+                return {
+                    "trace_id": trace_id,
+                    "task_id": task_id,
+                    "status": "failed",
+                    "stopped_at": pair_id,
+                    "pairs": pair_results,
+                    "repair_count": sum(1 for p in pair_results if p["repaired"]),
+                    "audit": runtime_audit,
+                }
+
+        return {
+            "trace_id": trace_id,
+            "task_id": task_id,
+            "status": "passed",
+            "stopped_at": None,
+            "pairs": pair_results,
+            "repair_count": sum(1 for p in pair_results if p["repaired"]),
+            "audit": runtime_audit,
+        }
