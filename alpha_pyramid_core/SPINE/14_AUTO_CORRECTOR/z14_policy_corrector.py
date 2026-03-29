@@ -76,26 +76,10 @@ class AutoCorrectorNode:
     @staticmethod
     def _run_async(coro):
         try:
-            asyncio.get_running_loop()
+            loop = asyncio.get_running_loop()
         except RuntimeError:
             return asyncio.run(coro)
-
-        result: Dict[str, Any] = {}
-        error: Dict[str, BaseException] = {}
-
-        def _runner():
-            try:
-                result["value"] = asyncio.run(coro)
-            except BaseException as exc:
-                error["value"] = exc
-
-        import threading
-        thread = threading.Thread(target=_runner, daemon=True)
-        thread.start()
-        thread.join()
-        if "value" in error:
-            raise error["value"]
-        return result.get("value")
+        return loop.run_until_complete(coro)
 
     @staticmethod
     def _build_error_signature(rejection_reason: str, original_intent: str) -> str:
