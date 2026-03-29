@@ -3,6 +3,7 @@ import json
 import uuid
 import time
 import logging
+from dataclasses import asdict, is_dataclass
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
@@ -18,8 +19,30 @@ try:
     from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
 except ImportError as e:
     print(f"!! [PEAR_BRIDGE] Import failed, using simplified logic: {e}")
+    from beta_pyramid_functional.B1_Kernel.SK_Engine import ProjectCortex, QuantumBlock, MemoryColor, MethodMode
+    from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
+
+    class CortexMemory:  # fallback compatibility shim for downstream tests/runtime
+        def __init__(self, data_dir: Path):
+            self._data_dir = data_dir
+
+        async def find_similar(self, _intent: str):
+            return []
+
+        async def add_block(self, _block: QuantumBlock):
+            return None
 
 logger = logging.getLogger("PEAR_Protocol")
+
+
+def _block_to_dict(block: Any) -> Dict[str, Any]:
+    if hasattr(block, "to_dict"):
+        return block.to_dict()
+    if hasattr(block, "model_dump"):
+        return block.model_dump()
+    if is_dataclass(block):
+        return asdict(block)
+    return {"content": str(getattr(block, "content", ""))}
 
 
 class PEARAgent:
@@ -53,13 +76,13 @@ class PEARAgent:
 
         # Layer 1: Role-specific memories
         past_blocks = await self.memory.find_similar(intent)
-        role_context = [b.to_dict() for b in past_blocks[:3]]
+        role_context = [_block_to_dict(b) for b in past_blocks[:3]]
 
         # Layer 2: CognitiveBridge — cross-session long-term memory
         try:
             bridge = await CognitiveBridge.get_instance()
             session_blocks = await bridge.retrieve_session_context(intent, top_k=3)
-            session_context = [b.to_dict() for b in session_blocks]
+            session_context = [_block_to_dict(b) for b in session_blocks]
         except Exception as e:
             logger.warning(f"[PEAR] CognitiveBridge unavailable: {e}")
             session_context = []
@@ -67,7 +90,7 @@ class PEARAgent:
         # Layer 3: Global Project Cortex memories
         project_cortex = await ProjectCortex.get_instance()
         global_blocks = await project_cortex.find_similar(intent)
-        global_context = [b.to_dict() for b in global_blocks[:3]]
+        global_context = [_block_to_dict(b) for b in global_blocks[:3]]
 
         logger.debug(
             f"[PEAR/{self.role}] Perceive — role:{len(role_context)} "
