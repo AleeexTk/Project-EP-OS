@@ -230,8 +230,7 @@ class CognitiveBridge:
             if not block:
                 continue
             content = str(getattr(block, "content", ""))
-            topic = self._extract_topic(content)
-            if topic == error_signature or (not topic and error_signature in content):
+            if self._extract_topic(content) == error_signature:
                 logger.info(f"[CognitiveBridge] Exact heal pattern recalled for '{error_signature}'!")
                 return {"id": node_id, "content": content}
         return None
