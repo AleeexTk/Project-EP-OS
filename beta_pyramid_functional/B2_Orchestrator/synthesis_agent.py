@@ -45,7 +45,11 @@ class SynthesisAgent:
         Scan memory for patterns and generate a synthesis report.
         """
         cortex = await ProjectCortex.get_instance()
-        sigs = cortex.get_all_sigs()
+        sigs = {
+            node_id: list(node.minhash_sig)
+            for node_id, node in cortex.hypergraph.nodes.items()
+            if getattr(node, "minhash_sig", None)
+        }
         
         if not sigs:
             return "No memory blocks found for synthesis."
