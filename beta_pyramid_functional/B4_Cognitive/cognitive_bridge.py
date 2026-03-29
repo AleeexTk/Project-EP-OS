@@ -164,7 +164,10 @@ class CognitiveBridge:
         Returns:
             The persisted QuantumBlock.
         """
-        all_tags = list(set(["session_memory"] + (tags or [])))
+        if not CognitiveBridge._cache_loaded:
+            CognitiveBridge._load_healing_cache()
+
+        all_tags = sorted(set(["session_memory"] + (tags or [])))
 
         block = QuantumBlock(
             id=f"mem_{uuid.uuid4().hex[:10]}",
@@ -207,6 +210,9 @@ class CognitiveBridge:
         """
         Search memory for a past successful healing pattern matching this error signature.
         """
+        if not CognitiveBridge._cache_loaded:
+            CognitiveBridge._load_healing_cache()
+
         if error_signature in CognitiveBridge._healing_cache:
             outcome = CognitiveBridge._healing_cache[error_signature]
             logger.info(f"[CognitiveBridge] In-process heal pattern recalled for '{error_signature}'!")
