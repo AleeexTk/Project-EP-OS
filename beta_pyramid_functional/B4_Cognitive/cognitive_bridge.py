@@ -139,7 +139,6 @@ class CognitiveBridge:
 
         # Best-effort persistence to ProjectCortex storage (non-blocking fallback).
         try:
-            if hasattr(self._cortex, "add_block"): await self._cortex.add_block(block)
             if hasattr(self._cortex, "persistence"):
                 self._cortex.persistence.save_block(block)
         except Exception as e:
