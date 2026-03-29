@@ -209,6 +209,7 @@ class CognitiveBridge:
     async def recall_healing_pattern(self, error_signature: str) -> Optional[dict]:
         """
         Search memory for a past successful healing pattern matching this error signature.
+        Performs one-time lazy cache recovery from persisted storage if cache was not loaded yet.
         """
         if not CognitiveBridge._cache_loaded:
             CognitiveBridge._load_healing_cache()
