@@ -11,7 +11,6 @@ Wraps ProjectCortex (SK_Engine) and provides:
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 import uuid
@@ -99,6 +98,13 @@ class CognitiveBridge:
         except Exception as exc:
             logger.warning(f"[CognitiveBridge] Failed to persist healing cache: {exc}")
 
+    @staticmethod
+    def _extract_topic(content: str) -> str:
+        if "[TOPIC]" not in content:
+            return ""
+        tail = content.split("[TOPIC]", 1)[1]
+        return tail.split("\n", 1)[0].strip()
+
     # ─────────────────────────────────────────
     #  Public API
     # ─────────────────────────────────────────
@@ -120,21 +126,18 @@ class CognitiveBridge:
         Returns:
             List of relevant QuantumBlocks, ordered by similarity descending.
         """
-        similar = await self._cortex.hypergraph.find_similar(topic, top_k=top_k)
+        similar = await self._cortex.hypergraph.find_similar(topic, top_k=max(top_k, 10))
         blocks: List[QuantumBlock] = []
         for node_id, _score in similar:
             node = self._cortex.hypergraph.nodes.get(node_id)
             if not node:
                 continue
+            node_tags = node.metadata.get("tags", []) if isinstance(node.metadata, dict) else []
+            if tag_filter and tag_filter not in node_tags:
+                continue
             block = self._cortex.persistence.load_block(node.block_id)
             if block:
                 blocks.append(block)
-
-        if tag_filter:
-            blocks = [
-                b for b in blocks
-                if tag_filter in str(getattr(b, "content", ""))
-            ]
 
         result = blocks[:top_k]
         logger.debug(
@@ -214,11 +217,14 @@ class CognitiveBridge:
             node = self._cortex.hypergraph.nodes.get(node_id)
             if not node:
                 continue
+            node_tags = node.metadata.get("tags", []) if isinstance(node.metadata, dict) else []
+            if "heal" not in node_tags and "resolution" not in node_tags:
+                continue
             block = self._cortex.persistence.load_block(node.block_id)
             if not block:
                 continue
             content = str(getattr(block, "content", ""))
-            if ("[TAGS] heal" in content or "[TAGS] resolution" in content or "[TOPIC]" in content) and error_signature in content:
+            if self._extract_topic(content) == error_signature:
                 logger.info(f"[CognitiveBridge] Exact heal pattern recalled for '{error_signature}'!")
                 return {"id": node_id, "content": content}
         return None
@@ -226,17 +232,17 @@ class CognitiveBridge:
     async def health_summary(self) -> dict:
         """Return a summary of what's currently in long-term memory."""
         total = len(self._cortex.hypergraph.nodes)
-        session_mem = 0
-        heal_blocks = 0
-        for node in self._cortex.hypergraph.nodes.values():
-            block = self._cortex.persistence.load_block(node.block_id)
-            if not block:
-                continue
-            content = str(getattr(block, "content", ""))
-            if "[TAGS] session_memory" in content:
-                session_mem += 1
-            if "[TAGS] heal" in content or node.id.startswith("heal_"):
-                heal_blocks += 1
+        session_mem = sum(
+            1
+            for node in self._cortex.hypergraph.nodes.values()
+            if "session_memory" in (node.metadata.get("tags", []) if isinstance(node.metadata, dict) else [])
+        )
+        heal_blocks = sum(
+            1
+            for node in self._cortex.hypergraph.nodes.values()
+            if "heal" in (node.metadata.get("tags", []) if isinstance(node.metadata, dict) else [])
+            or node.id.startswith("heal_")
+        )
         return {
             "total_blocks": total,
             "session_memory_blocks": session_mem,
