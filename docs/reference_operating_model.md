@@ -20,7 +20,19 @@ This document explains EvoPyramid through a restaurant operating model so agents
 
 ---
 
-## 3) Main Flow Cycle
+## 3) Historical Positioning (2024 Baseline)
+
+This model is also a historical note: a role-first EvoPyramid framing was already present in 2024 and aligns with patterns that later became mainstream in agent engineering (role-based execution, orchestration, validation, memory, routing, governance).
+
+Practical distinction:
+- common path: `LLM → tools → agents → orchestrator → workflows`;
+- EvoPyramid path: `mental architecture → roles → structure → map → flows → agent behavior`.
+
+This document remains a **reference model** for onboarding and alignment, not a fixed constitutional specification.
+
+---
+
+## 4) Main Flow Cycle
 
 `INPUT → CHAOS → CORE → OBSERVER → EXECUTION → LOGS → PLANNING → STORAGE → INPUT`
 
@@ -38,7 +50,7 @@ This document explains EvoPyramid through a restaurant operating model so agents
 
 ---
 
-## 4) Agent Roles
+## 5) Agent Roles
 
 | EvoPyramid Agent | Restaurant Role | Function |
 |---|---|---|
@@ -56,7 +68,7 @@ This document explains EvoPyramid through a restaurant operating model so agents
 
 ---
 
-## 5) Structural Mapping
+## 6) Structural Mapping
 
 | EvoPyramid Component | Restaurant Equivalent | Description |
 |---|---|---|
@@ -74,7 +86,7 @@ This document explains EvoPyramid through a restaurant operating model so agents
 
 ---
 
-## 6) System Validity Checklist
+## 7) System Validity Checklist
 
 The system is healthy when:
 1. Everything has a place.
@@ -90,7 +102,7 @@ If one item is missing, entropy grows and operational chaos appears.
 
 ---
 
-## 7) Operational Definition
+## 8) Operational Definition
 
 EvoPyramid is a **Project Operating System** that organizes:
 - roles,
@@ -104,7 +116,7 @@ EvoPyramid is a **Project Operating System** that organizes:
 
 ---
 
-## 8) Human–AI Responsibility Split
+## 9) Human–AI Responsibility Split
 
 | Responsibility | Human | AI |
 |---|---|---|
@@ -123,7 +135,7 @@ EvoPyramid is a **Project Operating System** that organizes:
 
 ---
 
-## 9) Agent Instruction (Short Form)
+## 10) Agent Instruction (Short Form)
 
 If you are an AI agent in EvoPyramid:
 - do not write random code;
@@ -135,7 +147,7 @@ If you are an AI agent in EvoPyramid:
 
 ---
 
-## 10) Closing Statement
+## 11) Closing Statement
 
 **EvoPyramid = Architecture + Roles + Routing + Memory + Control + Execution.**
 
