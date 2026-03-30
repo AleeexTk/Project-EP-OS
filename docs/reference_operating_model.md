@@ -1,9 +1,9 @@
-# Fixed Agent Module Specification
+# Reference Operating Model
 
 **EVO PYRAMID**  
 **Reference model:** Restaurant Operating System Analogy  
 **Version:** 1.0  
-**Purpose:** Conceptual model for Human–AI collaboration.
+**Purpose:** Conceptual model for Human–AI collaboration (onboarding/reference, not constitutional module spec).
 
 ---
 
