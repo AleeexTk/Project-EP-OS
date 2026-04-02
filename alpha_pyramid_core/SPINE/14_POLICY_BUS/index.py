@@ -23,6 +23,12 @@ DISPATCHER_DIR = PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel" / "D_Dis
 if str(DISPATCHER_DIR) not in sys.path:
     sys.path.insert(0, str(DISPATCHER_DIR))
 
+# Timeline writer — queue-serialized, safe for concurrent callers
+try:
+    from timeline_writer import timeline_writer
+except ImportError:
+    timeline_writer = None
+
 class ZBus:
     """
     Asynchronous Pub/Sub Event Bus enforcing the Hybrid Truth layer.
@@ -53,6 +59,10 @@ class ZBus:
                 return
         except ImportError:
             pass  # Dispatcher not available yet, bypass ATC
+
+        # LOG: write every approved event to the live project timeline
+        if timeline_writer:
+            asyncio.create_task(timeline_writer.write_event(event_dict))
 
         await self.queue.put(event)
 
