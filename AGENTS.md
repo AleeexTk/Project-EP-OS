@@ -110,14 +110,7 @@ await cortex.hypergraph.find_similar(query, top_k=5)
 
 ## 3. ACTIVE BUGS
 
-| ID | File:line | Bug | Fix |
-|----|-----------|-----|-----|
-| **BUG-1** | `alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR/z14_policy_corrector.py:164` | `recalled_proposal` used before assignment → `NameError` | Add `recalled_proposal = None` before if/elif |
-| **BUG-2** | `beta_pyramid_functional/B4_Cognitive/cognitive_bridge.py:172` | `self._cortex.blocks` → `AttributeError` | Replace with `self._cortex.hypergraph.nodes` |
-| **BUG-3** | `beta_pyramid_functional/B4_Cognitive/cognitive_bridge.py:43` | `_healing_cache` in-memory, lost on restart | Persist to `state/healing_cache.json` |
-| **BUG-4** | `beta_pyramid_functional/B2_Orchestrator/synthesis_agent.py:42` | `cortex.get_all_sigs()` does not exist | Replace with `cortex.hypergraph.nodes` iteration |
-
-If your task touches any of these files — fix the listed bug as part of the task.
+*All previous bugs (BUG-1 to BUG-4) have been verified as resolved. No active structural execution bugs are currently tracked.*
 
 ---
 

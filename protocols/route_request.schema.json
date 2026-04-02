@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Temporal Route Request Protocol",
+  "description": "Unified Module Contract schema required for any inter-module or shared resource operations within the EvoPyramid OS.",
+  "type": "object",
+  "required": [
+    "time",
+    "module_id",
+    "location",
+    "action",
+    "status",
+    "next"
+  ],
+  "properties": {
+    "time": {
+      "description": "ISO 8601 timestamp of the action or request.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "module_id": {
+      "description": "The unique identifier of the module initiating the request.",
+      "type": "string"
+    },
+    "location": {
+      "description": "The current architectural location of the module.",
+      "type": "string"
+    },
+    "action": {
+      "description": "The intent or concrete operation to be executed.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Current status of the intent.",
+      "type": "string"
+    },
+    "next": {
+      "description": "The next planned state or step for the module.",
+      "type": "string"
+    }
+  }
+}

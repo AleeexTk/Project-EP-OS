@@ -86,6 +86,7 @@ interface PyramidStateContextType {
   systemMetrics: any;
   repairHistory: any[];
   fetchRepairHistory: () => Promise<void>;
+  atcSlots: Record<string, any>;
 }
 
 const PyramidContext = createContext<PyramidStateContextType | undefined>(undefined);
@@ -96,6 +97,7 @@ export function PyramidProvider({ children }: { children: ReactNode }) {
   const [latestZBusEvent, setLatestZBusEvent] = useState<any>(null);
   const [systemMetrics, setSystemMetrics] = useState<any>(null);
   const [repairHistory, setRepairHistory] = useState<any[]>([]);
+  const [atcSlots, setAtcSlots] = useState<Record<string, any>>({});
   const backendNodesRef = useRef<Record<string, any>>({});
 
   const fetchRepairHistory = async () => {
@@ -137,6 +139,14 @@ export function PyramidProvider({ children }: { children: ReactNode }) {
             setSystemMetrics(message.data);
           } else if (message.type === 'zbus_event') {
             setLatestZBusEvent(message.data);
+          } else if (message.type === 'atc_route_locked') {
+            setAtcSlots(prev => ({ ...prev, [message.location]: message.payload }));
+          } else if (message.type === 'atc_route_released') {
+            setAtcSlots(prev => {
+              const next = { ...prev };
+              delete next[message.location];
+              return next;
+            });
           }
         } catch (e) { console.error('WS Parse Error', e); }
       };
@@ -160,7 +170,7 @@ export function PyramidProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <PyramidContext.Provider value={{ nodes, isConnected, latestZBusEvent, systemMetrics, repairHistory, fetchRepairHistory }}>
+    <PyramidContext.Provider value={{ nodes, isConnected, latestZBusEvent, systemMetrics, repairHistory, fetchRepairHistory, atcSlots }}>
       {children}
     </PyramidContext.Provider>
   );

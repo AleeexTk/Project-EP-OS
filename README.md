@@ -59,7 +59,7 @@ python -m unittest discover -s tests -p "test_*.py"
 - **[Z-Architecture Order & Z-Levels](docs/z_architecture_order.md)** — Z1 to Z17 tiering.
 - **[Project Architectural Audit](docs/PROJECT_AUDIT.md)** — Structural health and milestones.
 - **[Trinity Protocol](docs/trinity_protocol.md)** — Triad role interactions.
-- **[Reference Operating Model](docs/reference_operating_model.md)** — Restaurant analogy for role/flow alignment and onboarding.
+- **[Reference Operating Model](docs/reference_operating_model.md)** — Restaurant analogy for role/flow alignment and the shift to 4D Architecture (Timeline + Temporal Routing).
 
 ## Known Issues & Fixes Applied
 

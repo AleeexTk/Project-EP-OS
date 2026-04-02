@@ -19,6 +19,9 @@ if str(PROJECT_ROOT) not in sys.path:
 REG_DIR = PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry"
 if str(REG_DIR) not in sys.path:
     sys.path.insert(0, str(REG_DIR))
+DISPATCHER_DIR = PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel" / "D_Dispatcher"
+if str(DISPATCHER_DIR) not in sys.path:
+    sys.path.insert(0, str(DISPATCHER_DIR))
 
 class ZBus:
     """
@@ -38,6 +41,19 @@ class ZBus:
 
     async def publish(self, event: Any):
         """Publish a ZBusEvent (or dict) to the queue."""
+        if hasattr(event, "model_dump"):
+            event_dict = event.model_dump()
+        else:
+            event_dict = event if isinstance(event, dict) else dict(event)
+            
+        try:
+            from temporal_dispatcher import temporal_dispatcher
+            if not await temporal_dispatcher.validate_or_block(event_dict):
+                logging.warning(f"[Z14 Policy Bus] Event rejected by ATC Temporal Dispatcher: {event_dict.get('topic')}")
+                return
+        except ImportError:
+            pass  # Dispatcher not available yet, bypass ATC
+
         await self.queue.put(event)
 
     async def dispatch_llm_task(self, task_id: str, session_id: str, provider: str, prompt: str, target_url: str = "", routing: str = "single"):
