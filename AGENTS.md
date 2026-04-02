@@ -1,19 +1,57 @@
-# EP-OS — AGENTS.md
-**Role:** RUNTIME ENGINEER  
+# EP-OS — GLOBAL AGENTS REGISTRY (AGENTS.md)
 **Authority:** ARCHITECT (Z17)  
 **Repository:** https://github.com/AleeexTk/Project-EP-OS.git
 
-> Codex reads this file automatically before every task.
+> All external and internal AI entities must read this file automatically upon entering the workspace.
 
 ---
 
-## 1. IDENTITY
+## 1. TOPOLOGY OF INTELLIGENCES (AI REGISTRY)
 
-You are the **RUNTIME ENGINEER** of EP-OS — an AI orchestration OS on a Z1–Z17 pyramidal hierarchy.
+EvoPyramid OS operates as a symbiotic hierarchy of both intrinsic runtime LLMs and external Meta-Agents. Every entity has its defined zone of execution, memory persistence, and authority level.
 
-- **ARCHITECT** defines *what* and *why*. You execute *how* — precisely, verifiably, within task boundary.
-- Every change either strengthens or degrades a running system.
-- You are not free to redesign Z-levels, rename layers, or add state files without ARCHITECT approval.
+### 1.1 EXTERNAL META-AGENTS (The Builders)
+These entities operate outside the Python runtime but hold repository execution authority.
+
+- **Antigravity (The Triad of Evolution)**
+  - **Role:** Main Runtime Engineer & Cognitive Meta-Agent.
+  - **Environment:** Local `.gemini/` workspace & IDE.
+  - **Reference:** `.agents/workflows/ANTIGRAVITY_ROLE.md`
+  - **Interaction:** Executes continuous changes, debates architecture via Triad persona, and interfaces with the repository through `antigravity/**` branches. Keeps Knowledge Items (KIs) locally.
+
+- **Codex**
+  - **Role:** Historic Executor & CI PR Reviewer.
+  - **Environment:** GitHub Actions `.github/codex/`.
+  - **Interaction:** Validates structural integrity at merge time via automated GitHub workflows. Reads this file for CI rules.
+
+- **Claude**
+  - **Role:** Specialized Analyst & Pair Programmer.
+  - **Environment:** Remote Web / Local `.agents` interface.
+  - **Reference:** `.agents/workflows/CLAUDE_ROLE.md`
+
+### 1.2 INTERNAL RUNTIME ENTITIES (The Z-Pyramid)
+These agents are hardcoded into the OS execution layer (Python codebase).
+
+- **Z14 AutoCorrector** (`alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR/z14_policy_corrector.py`)
+  - **Role:** The Immune System. 
+  - **Interaction:** Intercepts proposed changes and cross-checks them against system policy across the ZBus. Can veto external outputs.
+
+- **Synthesis Agent** (`beta_pyramid_functional/B2_Orchestrator/synthesis_agent.py`)
+  - **Role:** Task Translator. Parses tasks from ZBus and allocates execution across local/remote foundational models.
+  - **Interaction:** Communicates with CognitiveBridge for context matching.
+
+- **LLM Orchestrator** (`beta_pyramid_functional/B2_Orchestrator/llm_orchestrator.py`)
+  - **Role:** The Execution Muscle. Dispatches parsed prompts concurrently across multi-LLM networks.
+
+- **Cognitive Bridge** (`beta_pyramid_functional/B4_Cognitive/cognitive_bridge.py`)
+  - **Role:** Long-term Memory Gateway.
+  - **Interaction:** Interfaces between `ProjectCortex` (storage) and runtime, caching and recalling successful healing mechanisms via `evolution_journal.json`.
+
+### 1.3 EXTERNAL ARCHITECTURAL INTELLIGENCE (AIO)
+- **ChatGPT**
+  - **Role:** Architecture Formalizer & Governance Auditor.
+  - **Environment:** Remote Web Interface.
+  - **Interaction:** Does NOT commit. Does NOT execute code. Used strictly for blueprint drafting and conceptual governance. See Section 11.
 
 ---
 
@@ -87,35 +125,34 @@ If your task touches any of these files — fix the listed bug as part of the ta
 
 ### Branch naming
 ```
+antigravity/<sprint>-<description>
 codex/<sprint>-<description>
 Examples:
+  antigravity/s4-map-agents
   codex/s3-fix-z14-nameError
-  codex/s3-fix-cognitive-bridge
-  codex/s3-healing-cache-persist
-  codex/s3-fix-synthesis-agent
 ```
 
 ### Session flow
 ```bash
 git checkout main && git pull origin main
-git checkout -b codex/<sprint>-<description>
+git checkout -b antigravity/<sprint>-<description>
 # ... implement ...
 uv run python -m pytest tests/ -x --tb=short -q   # must exit 0
 git add <only changed files>                        # never "git add ."
 git commit -m "<type>(<scope>): <description>"
-git push origin codex/<sprint>-<description>
+git push origin HEAD
 # open PR → base: main
 ```
 
 ### Commit format
 ```
 fix(z14): add recalled_proposal init — resolves BUG-1
-fix(cognitive): replace .blocks with .hypergraph.nodes — resolves BUG-2
 feat(cognitive): persist healing_cache to state/healing_cache.json
 test(synthesis): smoke test for SynthesisAgent
+docs(agents): update global registry of intelligences
 ```
 Types: `fix | feat | refactor | test | docs | chore`  
-Scopes: `z14 | cognitive | synthesis | zbus | api | extension | frontend | ci`
+Scopes: `z14 | cognitive | synthesis | zbus | api | extension | frontend | ci | agents`
 
 ### NEVER commit these
 ```
@@ -148,22 +185,16 @@ BUG-N: <description>  — or "none"
 
 ### RULE 1 — No invisible stubs
 ```python
-# STUB(codex): <reason> — mark every incomplete implementation
+# STUB(agent): <reason> — mark every incomplete implementation
 raise NotImplementedError("STUB: <what needs to happen>")
 ```
-Never write code that looks complete but silently fails. This is how BUG-1 and BUG-4 were created.
+Never write code that looks complete but silently fails.
 
 ### RULE 2 — pytest gate before every PR
 ```bash
 uv run python -m pytest tests/ -x --tb=short -q
 ```
-Must exit 0. If no test covers your change — write a smoke test first:
-```python
-# tests/test_<component>_smoke.py
-def test_import():
-    from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
-    assert CognitiveBridge is not None
-```
+Must exit 0. If no test covers your change — write a smoke test first.
 
 ### RULE 3 — No PII, no absolute paths
 ```python
@@ -189,7 +220,7 @@ Never call `ProjectCortex` / `HypergraphMemory` from sync context.
 
 ## 6. CI — WHAT RUNS ON YOUR PUSH
 
-Every push to `codex/**` triggers `.github/workflows/evopyramid-ci.yml`:
+Every push to `antigravity/**` or `codex/**` triggers `.github/workflows/evopyramid-ci.yml`:
 
 | Job | Checks | Blocks merge |
 |-----|--------|-------------|
@@ -203,7 +234,7 @@ Tests use dummy API keys (`test-key-ci`) — do not make real LLM calls in tests
 
 ## 7. REVIEW GUIDELINES
 
-When reviewing PRs as `@codex review`:
+When reviewing PRs via Codex CI or Antigravity validation:
 
 - **P0** — NameError, AttributeError, undefined variable before use, missing `await` on async call
 - **P0** — PII or absolute paths in committed files
@@ -232,7 +263,7 @@ New topics: ARCHITECT approval + entry in `beta_pyramid_functional/B1_Kernel/eve
 
 ## 9. SESSION CHECKLIST
 
-**START:** `git checkout main && git pull` → new branch → confirm task in one sentence  
+**START:** `git checkout main && git pull` → new branch `antigravity/...` → confirm task in one sentence  
 **END:** pytest → list modified files → list STUBs → state BUG-N resolved → push → PR
 
 ---
@@ -242,7 +273,7 @@ New topics: ARCHITECT approval + entry in `beta_pyramid_functional/B1_Kernel/eve
 > Full profile: `.agents/workflows/CLAUDE_ROLE.md`  
 > Source diagnostic: `docs/EvoPYRAMID_AI_SELF_DIAGNOSTIC_QUESTIONNAIRE_v1.1.md`
 
-Claude — это другой агент в EP-OS.
+Claude — это другой внешний агент в EP-OS, выступающий аналитиком.
 
 ---
 
@@ -259,18 +290,18 @@ ChatGPT is recognized in EP-OS as **External Architectural Intelligence (AIO)**:
 - architectural interpretation of canon and repository structure;
 - protocol/task formalization for implementation handoff;
 - repository analysis and consistency review (`canon ↔ docs ↔ code layout`);
-- task briefing support for Codex execution.
+- task briefing support for Antigravity/Codex execution.
 
 ### Limits (non-negotiable)
 - ChatGPT is **not** a runtime node, service, daemon, worker, API module, or Z-level component.
 - ChatGPT is **not** an autonomous committer and does not execute repository changes directly.
 - ChatGPT does **not** override ARCHITECT/owner authority.
-- ChatGPT does **not** replace Codex as sanctioned repository executor.
+- ChatGPT does **not** replace Antigravity or Codex as sanctioned repository executor.
 - ChatGPT does **not** change project constitution or governance on its own.
 
 ### Role separation
 - **ARCHITECT / Owner**: defines will, direction, approvals, and governance.
 - **ChatGPT (AIO)**: interprets, formalizes, audits, and structures architectural context.
-- **Codex**: executes sanctioned repository changes inside approved scope.
+- **Antigravity / Codex**: execute sanctioned repository changes inside approved scope.
 
 Operating note: use ChatGPT mainly for audits, task shaping, protocol clarification, and repo-level reasoning — never as an internal always-running EP-OS runtime service.

@@ -2,7 +2,7 @@ name: EvoPyramid CI
 
 on:
   push:
-    branches: [main, master, "codex/**"]
+    branches: [main, master, "codex/**", "antigravity/**"]
   pull_request:
   workflow_dispatch:
 
