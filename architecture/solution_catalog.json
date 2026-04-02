@@ -1,4 +1,23 @@
 {
   "version": "1.0",
-  "solutions": []
+  "comment": "EvoPyramid Standard Operational Blueprints",
+  "solutions": {
+    "PROMPT_DISPATCH_WORKFLOW": {
+      "description": "Standard flow for routing prompt to LLM and returning response",
+      "steps": [
+        {"module": "D_INTERFACE_API", "action": "RECEIVE_PROMPT"},
+        {"module": "B2_LLM_ORCHESTRATOR", "action": "DISPATCH_LLM"},
+        {"module": "Z14_POLICY_BUS", "action": "VALIDATE_CONSENSUS"}
+      ]
+    },
+    "AUTO_HEALING_WORKFLOW": {
+      "description": "Automated structural repair via Immune System",
+      "steps": [
+        {"module": "Z14_AUTO_CORRECTOR", "action": "DETECT_VIOLATION"},
+        {"module": "B4_COGNITIVE_BRIDGE", "action": "RECALL_SIMILAR_ERRORS"},
+        {"module": "Z14_AUTO_CORRECTOR", "action": "APPLY_PATCH"},
+        {"module": "Z17_GLOBAL_NEXUS", "action": "APPROVE_REPAIR"}
+      ]
+    }
+  }
 }
