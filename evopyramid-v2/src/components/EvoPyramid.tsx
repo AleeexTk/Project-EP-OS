@@ -12,6 +12,7 @@ interface EvoPyramidProps {
   panY: number;
   activeZLevel: number;
   viewMode: string;
+  atcSlots?: Record<string, any>;
 }
 
 const GRID_SPACING = 1.2;
@@ -24,9 +25,10 @@ interface NodeMeshProps {
   onSelect: (node: EvoNode) => void;
   onDoubleClick: (node: EvoNode) => void;
   onLongPress: (node: EvoNode) => void;
+  atcSlots?: Record<string, any>;
 }
 
-function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongPress }: NodeMeshProps) {
+function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongPress, atcSlots }: NodeMeshProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const timerRef = useRef<number | null>(null);
@@ -39,7 +41,12 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
   // SK Engine Integration: Blend sector color with memory color if present
   const baseColor = SECTOR_COLORS[node.sector];
   const memColor = node.memory_color;
-  const nodeColor = isEmpty ? '#8fa4bf' : isSelected ? '#3b82f6' : hovered ? '#60a5fa' : memColor || baseColor;
+  // ATC Integration: Detect if node holds an active temporal route lock
+  const locationLock = atcSlots?.[node.id] || atcSlots?.[node.label];
+  const ownerLock = atcSlots ? Object.values(atcSlots).find((slot: any) => slot.module_id === node.id || slot.module_id === node.label) : undefined;
+  const atcLockState = locationLock || ownerLock;
+
+  const nodeColor = isEmpty ? '#8fa4bf' : isSelected ? '#3b82f6' : hovered ? '#60a5fa' : atcLockState ? '#06b6d4' : memColor || baseColor;
 
   useFrame((state) => {
     if (!meshRef.current) {
@@ -58,6 +65,10 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
     if (node.status === 'active' && node.type === 'structural' && !isDimmed) {
       const pulseSpeed = 1 + (gScale * 2);
       meshRef.current.scale.setScalar(baseScale * (1 + Math.sin(state.clock.elapsedTime * pulseSpeed) * 0.02 * gScale));
+      return;
+    }
+    if (atcLockState && !isDimmed) {
+      meshRef.current.scale.setScalar(baseScale * (1 + Math.sin(state.clock.elapsedTime * 6) * 0.05));
       return;
     }
     meshRef.current.rotation.y = 0;
@@ -110,6 +121,22 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
         metalness={0.1}
       />
 
+      {!isDimmed && atcLockState && (
+        <Billboard position={[0, -0.6, 0]}>
+          <Text
+            fontSize={0.2}
+            color="#06b6d4"
+            anchorX="center"
+            anchorY="top"
+            outlineWidth={0.03}
+            outlineColor="#083344"
+            textAlign="center"
+          >
+            {`>> ATC: ${atcLockState.action} <<`}
+          </Text>
+        </Billboard>
+      )}
+
       {!isDimmed && node.kind !== 'empty' && (
         <Billboard position={[0, 0.4, 0]}>
           <Text
@@ -140,6 +167,13 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
             ) : node.runtime_canon_flag === 'runtime' ? (
               <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-slate-300 bg-black/40 shadow-sm whitespace-nowrap border border-slate-500/50">RUNTIME</div>
             ) : null}
+
+            {/* ATC Active Lock Notice */}
+            {atcLockState && (
+              <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-white bg-cyan-600 shadow-sm whitespace-nowrap border border-cyan-400/50 animate-pulse">
+                SYS: ROUTE LOCKED
+              </div>
+            )}
 
             {/* Active Agents */}
             {node.activeAgents && node.activeAgents.length > 0 && (
@@ -187,6 +221,7 @@ function EvoScene({
   onDoubleClick,
   onLongPress,
   viewMode,
+  atcSlots,
 }: {
   nodes: EvoNode[];
   onSelectNode: (node: EvoNode) => void;
@@ -200,6 +235,7 @@ function EvoScene({
   onDoubleClick: (node: EvoNode) => void;
   onLongPress: (node: EvoNode) => void;
   viewMode: string;
+  atcSlots?: Record<string, any>;
 }) {
   const controlsRef = useRef<any>(null);
   const activeId = selectedNode?.id;
@@ -350,6 +386,7 @@ function EvoScene({
               node={node}
               isSelected={selectedNode?.id === node.id}
               isDimmed={isDimmed}
+              atcSlots={atcSlots}
               onSelect={(selected) => {
                 setFocusNode(null);
                 onSelectNode(selected);
@@ -372,6 +409,7 @@ export default function EvoPyramid({
   panY,
   activeZLevel,
   viewMode = 'structure',
+  atcSlots,
 }: EvoPyramidProps) {
   const [focusNode, setFocusNode] = useState<EvoNode | null>(null);
   const [routeNodes, setRouteNodes] = useState<EvoNode[]>([]);
@@ -386,6 +424,7 @@ export default function EvoPyramid({
         panY={panY}
         activeZLevel={activeZLevel}
         viewMode={viewMode}
+        atcSlots={atcSlots}
         focusNode={focusNode}
         setFocusNode={setFocusNode}
         routeNodes={routeNodes}

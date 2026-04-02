@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Play } from 'lucide-react';
 import { CORE_API_BASE } from '../lib/config';
 import { CENTER, EvoNode, getRadius } from '../lib/evo';
+import { usePyramidContext } from '../lib/PyramidContext';
 
 interface ArchitectTableProps {
   nodes: EvoNode[];
@@ -24,6 +25,7 @@ const GRID_CLASS: Record<number, string> = {
 
 function ArchitectTable({ nodes, onSelectNode }: ArchitectTableProps) {
   const [activeZ, setActiveZ] = useState<number>(17);
+  const { atcSlots } = usePyramidContext();
   const radius = getRadius(activeZ);
   const size = radius * 2 + 1;
   const gridRange = useMemo(() => Array.from({ length: size }, (_, index) => CENTER - radius + index), [radius, size]);
@@ -53,12 +55,18 @@ function ArchitectTable({ nodes, onSelectNode }: ArchitectTableProps) {
               const node = getCellNode(x, y);
               const empty = !node || node.kind === 'empty';
 
+              const isLocked = node ? Object.keys(atcSlots).some(loc => loc === node.id || node.label.startsWith(loc)) : false;
+              const lockedSlotKey = node ? Object.keys(atcSlots).find(loc => loc === node.id || node.label.startsWith(loc)) : undefined;
+              const lockedBy = lockedSlotKey ? atcSlots[lockedSlotKey].module_id : null;
+
               return (
                 <button
                   key={`${x}-${y}`}
                   onClick={() => node && onSelectNode(node)}
                   className={`group relative h-24 p-2 rounded-xl text-left transition-all border ${
-                    empty
+                    isLocked
+                      ? 'border-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.4)] bg-orange-950/40 hover:bg-orange-900/50 hover:border-orange-400'
+                      : empty
                       ? 'border-slate-800 bg-black/20 hover:border-slate-600'
                       : 'border-blue-500/30 bg-blue-900/20 hover:bg-blue-800/30 hover:border-blue-400/50'
                   }`}
@@ -85,9 +93,20 @@ function ArchitectTable({ nodes, onSelectNode }: ArchitectTableProps) {
                     <div className={`text-[11px] font-semibold truncate ${empty ? 'text-slate-500' : 'text-slate-100'}`}>
                       {node?.label ?? 'EMPTY SLOT'}
                     </div>
-                    {!empty && node && (
+                    {!empty && node && !isLocked && (
                       <div className="mt-1 text-[9px] uppercase tracking-wide text-slate-400">
                         {node.kind} / {node.sector}
+                      </div>
+                    )}
+                    {isLocked && (
+                      <div className="mt-1 flex items-center gap-1.5 bg-black/40 rounded px-1.5 py-0.5 border border-orange-500/30 w-fit">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span>
+                        </span>
+                        <span className="text-[9px] font-semibold tracking-wide text-orange-400 truncate max-w-[80px]" title={lockedBy}>
+                          {lockedBy}
+                        </span>
                       </div>
                     )}
                   </div>
