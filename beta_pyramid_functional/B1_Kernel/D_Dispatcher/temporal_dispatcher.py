@@ -1,6 +1,8 @@
 import sys
 import logging
 import asyncio
+import json
+from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, Any
 
@@ -14,6 +16,22 @@ class TemporalDispatcher:
     def __init__(self):
         self.active_slots: Dict[str, Dict[str, Any]] = {}
         self.lock = asyncio.Lock()
+        self.architecture_map = self._load_architecture_map()
+
+    def _load_architecture_map(self) -> Dict[str, Any]:
+        """Loads the formal topology from the architecture map."""
+        target_map = {"modules": {}, "routes": {}, "bridges": {}}
+        try:
+            project_root = Path(__file__).resolve().parents[4]
+            map_path = project_root / "architecture" / "architecture_map.json"
+            if map_path.exists():
+                with open(map_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    target_map.update(data)
+                    logger.info(f"[ATC] Architecture map loaded: {len(target_map.get('modules', {}))} modules known.")
+        except Exception as e:
+            logger.error(f"[ATC] Failed to load architecture map: {e}")
+        return target_map
 
     async def validate_or_block(self, event_dict: Dict[str, Any]) -> bool:
         """
@@ -32,6 +50,11 @@ class TemporalDispatcher:
         route = payload.get("route_request", {})
         location = route.get("location") or "global_bus"
         action = route.get("action") or topic
+        
+        # ATC Strict Mode: Warn if the location is completely unmapped
+        known_modules = self.architecture_map.get("modules", {})
+        if known_modules and location != "global_bus" and location not in known_modules:
+            logger.warning(f"[ATC] STRICT WARNING: '{module_id}' requested unmapped location '{location}'. Rogue Agent behavior?")
         
         async with self.lock:
             # Check for collision
