@@ -64,7 +64,7 @@ const getProjectPathForNode = (node: EvoNode) => {
 };
 
 function App() {
-  const { nodes: coreNodes, isConnected, latestZBusEvent, systemMetrics } = usePyramidState();
+  const { nodes: coreNodes, isConnected, latestZBusEvent, systemMetrics, atcSlots } = usePyramidState();
   const { events, connected: swarmConnected } = useSwarmTerminal();
   const { sessions, loadSessions } = useSessionRegistry();
 
@@ -313,6 +313,7 @@ function App() {
               panY={panY}
               activeZLevel={activeZLevel}
               viewMode={viewMode}
+              atcSlots={atcSlots}
             />
           </div>
         )}
