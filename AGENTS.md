@@ -172,21 +172,21 @@ Before every commit: `git status` — if you see the above, `git restore --stage
 ### PR description template
 
 ```markdown
-## What changed
+## 1. Что добавляется нового?
 
-<one paragraph>
+<описание нового модуля, функции или workflow>
 
-## Bug fixed
+## 2. Почему это нельзя сделать через уже существующий модуль или решение?
 
-BUG-N: <description>  — or "none"
+<объяснение, почему архитектура требует новой сущности, а не расширения существующей>
+
+## 3. Что именно было проверено на дублирование?
+
+<отчет о сверке с architecture_map.json, solution_catalog.json и поиском по репозиторию>
 
 ## Pytest output
 
 <paste: uv run python -m pytest tests/ -x --tb=short -q>
-
-## Files modified
-
-- path/to/file.py
 ```
 
 ---
@@ -234,6 +234,10 @@ await zbus.publish({"topic": "EXECUTE_TASK", "payload": {...}})
 ### RULE 6 — Async safety
 
 Never call `ProjectCortex` / `HypergraphMemory` from sync context.
+
+### RULE 7 — Architectural Deduplication
+
+Во время интеграции любые новые изменения должны проходить архитектурную сверку с текущим содержимым репозитория, картой архитектуры (`architecture_map.json`) и каталогом решений (`solution_catalog.json`). Если находится дублирующая функция или пересекающееся решение, приоритет отдаётся объединению, переиспользованию или расширению существующего элемента, а не созданию нового.
 
 ---
 
