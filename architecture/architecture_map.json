@@ -10,7 +10,10 @@
     "B2_SYNTHESIS_AGENT": { "layer": "beta", "sector": "orchestrator", "role": "Task Translator" },
     "B2_LLM_ORCHESTRATOR": { "layer": "beta", "sector": "orchestrator", "role": "Multi-provider dispatch" },
     "B4_COGNITIVE_BRIDGE": { "layer": "beta", "sector": "cognitive", "role": "Long-term Memory Gateway" },
-    "D_INTERFACE_API": { "layer": "beta", "sector": "interface", "role": "FastAPI entry point" }
+    "D_INTERFACE_API": { "layer": "beta", "sector": "interface", "role": "FastAPI entry point" },
+    "EXTERNAL_CHATGPT": { "layer": "external", "sector": "aio", "role": "Architecture Formalizer & Governance Auditor" },
+    "EXTERNAL_CODEX":   { "layer": "external", "sector": "ci",  "role": "CI PR Reviewer" },
+    "EXTERNAL_TELEGRAM":{ "layer": "external", "sector": "ui",  "role": "User notification channel" }
   },
   "routes": {
     "EXECUTION_CASCADE": [
@@ -28,10 +31,24 @@
       "B2_SYNTHESIS_AGENT",
       "B4_COGNITIVE_BRIDGE",
       "B1_PROJECT_CORTEX"
+    ],
+    "AIO_GOVERNANCE_ROUTE": [
+      "EXTERNAL_CHATGPT",
+      "Z17_GLOBAL_NEXUS"
+    ],
+    "CI_REVIEW_ROUTE": [
+      "EXTERNAL_CODEX",
+      "Z14_POLICY_BUS"
+    ],
+    "NOTIFICATION_ROUTE": [
+      "D_INTERFACE_API",
+      "EXTERNAL_TELEGRAM"
     ]
   },
   "bridges": {
     "ZBUS_BRIDGE": ["Z14_POLICY_BUS", "B2_SYNTHESIS_AGENT"],
-    "WEB_WS_BRIDGE": ["B2_LLM_ORCHESTRATOR", "FRONTEND_UI"]
+    "WEB_WS_BRIDGE": ["B2_LLM_ORCHESTRATOR", "FRONTEND_UI"],
+    "AIO_BRIDGE": ["EXTERNAL_CHATGPT", "Z17_GLOBAL_NEXUS"],
+    "CI_BRIDGE":  ["EXTERNAL_CODEX",   "Z14_POLICY_BUS"]
   }
 }
