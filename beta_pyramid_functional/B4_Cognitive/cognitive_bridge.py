@@ -173,7 +173,7 @@ class CognitiveBridge:
             id=f"mem_{uuid.uuid4().hex[:10]}",
             hyper_id=None,
             base_color=MemoryColor.VIOLET,
-            content=f"[TOPIC] {topic}\n[TAGS] {','.join(all_tags)}\n[OUTCOME] {outcome}",
+            content=f"[TOPIC] {topic}\n[OUTCOME] {outcome}",
             method=MethodMode.SK2_FUNDAMENTAL,
         )
 
