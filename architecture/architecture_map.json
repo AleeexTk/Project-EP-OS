@@ -13,7 +13,8 @@
     "D_INTERFACE_API": { "layer": "beta", "sector": "interface", "role": "FastAPI entry point" },
     "EXTERNAL_CHATGPT": { "layer": "external", "sector": "aio", "role": "Architecture Formalizer & Governance Auditor" },
     "EXTERNAL_CODEX":   { "layer": "external", "sector": "ci",  "role": "CI PR Reviewer" },
-    "EXTERNAL_TELEGRAM":{ "layer": "external", "sector": "ui",  "role": "User notification channel" }
+    "EXTERNAL_TELEGRAM":{ "layer": "external", "sector": "ui",  "role": "User notification channel" },
+    "FRONTEND_UI":      { "layer": "external", "sector": "ui",  "role": "React + Three.js Web Control Plane" }
   },
   "routes": {
     "EXECUTION_CASCADE": [
