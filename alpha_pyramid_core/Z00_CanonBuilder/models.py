@@ -8,6 +8,7 @@ class Sector(str, Enum):
     RED = "red"
     GOLD = "gold"
     GREEN = "green"
+    SANDBOX = "sandbox"
 
 @dataclass(frozen=True)
 class Coordinates:

@@ -3,7 +3,7 @@
   "title": "OpenAI Docs Hub",
   "z_level": 15,
   "sector": "PURPLE",
-  "coords": { "x": 10, "y": 9, "z": 15 },
+  "coords": { "x": 8, "y": 8, "z": 15 },
   "layer_type": "alpha",
   "kind": "protocol",
   "summary": "Primary documentation oracle for API/schema decisions and upgrade guidance.",

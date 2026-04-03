@@ -37,8 +37,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Run Deduplication Check
-        run: python scripts/ci_architectural_check.py
+      - name: Run CanonBuilder Pipeline
+        run: python -m alpha_pyramid_core.Z00_CanonBuilder.pipeline --modules . --output /tmp/canon
 
   # ── 2. Pytest gate — blocks merge if red ──────────────────────
   pytest:

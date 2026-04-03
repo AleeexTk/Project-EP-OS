@@ -4,8 +4,8 @@
   "z_level": 1,
   "sector": "SANDBOX",
   "coords": {
-    "x": 0,
-    "y": 0,
+    "x": 1,
+    "y": 1,
     "z": 1
   },
   "layer_type": "beta",

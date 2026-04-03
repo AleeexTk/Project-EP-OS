@@ -5,5 +5,6 @@
   "sector": "SPINE",
   "layer": "alpha",
   "description": "Security proxy gateway. Audits all cross-layer requests for authentication, origin spoofing, and token abuse.",
+  "coords": { "x": 8, "y": 8, "z": 12 },
   "status": "active"
 }
