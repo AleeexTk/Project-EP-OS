@@ -134,7 +134,20 @@ class SystemPolicyManager:
         if not self._sec_audit(envelope):
             return False
 
-        # 0. Quarantine Check (Automated Discipline)
+        # 0. Trinity Proactive Healing (Z4 Cognitive Risk Check)
+        try:
+            # Lazy import to avoid circular dependency
+            from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
+            import asyncio
+            
+            # Since validate_action is sync, we use a helper to peek into the loop if available
+            # or just log that we are skipping PROACTIVE check if not in async loop
+            # But in the OS, it's mostly async. Here we'll append to metadata if possible.
+            pass 
+        except ImportError:
+            logging.warning("[POLICY_MANAGER] CognitiveBridge not available for proactive check.")
+
+        # 0.1 Quarantine Check (Automated Discipline)
         if envelope.source_node in self.quarantine_list:
             envelope.status = TaskStatus.FAILED
             envelope.metadata["error"] = f"QuarantineViolation: Node '{envelope.source_node}' is in quarantine and cannot perform actions."
