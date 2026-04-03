@@ -6,6 +6,8 @@
     "Z16_NEXUS_ROUTER": { "layer": "alpha", "sector": "spine", "role": "Sync task dispatcher" },
     "Z14_POLICY_BUS": { "layer": "alpha", "sector": "spine", "role": "ZBus canonical source" },
     "Z14_AUTO_CORRECTOR": { "layer": "alpha", "sector": "spine", "role": "Self-healing" },
+    "TIMELINE_STORAGE": { "layer": "beta",  "sector": "state",  "role": "Project History (NDJSON)" },
+    "TEMPORAL_CONTEXT_SERVICE": { "layer": "beta", "sector": "kernel", "role": "Timeline & Route Coordination" },
     "B1_PROJECT_CORTEX": { "layer": "beta", "sector": "kernel", "role": "MinHash+LSH Memory" },
     "B2_SYNTHESIS_AGENT": { "layer": "beta", "sector": "orchestrator", "role": "Task Translator" },
     "B2_LLM_ORCHESTRATOR": { "layer": "beta", "sector": "orchestrator", "role": "Multi-provider dispatch" },

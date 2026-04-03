@@ -18,6 +18,15 @@
         {"module": "Z14_AUTO_CORRECTOR", "action": "APPLY_PATCH"},
         {"module": "Z17_GLOBAL_NEXUS", "action": "APPROVE_REPAIR"}
       ]
+    },
+    "TEMPORAL_ROUTING_PROTOCOL": {
+      "description": "Standard procedure for requesting a movement slot across modules/levels",
+      "steps": [
+        {"module": "TEMPORAL_CONTEXT_SERVICE", "action": "REQUEST_SLOT"},
+        {"module": "Z16_NEXUS_ROUTER", "action": "VALIDATE_ROUTE"},
+        {"module": "TEMPORAL_CONTEXT_SERVICE", "action": "GRANT_SLOT"},
+        {"module": "TIMELINE_STORAGE", "action": "LOG_INTENT"}
+      ]
     }
   }
 }

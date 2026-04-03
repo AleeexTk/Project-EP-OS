@@ -11,6 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 from contracts import TaskEnvelope, CascadeStatus, TaskStatus
 from events import create_event, EventType, EventSeverity
+from timeline import TimelineManager
 
 class Observer:
     @staticmethod
@@ -83,9 +84,11 @@ class CascadeValidator:
         if Monument.crystallize(envelope):
             envelope.cascade_status = CascadeStatus.PASSED
             Observer.log_status(envelope, "Cascade Successful. Meaning preserved.")
+            TimelineManager.log_event(envelope.model_dump(), "CASCADE_PASSED", "SUCCESS", "Meaning preserved.", "NEXT_LEVEL")
             return True
         else:
             Monument.block(envelope, "Crystallization Failed. Invariant broken.")
+            TimelineManager.log_event(envelope.model_dump(), "CASCADE_FAILED", "ERROR", "Crystallization Failed.", "ABORT")
             return False
 
 
@@ -102,6 +105,28 @@ class ZCascadePipeline:
 
         from policy_manager import SystemPolicyManager
 
+        # TRP: Request temporal slot before movement (Air Traffic Control)
+        # Using ZBUS_BRIDGE as the primary resource for the cascade.
+        bridge_id = "ZBUS_BRIDGE"
+        if not envelope.slot_id:
+            success, slot_id, msg = TimelineManager.request_slot(envelope.model_dump(), via=bridge_id)
+            if not success:
+                return {
+                    "task_id": envelope.task_id,
+                    "status": "denied",
+                    "reason": f"Temporal Slot Denied: {msg}",
+                    "trace_id": envelope.trace_id
+                }
+            envelope.slot_id = slot_id
+
+        TimelineManager.log_event(
+            envelope.model_dump(), 
+            "CASCADE_START", 
+            "ACTIVE", 
+            f"Starting Z17->Z1 cascade for task {envelope.task_id}",
+            "Z16_ROUTING"
+        )
+
         manager = policy_manager or SystemPolicyManager()
         try:
             z12_dir = PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN"
@@ -112,6 +137,7 @@ class ZCascadePipeline:
         except Exception:
             # Keep default guardian behavior if import path is unavailable.
             pass
+            
         task_id = envelope.task_id
         trace_id = envelope.trace_id
         pair_results: List[Dict[str, Any]] = []
@@ -123,61 +149,81 @@ class ZCascadePipeline:
 
         manager.register_reporter(_audit_hook)
 
-        for upper_z in range(17, 1, -1):
-            lower_z = upper_z - 1
-            pair_id = f"Z{upper_z}->Z{lower_z}"
+        try:
+            for upper_z in range(17, 1, -1):
+                lower_z = upper_z - 1
+                pair_id = f"Z{upper_z}->Z{lower_z}"
 
-            pair_envelope = envelope.model_copy(deep=True)
-            pair_envelope.origin_z = upper_z
-            pair_envelope.payload["target_z"] = lower_z
-            pair_envelope.payload["z_level"] = lower_z
-            pair_envelope.metadata["pair_id"] = pair_id
-            pair_envelope.metadata["cascade_trace"] = trace_id
-            pair_envelope.cascade_status = CascadeStatus.PENDING
+                pair_envelope = envelope.model_copy(deep=True)
+                pair_envelope.origin_z = upper_z
+                pair_envelope.payload["target_z"] = lower_z
+                pair_envelope.payload["z_level"] = lower_z
+                pair_envelope.metadata["pair_id"] = pair_id
+                pair_envelope.metadata["cascade_trace"] = trace_id
+                pair_envelope.cascade_status = CascadeStatus.PENDING
 
-            pair_ok = manager.validate_action(pair_envelope)
-            pair_event = create_event(
-                event_type=EventType.NODE_PROGRESS if pair_ok else EventType.NODE_FAILURE,
-                trace_id=trace_id,
-                node_id=f"z{upper_z}_pair_validator",
-                task_id=task_id,
-                severity=EventSeverity.INFO if pair_ok else EventSeverity.ERROR,
-                payload={
-                    "pair_id": pair_id,
-                    "repaired": bool(pair_envelope.metadata.get("repaired", False)),
-                    "cascade_status": str(pair_envelope.cascade_status),
-                    "error": pair_envelope.metadata.get("error"),
-                },
+                pair_ok = manager.validate_action(pair_envelope)
+                pair_event = create_event(
+                    event_type=EventType.NODE_PROGRESS if pair_ok else EventType.NODE_FAILURE,
+                    trace_id=trace_id,
+                    node_id=f"z{upper_z}_pair_validator",
+                    task_id=task_id,
+                    severity=EventSeverity.INFO if pair_ok else EventSeverity.ERROR,
+                    payload={
+                        "pair_id": pair_id,
+                        "repaired": bool(pair_envelope.metadata.get("repaired", False)),
+                        "cascade_status": str(pair_envelope.cascade_status),
+                        "error": pair_envelope.metadata.get("error"),
+                    },
+                )
+
+                pair_results.append(
+                    {
+                        "pair_id": pair_id,
+                        "ok": pair_ok,
+                        "cascade_status": pair_envelope.cascade_status,
+                        "repaired": bool(pair_envelope.metadata.get("repaired", False)),
+                        "error": pair_envelope.metadata.get("error"),
+                        "event": pair_event.model_dump(),
+                    }
+                )
+
+                # Log each pair transition to the timeline
+                TimelineManager.log_event(
+                    pair_envelope.model_dump(),
+                    "Z_TRANSITION",
+                    "PASSED" if pair_ok else "FAILED",
+                    f"Transition {pair_id} result: {'OK' if pair_ok else 'ERROR'}",
+                    f"Z{lower_z}_ENTRY" if pair_ok else "REPAIR_Z14"
+                )
+
+                if not pair_ok:
+                    return {
+                        "trace_id": trace_id,
+                        "task_id": task_id,
+                        "status": "failed",
+                        "stopped_at": pair_id,
+                        "pairs": pair_results,
+                        "repair_count": sum(1 for p in pair_results if p["repaired"]),
+                        "audit": runtime_audit,
+                    }
+
+            return {
+                "trace_id": trace_id,
+                "task_id": task_id,
+                "status": "passed",
+                "stopped_at": None,
+                "pairs": pair_results,
+                "repair_count": sum(1 for p in pair_results if p["repaired"]),
+                "audit": runtime_audit,
+            }
+        finally:
+            # RELEASE the bridge slot after completion or failure
+            TimelineManager.release_slot(envelope.slot_id, bridge_id)
+            TimelineManager.log_event(
+                envelope.model_dump(),
+                "CASCADE_FINISH",
+                "CLOSED",
+                f"Z-Cascade finished for task {task_id}. Slot {envelope.slot_id} released.",
+                "STANDBY"
             )
-
-            pair_results.append(
-                {
-                    "pair_id": pair_id,
-                    "ok": pair_ok,
-                    "cascade_status": pair_envelope.cascade_status,
-                    "repaired": bool(pair_envelope.metadata.get("repaired", False)),
-                    "error": pair_envelope.metadata.get("error"),
-                    "event": pair_event.model_dump(),
-                }
-            )
-
-            if not pair_ok:
-                return {
-                    "trace_id": trace_id,
-                    "task_id": task_id,
-                    "status": "failed",
-                    "stopped_at": pair_id,
-                    "pairs": pair_results,
-                    "repair_count": sum(1 for p in pair_results if p["repaired"]),
-                    "audit": runtime_audit,
-                }
-
-        return {
-            "trace_id": trace_id,
-            "task_id": task_id,
-            "status": "passed",
-            "stopped_at": None,
-            "pairs": pair_results,
-            "repair_count": sum(1 for p in pair_results if p["repaired"]),
-            "audit": runtime_audit,
-        }
