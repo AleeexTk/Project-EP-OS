@@ -53,3 +53,9 @@ This journal tracks all autonomous decisions, conceptual adoptions, and architec
 - **Status**: ACTIVE.
 
 ---
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-03T12:15:18.122036+00:00`
