@@ -172,18 +172,18 @@ class SystemPolicyManager:
                 cascade_success = CascadeValidator.validate_descent(envelope, target_z)
                 if not cascade_success:
                     if envelope.cascade_status == CascadeStatus.BLOCKED:
-                        logging.warning(f"[POLICY_MANAGER] Task blocked by Monument. Handing over to Z14_AUTO_CORRECTOR...")
+                        logging.warning(f"[POLICY_MANAGER] Task blocked by Monument. Handing over to Z13_AUTO_CORRECTOR...")
                         try:
                             import sys
                             from pathlib import Path
                             # policy_manager.py -> B1_Kernel -> beta_pyramid_functional -> PROJECT_ROOT
                             PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-                            z14_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR")
-                            if z14_path not in sys.path:
-                                sys.path.insert(0, z14_path)
-                            from z14_policy_corrector import AutoCorrectorNode
+                            z13_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR")
+                            if z13_path not in sys.path:
+                                sys.path.insert(0, z13_path)
+                            from z13_policy_corrector import Z13PolicyCorrector
                             
-                            repaired_envelope = AutoCorrectorNode.intercept_and_repair(envelope, envelope.metadata.get("error", "Semantic Integrity Lost"))
+                            repaired_envelope = Z13PolicyCorrector.intercept_and_repair(envelope, envelope.metadata.get("error", "Semantic Integrity Lost"))
                             
                             # Second pass validation on repaired envelope
                             if CascadeValidator.validate_descent(repaired_envelope, target_z):
@@ -194,7 +194,7 @@ class SystemPolicyManager:
                                 if "error" in envelope.metadata:
                                     del envelope.metadata["error"]
                                 envelope.metadata["repaired"] = True
-                                logging.info(f"[POLICY_MANAGER] Z14 Auto-Corrector resurrected the task successfully.")
+                                logging.info(f"[POLICY_MANAGER] Z13 Auto-Corrector resurrected the task successfully.")
                                 return True
                         except Exception as e:
                             logging.error(f"[POLICY_MANAGER] Auto-Corrector bypass failed: {e}")

@@ -1,0 +1,15 @@
+{
+  "id": "auto_corrector",
+  "title": "AUTO CORRECTOR",
+  "z_level": 13,
+  "sector": "SPINE",
+  "coords": {
+    "x": 10,
+    "y": 10,
+    "z": 13
+  },
+  "layer_type": "alpha",
+  "kind": "service",
+  "summary": "Z-Cascade Auto-Advocate that repairs blocked tasks via LLM-driven synthesis rewrite.",
+  "state": "active"
+}

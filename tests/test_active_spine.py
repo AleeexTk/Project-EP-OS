@@ -15,6 +15,9 @@ from timeline import TimelineManager
 from index import NexusRouter
 from contracts import TaskEnvelope
 
+import pytest
+
+@pytest.mark.asyncio
 async def test_active_spine_enforcement():
     print("--- Starting Phase 3: Active Spine Test ---")
     

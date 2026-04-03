@@ -16,7 +16,7 @@ _REQUIRED_PATHS = [
     PROJECT_ROOT / "beta_pyramid_functional" / "B2_ProviderMatrix",
     PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry",
     PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN",
-    PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR",
+    PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR",
     PROJECT_ROOT / "gamma_pyramid_reflective" / "SPINE" / "2_INTEGRITY_OBSERVER",
     PROJECT_ROOT / "gamma_pyramid_reflective" / "A_Pulse",
 ]

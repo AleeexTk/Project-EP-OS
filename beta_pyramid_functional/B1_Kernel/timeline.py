@@ -16,7 +16,7 @@ NODE_MAP = {
     "gen-nexus": "alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS",
     "Z16_NEXUS_ROUTER": "alpha_pyramid_core/SPINE/16_NEXUS_ROUTER",
     "Z14_POLICY_BUS": "alpha_pyramid_core/SPINE/14_POLICY_BUS",
-    "Z14_AUTO_CORRECTOR": "alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR",
+    "Z13_AUTO_CORRECTOR": "alpha_pyramid_core/SPINE/13_AUTO_CORRECTOR",
     "B1_PROJECT_CORTEX": "beta_pyramid_functional/B1_Kernel",
     "B2_SYNTHESIS_AGENT": "beta_pyramid_functional/B2_Orchestrator",
     "B2_LLM_ORCHESTRATOR": "beta_pyramid_functional/B2_Orchestrator",

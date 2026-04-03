@@ -5,19 +5,6 @@ __pycache__/
 .venv/
 env/
 venv/
-ENV/
-build/
-dist/
-
-# Logs and State
-state/*.log
-state/*.json
-!state/.gitkeep
-
-# Node.js
-node_modules/
-.npm/
-dist-ssr/
 *.local
 
 # OS
@@ -30,8 +17,19 @@ Thumbs.db
 .uv/
 timeline/
 *.ndjson
-state/
+
+# State & Persistence (Seal Git Leaks)
+state/**/*.json
+state/**/*.log
+state/*.json
+state/*.log
 !state/.gitkeep
+
+# Node.js
+node_modules/
+.npm/
+dist/
+dist-ssr/
 
 # Generated Data & Logs
 evo_data/

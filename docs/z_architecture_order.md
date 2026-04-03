@@ -37,7 +37,6 @@
 
 **Z14 — INFRA** (между Z15 и Z13): ✅ **ЕСТЬ**
 > Узел 1: `alpha_pyramid_core/SPINE/14_POLICY_BUS/index.py`
-> Узел 2 (Промотирован): `alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR/auto_corrector.py` (Авто-Адвокат Z-Каскада)
 
 ---
 

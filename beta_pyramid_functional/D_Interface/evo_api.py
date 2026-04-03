@@ -23,12 +23,12 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-AUTO_CORRECTOR_PATH = ROOT_DIR / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR"
+AUTO_CORRECTOR_PATH = ROOT_DIR / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR"
 if str(AUTO_CORRECTOR_PATH) not in sys.path:
     sys.path.append(str(AUTO_CORRECTOR_PATH))
 
 try:
-    import z14_policy_corrector as AC
+    import z13_policy_corrector as AC
 except ImportError:
     AC = None
 
