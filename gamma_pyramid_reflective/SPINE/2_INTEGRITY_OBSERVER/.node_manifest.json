@@ -1,0 +1,28 @@
+{
+  "id": "integrity_observer",
+  "title": "INTEGRITY OBSERVER",
+  "z_level": 2,
+  "sector": "SPINE",
+  "coords": {
+    "x": 10,
+    "y": 10,
+    "z": 2
+  },
+  "layer_type": "gamma",
+  "kind": "service",
+  "summary": "Z2 Reflective Observer. Monitoring high-Z policy violations and archiving them to project history.",
+  "state": "active",
+  "canon_status": "runtime",
+  "artifacts": [],
+  "links": [],
+  "children": [],
+  "source_refs": [
+    "integrity_observer.py"
+  ],
+  "metadata": {
+    "source": "antigravity-reconstruction",
+    "path": "gamma_pyramid_reflective/SPINE/2_INTEGRITY_OBSERVER"
+  },
+  "runtime_canon_flag": "runtime",
+  "layer_folder": "gamma_pyramid_reflective"
+}

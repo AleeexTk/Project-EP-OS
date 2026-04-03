@@ -773,6 +773,47 @@ async def add_link(link: Link):
     await manager.broadcast({"type": "link_added", "data": link.model_dump()})
     return {"status": "ok"}
 
+# ─────────────────────────────────────────
+#  Architecture & Timeline API (Sprint 8)
+# ─────────────────────────────────────────
+
+@app.get("/api/architecture/map")
+async def get_architecture_map():
+    path = ROOT_DIR / "architecture" / "architecture_map.json"
+    if not path.exists():
+        return {"error": "Architecture map not found"}
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@app.get("/api/architecture/catalog")
+async def get_solution_catalog():
+    path = ROOT_DIR / "architecture" / "solution_catalog.json"
+    if not path.exists():
+        return {"error": "Solution catalog not found"}
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@app.get("/api/timeline")
+async def get_timeline(limit: int = 20):
+    path = ROOT_DIR / "timeline" / "project_timeline.ndjson"
+    if not path.exists():
+        return []
+    
+    events = []
+    try:
+        # Read last N lines for efficiency
+        with open(path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            # Parse only the last N lines
+            for line in lines[-limit:]:
+                if line.strip():
+                    events.append(json.loads(line))
+    except Exception as e:
+        logging.error(f"Timeline read error: {e}")
+        return {"error": str(e)}
+        
+    return events[::-1] # Return newest first for the UI
+
 @app.post("/zbus/publish")
 async def zbus_publish(event: dict):
     """

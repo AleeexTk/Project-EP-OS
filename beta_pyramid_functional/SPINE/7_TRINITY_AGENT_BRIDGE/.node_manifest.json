@@ -21,12 +21,12 @@
   "source_refs": [],
   "metadata": {
     "source": "filesystem-discovery",
-    "path": "\u03b2_Pyramid_Functional/SPINE/7_CHATGPT_APPS_BRIDGE",
-    "layer_folder": "\u03b2_Pyramid_Functional"
+    "path": "beta_pyramid_functional/SPINE/7_CHATGPT_APPS_BRIDGE",
+    "layer_folder": "beta_pyramid_functional"
   },
   "runtime_canon_flag": "runtime",
   "session_url": null,
   "browser_profile_dir": null,
   "orchestrator_state": "unlinked",
-  "layer_folder": "\u03b2_Pyramid_Functional"
+  "layer_folder": "beta_pyramid_functional"
 }

@@ -3,5 +3,10 @@
   "title": "Agent Workspace Tools",
   "z_level": 5,
   "sector": "GREEN",
+  "coords": {
+    "x": 7,
+    "y": 7,
+    "z": 5
+  },
   "layer_folder": "beta_pyramid_functional"
 }

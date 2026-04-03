@@ -3,7 +3,7 @@
   "title": "GH CI Guardian",
   "z_level": 11,
   "sector": "RED",
-  "coords": { "x": 11, "y": 9, "z": 11 },
+  "coords": { "x": 12, "y": 9, "z": 11 },
   "layer_type": "alpha",
   "kind": "service",
   "summary": "Stabilizes GitHub workflow health and routes failing checks to correction loops.",

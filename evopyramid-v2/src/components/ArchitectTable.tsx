@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Play } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Play, ClipboardList, RefreshCw } from 'lucide-react';
 import { CORE_API_BASE } from '../lib/config';
 import { CENTER, EvoNode, getRadius } from '../lib/evo';
 import { usePyramidContext } from '../lib/PyramidContext';
@@ -25,7 +25,22 @@ const GRID_CLASS: Record<number, string> = {
 
 function ArchitectTable({ nodes, onSelectNode }: ArchitectTableProps) {
   const [activeZ, setActiveZ] = useState<number>(17);
+  const [archMap, setArchMap] = useState<any>(null);
   const { atcSlots } = usePyramidContext();
+
+  const fetchArchMap = async () => {
+    try {
+      const resp = await fetch(`${CORE_API_BASE}/api/architecture/map`);
+      if (resp.ok) setArchMap(await resp.json());
+    } catch (err) {
+      console.error('Failed to fetch arch map:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchArchMap();
+  }, []);
+
   const radius = getRadius(activeZ);
   const size = radius * 2 + 1;
   const gridRange = useMemo(() => Array.from({ length: size }, (_, index) => CENTER - radius + index), [radius, size]);
@@ -50,8 +65,8 @@ function ArchitectTable({ nodes, onSelectNode }: ArchitectTableProps) {
 
       <div className="flex-1 overflow-auto p-4 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.15),_rgba(2,6,23,1))]">
         <div className={`grid gap-2 mx-auto w-fit ${GRID_CLASS[size] ?? 'grid-cols-1'}`}>
-          {gridRange.map((y) =>
-            gridRange.map((x) => {
+          {gridRange.map((y: number) =>
+            gridRange.map((x: number) => {
               const node = getCellNode(x, y);
               const empty = !node || node.kind === 'empty';
 
@@ -117,10 +132,42 @@ function ArchitectTable({ nodes, onSelectNode }: ArchitectTableProps) {
         </div>
       </div>
 
-      <div className="px-4 py-2 border-t border-white/10 text-[10px] text-slate-400 flex items-center justify-between">
+      <div className="px-4 py-2 border-t border-white/10 text-[10px] text-slate-400 flex items-center justify-between bg-slate-950/40">
         <span className="font-mono">LAYER: {activeZ >= 11 ? 'ALPHA' : activeZ >= 5 ? 'BETA' : 'GAMMA'}</span>
-        <span>{size * size} cells</span>
+        <div className="flex items-center gap-4">
+          <span>{size * size} cells</span>
+          <button onClick={fetchArchMap} className="hover:text-blue-400" title="Refresh Architecture Map">
+            <RefreshCw className="w-3 h-3" />
+          </button>
+        </div>
       </div>
+
+      {archMap && (
+        <div className="h-64 border-t border-white/10 bg-black/40 p-4 overflow-y-auto">
+          <h3 className="text-xs font-bold text-slate-200 mb-3 flex items-center gap-2">
+            <ClipboardList className="w-4 h-4 text-blue-400" />
+            CANONICAL REGISTRY
+          </h3>
+          <table className="w-full text-left text-[10px] font-mono border-collapse">
+            <thead>
+              <tr className="text-slate-500 border-b border-white/5">
+                <th className="pb-2">MODULE ID</th>
+                <th className="pb-2">SECTOR</th>
+                <th className="pb-2">ROLE</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {Object.entries(archMap.modules || {}).map(([id, info]: [string, any]) => (
+                <tr key={id} className="group hover:bg-white/5 transition-colors">
+                  <td className="py-2 text-blue-400 font-bold">{id}</td>
+                  <td className="py-2 text-slate-400">{info.sector}</td>
+                  <td className="py-2 text-slate-300 italic">{info.role}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
