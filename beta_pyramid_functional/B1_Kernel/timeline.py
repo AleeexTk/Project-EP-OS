@@ -16,7 +16,7 @@ NODE_MAP = {
     "gen-nexus": "alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS",
     "Z16_NEXUS_ROUTER": "alpha_pyramid_core/SPINE/16_NEXUS_ROUTER",
     "Z14_POLICY_BUS": "alpha_pyramid_core/SPINE/14_POLICY_BUS",
-    "Z14_AUTO_CORRECTOR": "alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR",
+    "Z13_AUTO_CORRECTOR": "alpha_pyramid_core/SPINE/13_AUTO_CORRECTOR",
     "B1_PROJECT_CORTEX": "beta_pyramid_functional/B1_Kernel",
     "B2_SYNTHESIS_AGENT": "beta_pyramid_functional/B2_Orchestrator",
     "B2_LLM_ORCHESTRATOR": "beta_pyramid_functional/B2_Orchestrator",
@@ -76,27 +76,55 @@ class TimelineManager:
             # Silent fail for local logging to avoid blocking core execution
             pass
 
+    _ACTIVE_SLOTS = {} # bridge_id -> slot_data
+
+    @staticmethod
+    def _sync_from_disk():
+        """Syncs the RAM cache from the bridge_locks.ndjson persistent store."""
+        if not BRIDGE_LOCKS_PATH.exists():
+            return
+        try:
+            with open(BRIDGE_LOCKS_PATH, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+                # We only care about the latest state of each bridge
+                temp_status = {}
+                for line in lines:
+                    if not line.strip(): continue
+                    lock = json.loads(line)
+                    temp_status[lock["bridge_id"]] = lock
+                
+                # Filter only active locks
+                TimelineManager._ACTIVE_SLOTS = {
+                    b_id: data for b_id, data in temp_status.items() 
+                    if data["status"] == "active"
+                }
+        except Exception:
+            pass
+
     @staticmethod
     def request_slot(envelope_data: Dict[str, Any], via: Optional[str] = None) -> Tuple[bool, str, str]:
         """
         Requests a temporal slot for a cross-layer or cross-module movement.
-        Enforces Bridge Guard: checks if the 'via' resource is available.
-        Returns: (approved, slot_id, message)
+        Phase 3: Uses RAM-based ACTIVE_SLOTS for sub-millisecond verification.
         """
         via = via or envelope_data.get("metadata", {}).get("via", "GENERAL_ROUTE")
         
-        # Check Bridge Availability
-        if not TimelineManager._check_bridge_availability(via):
-            msg = f"Bridge {via} is currently saturated or locked by another process."
+        # Cold start sync if RAM is empty but disk has data
+        if not TimelineManager._ACTIVE_SLOTS and BRIDGE_LOCKS_PATH.exists():
+            TimelineManager._sync_from_disk()
+
+        # Check RAM bridge availability
+        if via in TimelineManager._ACTIVE_SLOTS:
+            msg = f"Bridge {via} is currently saturated or locked by another process (RAM-Verified)."
             TimelineManager.log_event(envelope_data, "REQUEST_SLOT", "DENIED", msg, "RETRY_LATER")
             return False, "", msg
 
         slot_id = f"SLOT-{uuid.uuid4().hex[:8].upper()}"
         
-        # Lock the bridge
+        # Lock the bridge (RAM + DISK)
         TimelineManager._lock_bridge(via, slot_id, envelope_data.get("task_id", "GLOBAL"))
 
-        msg = f"Temporal slot {slot_id} granted via {via}."
+        msg = f"Temporal slot {slot_id} granted via {via} (RAM-Lock)."
         TimelineManager.log_event(
             envelope_data=envelope_data,
             action="REQUEST_SLOT",
@@ -108,31 +136,8 @@ class TimelineManager:
         return True, slot_id, msg
 
     @staticmethod
-    def _check_bridge_availability(bridge_id: str) -> bool:
-        """
-        Checks if the bridge is currently occupied by an active slot.
-        Currently uses a simple per-bridge lock file simulation.
-        """
-        if not BRIDGE_LOCKS_PATH.exists():
-            return True
-        
-        # Check active locks
-        try:
-            with open(BRIDGE_LOCKS_PATH, "r", encoding="utf-8") as f:
-                locks = [json.loads(line) for line in f if line.strip()]
-                # If there's an active lock for this bridge that isn't 'released', return False
-                # Simple logic: last entry for bridge_id must be 'released'
-                bridge_status = [l for l in locks if l["bridge_id"] == bridge_id]
-                if bridge_status and bridge_status[-1]["status"] == "active":
-                    return False
-        except Exception:
-            return True
-        
-        return True
-
-    @staticmethod
     def _lock_bridge(bridge_id: str, slot_id: str, task_id: str):
-        """Records a new active lock for a bridge."""
+        """Records a new active lock for a bridge (RAM + DISK)."""
         lock_entry = {
             "time": datetime.now(timezone.utc).isoformat(),
             "bridge_id": bridge_id,
@@ -140,13 +145,24 @@ class TimelineManager:
             "task_id": task_id,
             "status": "active"
         }
+        
+        # Update RAM
+        TimelineManager._ACTIVE_SLOTS[bridge_id] = lock_entry
+        
+        # Update DISK
         BRIDGE_LOCKS_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(BRIDGE_LOCKS_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(lock_entry, ensure_ascii=False) + "\n")
 
     @staticmethod
     def release_slot(slot_id: str, bridge_id: str):
-        """Releases the lock on a bridge after task completion."""
+        """Releases the lock on a bridge (RAM + DISK)."""
+        # Update RAM
+        if bridge_id in TimelineManager._ACTIVE_SLOTS:
+            if TimelineManager._ACTIVE_SLOTS[bridge_id].get("slot_id") == slot_id:
+                del TimelineManager._ACTIVE_SLOTS[bridge_id]
+
+        # Update DISK
         release_entry = {
             "time": datetime.now(timezone.utc).isoformat(),
             "bridge_id": bridge_id,

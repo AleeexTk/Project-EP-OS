@@ -1,10 +1,15 @@
 {
-  "node_id": "sec_guardian",
+  "id": "sec_guardian",
   "title": "SEC GUARDIAN",
   "z_level": 12,
   "sector": "SPINE",
-  "layer": "alpha",
-  "description": "Security proxy gateway. Audits all cross-layer requests for authentication, origin spoofing, and token abuse.",
-  "coords": { "x": 8, "y": 8, "z": 12 },
-  "status": "active"
+  "coords": {
+    "x": 8,
+    "y": 8,
+    "z": 12
+  },
+  "layer_type": "alpha",
+  "kind": "service",
+  "summary": "Security proxy gateway and rate-limiter. Audits all cross-layer Z-Bus requests.",
+  "state": "active"
 }

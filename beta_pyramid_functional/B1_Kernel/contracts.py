@@ -34,6 +34,7 @@ class TaskEnvelope(BaseModel):
     origin_z: int = 1   # Z-level of the source node
     intent: Optional[str] = None  # Original Architect's intent (canonical goal)
     metadata: Dict[str, Any] = Field(default_factory=dict)
+    signature: Optional[str] = None  # Zero-Trust Cryptographic Signature
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     slot_id: Optional[str] = None  # Temporal Slot ID for ATC coordination
     temporal_trace: List[Dict[str, Any]] = Field(default_factory=list) # 4D history trace

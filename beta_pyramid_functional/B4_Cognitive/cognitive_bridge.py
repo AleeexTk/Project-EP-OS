@@ -236,6 +236,39 @@ class CognitiveBridge:
                 return {"id": node_id, "content": content}
         return None
 
+    async def predict_failure(self, envelope: Any) -> Optional[Dict[str, Any]]:
+        """
+        [TRINITY PROACTIVE HEALING]
+        Analyzes the current envelope against past failure patterns in ProjectCortex.
+        Returns a prediction report if a high-risk pattern is detected.
+        """
+        topic = f"{envelope.action} on {envelope.target_node}"
+        logger.debug(f"[CognitiveBridge] Predicting failure risk for '{topic}'...")
+
+        # Search for similar blocks with 'error' or 'heal' tags
+        similar = await self._cortex.hypergraph.find_similar(topic, top_k=15)
+        
+        for node_id, score in similar:
+            node = self._cortex.hypergraph.nodes.get(node_id)
+            if not node: continue
+            
+            tags = node.metadata.get("tags", []) if isinstance(node.metadata, dict) else []
+            
+            # If we find a highly similar block (score > 0.4) that was a 'heal' or 'violation'
+            if score > 0.4 and ("heal" in tags or "violation" in tags or "error" in tags):
+                block = self._cortex.persistence.load_block(node.block_id)
+                if not block: continue
+                
+                logger.warning(f"[CognitiveBridge] ⚠️ High risk detected! Past failure pattern found (similarity: {score:.2f})")
+                return {
+                    "risk_level": "high" if score > 0.7 else "medium",
+                    "similarity": score,
+                    "past_outcome": block.content,
+                    "recommendation": "Consult SynthesisAgent (Z9) for a pre-flight architectural check."
+                }
+        
+        return None
+
     async def health_summary(self) -> dict:
         """Return a summary of what's currently in long-term memory."""
         total = len(self._cortex.hypergraph.nodes)

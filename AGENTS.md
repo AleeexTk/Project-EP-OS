@@ -36,7 +36,7 @@ These entities operate outside the Python runtime but hold repository execution 
 
 These agents are hardcoded into the OS execution layer (Python codebase).
 
-- **Z14 AutoCorrector** (`alpha_pyramid_core/SPINE/14_AUTO_CORRECTOR/z14_policy_corrector.py`)
+- **Z13 AutoCorrector** (`alpha_pyramid_core/SPINE/13_AUTO_CORRECTOR/z13_policy_corrector.py`)
   - **Role:** The Immune System.
   - **Interaction:** Intercepts proposed changes and cross-checks them against system policy across the ZBus. Can veto external outputs.
 

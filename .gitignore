@@ -5,19 +5,6 @@ __pycache__/
 .venv/
 env/
 venv/
-ENV/
-build/
-dist/
-
-# Logs and State
-state/*.log
-state/*.json
-!state/.gitkeep
-
-# Node.js
-node_modules/
-.npm/
-dist-ssr/
 *.local
 
 # OS
@@ -28,15 +15,35 @@ Thumbs.db
 .env
 .python-version
 .uv/
+timeline/
+*.ndjson
 
-# Generated Data
-evo_data/tmp*
+# State & Persistence (Seal Git Leaks)
+state/**/*.json
+state/**/*.log
+state/*.json
+state/*.log
+!state/.gitkeep
+
+# Node.js
+node_modules/
+.npm/
+dist/
+dist-ssr/
+
+# Generated Data & Logs
+evo_data/
+tmp/
+tmp_canon_test/
+beta_pyramid_functional_backup/
+beta_pyramid_functional/B3_SessionRegistry/sessions_store.json
+beta_pyramid_functional/D_Interface/evolution_journal.json
+gamma_pyramid_reflective/B_Evo_Log/*.json
 *.log
 *.pem
-tmp/
-beta_pyramid_functional_backup/
-*.log
-beta_pyramid_functional/B3_SessionRegistry/*.log
-beta_pyramid_functional/D_Interface/logs/
-evo_data/
-**/sessions_store.json
+
+# Temporary Discussion Files
+discussion.txt
+gpt_discussion.txt
+extract_docx.py
+extract_docx_2.py

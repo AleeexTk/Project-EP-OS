@@ -13,9 +13,9 @@
     "AUTO_HEALING_WORKFLOW": {
       "description": "Automated structural repair via Immune System",
       "steps": [
-        {"module": "Z14_AUTO_CORRECTOR", "action": "DETECT_VIOLATION"},
+        {"module": "Z13_AUTO_CORRECTOR", "action": "DETECT_VIOLATION"},
         {"module": "B4_COGNITIVE_BRIDGE", "action": "RECALL_SIMILAR_ERRORS"},
-        {"module": "Z14_AUTO_CORRECTOR", "action": "APPLY_PATCH"},
+        {"module": "Z13_AUTO_CORRECTOR", "action": "APPLY_PATCH"},
         {"module": "Z17_GLOBAL_NEXUS", "action": "APPROVE_REPAIR"}
       ]
     },

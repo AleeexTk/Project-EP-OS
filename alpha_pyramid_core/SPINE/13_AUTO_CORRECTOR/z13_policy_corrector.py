@@ -1,5 +1,5 @@
 """
-Auto Corrector — Z14 · Alpha_Pyramid_Core · SPINE sector
+Auto Corrector — Z13 · Alpha_Pyramid_Core · SPINE sector
 Intercepts and repairs tasks blocked by the Z-Cascade Monument.
 """
 
@@ -72,7 +72,7 @@ class RepairJournal:
         except Exception as e:
             logger.error(f"[REPAIR_JOURNAL] Failed to save history: {e}")
 
-class AutoCorrectorNode:
+class Z13PolicyCorrector:
     @staticmethod
     def _run_async(coro):
         try:
@@ -178,26 +178,26 @@ class AutoCorrectorNode:
         Takes a blocked envelope, uses an LLM (or fallback logic) to rewrite
         the synthesis_proposal so it matches the original intent, and returns it.
         """
-        logger.warning(f"[Z14_AUTO_CORRECTOR] Intercepting blocked task from {envelope.source_node}. Reason: {rejection_reason}")
+        logger.warning(f"[Z13_AUTO_CORRECTOR] Intercepting blocked task from {envelope.source_node}. Reason: {rejection_reason}")
         
         repaired_envelope = envelope.model_copy(deep=True)
         
-        # Retrieve best provider for Z14 logic repair
-        provider = ProviderMatrix.get_best_available(14, "SPINE")
+        # Retrieve best provider for Z13 logic repair
+        provider = ProviderMatrix.get_best_available(13, "SPINE")
         
         original_intent = repaired_envelope.intent or ""
         original_proposal = str(repaired_envelope.payload.get("synthesis_proposal", "") or "")
-        error_signature = AutoCorrectorNode._build_error_signature(rejection_reason, original_intent)
+        error_signature = Z13PolicyCorrector._build_error_signature(rejection_reason, original_intent)
         recalled_proposal = None
         try:
-            bridge = AutoCorrectorNode._run_async(CognitiveBridge.get_instance())
-            recalled_memory = AutoCorrectorNode._run_async(bridge.recall_healing_pattern(error_signature))
+            bridge = Z13PolicyCorrector._run_async(CognitiveBridge.get_instance())
+            recalled_memory = Z13PolicyCorrector._run_async(bridge.recall_healing_pattern(error_signature))
             if recalled_memory and isinstance(recalled_memory, dict):
                 content = str(recalled_memory.get("content", ""))
                 if "[OUTCOME]" in content:
                     recalled_proposal = content.split("[OUTCOME]", 1)[1].strip()
         except Exception as e:
-            logger.warning(f"[Z14_AUTO_CORRECTOR] Memory recall unavailable: {e}")
+            logger.warning(f"[Z13_AUTO_CORRECTOR] Memory recall unavailable: {e}")
         
         if not original_intent:
             repaired_proposal = "Restored semantic alignment."
@@ -205,7 +205,7 @@ class AutoCorrectorNode:
             repaired_proposal = recalled_proposal
         else:
             try:
-                repaired_proposal = AutoCorrectorNode._rewrite_with_provider(
+                repaired_proposal = Z13PolicyCorrector._rewrite_with_provider(
                     provider=provider,
                     original_intent=original_intent,
                     current_proposal=original_proposal,
@@ -214,10 +214,10 @@ class AutoCorrectorNode:
                 if not repaired_proposal:
                     repaired_proposal = original_intent
             except Exception as e:
-                logger.error(f"[Z14_AUTO_CORRECTOR] LLM rewrite failed with {provider.value}: {e}")
+                logger.error(f"[Z13_AUTO_CORRECTOR] LLM rewrite failed with {provider.value}: {e}")
                 repaired_proposal = original_intent
             
-        logger.info(f"[Z14_AUTO_CORRECTOR] Synthesis Proposal rewritten with {provider.value} provider logic.")
+        logger.info(f"[Z13_AUTO_CORRECTOR] Synthesis Proposal rewritten with {provider.value} provider logic.")
         
         repaired_envelope.payload["synthesis_proposal"] = repaired_proposal
         if "simulate_semantic_loss" in repaired_envelope.payload:
@@ -235,16 +235,16 @@ class AutoCorrectorNode:
         )
 
         try:
-            bridge = AutoCorrectorNode._run_async(CognitiveBridge.get_instance())
-            AutoCorrectorNode._run_async(
+            bridge = Z13PolicyCorrector._run_async(CognitiveBridge.get_instance())
+            Z13PolicyCorrector._run_async(
                 bridge.store_decision(
                     topic=error_signature,
                     outcome=repaired_proposal,
-                    z_level=14,
-                    tags=["heal", "z14_auto_corrector"],
+                    z_level=13,
+                    tags=["heal", "z13_auto_corrector"],
                 )
             )
         except Exception as e:
-            logger.warning(f"[Z14_AUTO_CORRECTOR] Memory store unavailable: {e}")
+            logger.warning(f"[Z13_AUTO_CORRECTOR] Memory store unavailable: {e}")
         
         return repaired_envelope

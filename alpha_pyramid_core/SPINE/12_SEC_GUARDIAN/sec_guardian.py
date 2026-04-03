@@ -87,6 +87,40 @@ class OriginVerifier:
 
 
 # ---------------------------------------------------------------------------
+#  Signature Verifier (Zero-Trust)
+# ---------------------------------------------------------------------------
+
+class SignatureVerifier:
+    """
+    Trinity Zero-Trust Signatory. 
+    High-Z nodes (Z7+) MUST provide a valid Trinity Soft-Sig.
+    """
+    
+    # Mock system secret for Trinity Phase 1
+    _TRINITY_SECRET = "TRINITY-V4-CORE"
+
+    @classmethod
+    def verify(cls, envelope: TaskEnvelope) -> tuple[bool, str]:
+        # Rule 1: Mandatory signature for Z7+ (Spine/Infrastructure)
+        if envelope.origin_z >= 7:
+            if not envelope.signature:
+                return False, f"SignatureMissing: Z{envelope.origin_z} node '{envelope.source_node}' requires a Trinity Signature."
+            
+            # Rule 2: Basic logic check (Format: TSIG:<node_id>:<checksum>)
+            # In Phase 1, we accept 'TSIG:<node_id>:AUTHORIZED' or a hash-like string
+            sig_parts = envelope.signature.split(":")
+            if len(sig_parts) < 3 or sig_parts[0] != "TSIG" or sig_parts[1] != envelope.source_node:
+                return False, f"SignatureInvalid: Cryptographic handshake failed for '{envelope.source_node}'."
+            
+            # Rule 3: Anti-Replay (Trace check)
+            if not envelope.task_id in envelope.signature:
+                # For Phase 2+ we'd check if the task_id is signed into the hash
+                pass
+
+        return True, "OK"
+
+
+# ---------------------------------------------------------------------------
 #  SEC Guardian — Public Interface
 # ---------------------------------------------------------------------------
 
@@ -99,19 +133,26 @@ class SecGuardian:
     def __init__(self, max_rps: int = 10, window: int = 60):
         self._limiter = RateLimiter(max_requests=max_rps, window_seconds=window)
         self._verifier = OriginVerifier()
+        self._sig_verifier = SignatureVerifier()
 
     def audit(self, envelope: TaskEnvelope) -> bool:
         """
         Returns True if the envelope passes all security checks.
         Mutates `envelope.status` and `envelope.metadata['error']` on failure.
         """
-        # 1. Origin verification
+        # 1. Zero-Trust Signature Check (Trinity Protocol)
+        sig_ok, sig_reason = self._sig_verifier.verify(envelope)
+        if not sig_ok:
+            self._block(envelope, sig_reason)
+            return False
+
+        # 2. Origin verification
         ok, reason = self._verifier.verify(envelope)
         if not ok:
             self._block(envelope, reason)
             return False
 
-        # 2. Rate-limit check
+        # 3. Rate-limit check
         if not self._limiter.is_allowed(envelope.source_node):
             self._block(envelope, f"RateLimitViolation: '{envelope.source_node}' exceeded request quota.")
             return False
