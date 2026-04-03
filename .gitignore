@@ -28,15 +28,24 @@ Thumbs.db
 .env
 .python-version
 .uv/
+timeline/
+*.ndjson
+state/
+!state/.gitkeep
 
-# Generated Data
-evo_data/tmp*
+# Generated Data & Logs
+evo_data/
+tmp/
+tmp_canon_test/
+beta_pyramid_functional_backup/
+beta_pyramid_functional/B3_SessionRegistry/sessions_store.json
+beta_pyramid_functional/D_Interface/evolution_journal.json
+gamma_pyramid_reflective/B_Evo_Log/*.json
 *.log
 *.pem
-tmp/
-beta_pyramid_functional_backup/
-*.log
-beta_pyramid_functional/B3_SessionRegistry/*.log
-beta_pyramid_functional/D_Interface/logs/
-evo_data/
-**/sessions_store.json
+
+# Temporary Discussion Files
+discussion.txt
+gpt_discussion.txt
+extract_docx.py
+extract_docx_2.py
