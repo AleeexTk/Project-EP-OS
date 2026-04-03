@@ -107,7 +107,7 @@ class ZCascadePipeline:
 
         # TRP: Request temporal slot before movement (Air Traffic Control)
         # Using ZBUS_BRIDGE as the primary resource for the cascade.
-        bridge_id = "ZBUS_BRIDGE"
+        bridge_id = envelope.metadata.get("via", "ZBUS_BRIDGE")
         if not envelope.slot_id:
             success, slot_id, msg = TimelineManager.request_slot(envelope.model_dump(), via=bridge_id)
             if not success:
@@ -118,6 +118,15 @@ class ZCascadePipeline:
                     "trace_id": envelope.trace_id
                 }
             envelope.slot_id = slot_id
+        else:
+            # Slot already provided by Dispatcher (Phase 2 Early Enforcement)
+            TimelineManager.log_event(
+                envelope.model_dump(),
+                "TRP_INHERIT",
+                "ACTIVE",
+                f"Inherited ATC Slot {envelope.slot_id} from Dispatcher.",
+                "Z16_ROUTING"
+            )
 
         TimelineManager.log_event(
             envelope.model_dump(), 

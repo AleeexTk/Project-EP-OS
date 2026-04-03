@@ -19,6 +19,8 @@ if str(PROJECT_ROOT) not in sys.path:
 
 logger = logging.getLogger(__name__)
 
+from timeline import TimelineManager
+
 class NexusRouter:
     """
     Routes commands from the Global Control Plane into the Policy Bus (Z-Bus),
@@ -42,13 +44,25 @@ class NexusRouter:
     async def dispatch_sync(self, envelope) -> dict:
         """
         Dispatches a task to the Z-Bus and awaits its result.
-        This provides the synchronous illusion needed by REST APIs.
+        Enforces Early TRP: requests a temporal slot before publication.
         """
+        # TRP: Early Gatekeeper Check
+        bridge_id = envelope.metadata.get("via", "ZBUS_BRIDGE")
+        success, slot_id, msg = TimelineManager.request_slot(envelope.model_dump(), via=bridge_id)
+        
+        if not success:
+            return {
+                "status": "DENIED_BY_ATC",
+                "task_id": envelope.task_id,
+                "reason": f"Temporal Routing Denied: {msg}"
+            }
+        
+        envelope.slot_id = slot_id
         task_id = envelope.task_id
         future = asyncio.Future()
         self.pending_tasks[task_id] = future
         
-        # Publish to the Z-Bus for the Kernel (or any worker) to process
+        # Publish to the Z-Bus
         await self.zbus.publish({
             "topic": "EXECUTE_TASK",
             "payload": {
@@ -65,7 +79,7 @@ class NexusRouter:
             return {
                 "status": "ERROR",
                 "task_id": task_id,
-                "reason": "Z-Bus Execution Timeout"
+                "reason": "Z-Bus Execution Timeout (ATC Slot was active)"
             }
         finally:
             self.pending_tasks.pop(task_id, None)
@@ -73,8 +87,20 @@ class NexusRouter:
     async def dispatch_async(self, envelope) -> dict:
         """
         Dispatches a task asynchronously and returns immediately.
-        The UI will receive the result via WebSocket.
+        Enforces Early TRP: requests a temporal slot before publication.
         """
+        # TRP: Early Gatekeeper Check
+        bridge_id = envelope.metadata.get("via", "ZBUS_BRIDGE")
+        success, slot_id, msg = TimelineManager.request_slot(envelope.model_dump(), via=bridge_id)
+        
+        if not success:
+            return {
+                "status": "DENIED_BY_ATC",
+                "task_id": envelope.task_id,
+                "reason": f"Temporal Routing Denied: {msg}"
+            }
+            
+        envelope.slot_id = slot_id
         await self.zbus.publish({
             "topic": "EXECUTE_TASK",
             "payload": {
@@ -85,7 +111,8 @@ class NexusRouter:
         return {
             "status": "ACCEPTED_ASYNC",
             "task_id": envelope.task_id,
-            "message": "Dispatched to Z-Bus"
+            "slot_id": slot_id,
+            "message": f"Dispatched via ATC Slot {slot_id}"
         }
 
 # Global singleton will be initialized when needed by the API
