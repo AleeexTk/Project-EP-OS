@@ -35,6 +35,8 @@ class TaskEnvelope(BaseModel):
     intent: Optional[str] = None  # Original Architect's intent (canonical goal)
     metadata: Dict[str, Any] = Field(default_factory=dict)
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    slot_id: Optional[str] = None  # Temporal Slot ID for ATC coordination
+    temporal_trace: List[Dict[str, Any]] = Field(default_factory=list) # 4D history trace
 
 class SystemPolicy(BaseModel):
     """Permissions and policy layer for autonomous execution nodes."""

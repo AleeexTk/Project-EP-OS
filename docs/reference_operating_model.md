@@ -16,11 +16,27 @@ This document explains EvoPyramid through a restaurant operating model so agents
 ## 2) Core Principle
 
 - A restaurant is not only a kitchen; it is a role-and-flow system.
-- EvoPyramid is not only a code repository; it is a role-and-flow operating system for project execution.
+- An airport is not only a runway; it is a time-and-route coordination system.
+- EvoPyramid is not only a code repository; it is a role-and-flow operating system for project execution, governed by **Temporal Identity** and **Spatial Routes**.
 
 ---
 
-## 3) Historical Positioning (2024 Baseline)
+## 3) Core Concepts: Time & Space
+
+### 3.1) The ATC Analogy (Air Traffic Control)
+To ensure safety and prevent "air crashes" (system conflicts), EvoPyramid operates like an airport:
+- **Modules = Planes**: Autonomous entities with a mission.
+- **Routes = Flight Paths**: Defined transitions between architecture nodes (Z-layers).
+- **Core = Dispatcher**: Coordinates intentions and grants time slots.
+- **Timeline = Flight Log + Radar**: Historical record and real-time status.
+
+### 3.2) Temporal Identity (4D)
+A module's identity is not just a name; it is its existence in time and space:
+`IDENTITY = ID (Who) + TIME TRACE (When) + LOCATION (Where) + ACTION HISTORY (What)`
+
+---
+
+## 4) Historical Positioning (2024 Baseline)
 
 This model is also a historical note: a role-first EvoPyramid framing was already present in 2024 and aligns with patterns that later became mainstream in agent engineering (role-based execution, orchestration, validation, memory, routing, governance).
 
@@ -143,11 +159,11 @@ If you are an AI agent in EvoPyramid:
 - respect storage boundaries;
 - pass validation gates;
 - log actions;
-- do not break architecture discipline.
+- **No Slot -> No Movement**: Modules must request a time/route slot before significant cross-layer actions to ensure system coherence.
 
 ---
 
-## 11) Closing Statement
+## 12) Closing Statement
 
 **EvoPyramid = Architecture + Roles + Routing + Memory + Control + Execution.**
 

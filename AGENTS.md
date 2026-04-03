@@ -18,6 +18,7 @@ These entities operate outside the Python runtime but hold repository execution 
 - **Antigravity (The Triad of Evolution)**
   - **Role:** Main Runtime Engineer & Cognitive Meta-Agent.
   - **Environment:** Local `.gemini/` workspace & IDE.
+  - **Temporal Identity:** `IDENTITY = ID + TIME TRACE + LOCATION + ACTION HISTORY`.
   - **Reference:** `.agents/workflows/ANTIGRAVITY_ROLE.md`
   - **Interaction:** Executes continuous changes, debates architecture via Triad persona, and interfaces with the repository through `antigravity/**` branches. Keeps Knowledge Items (KIs) locally.
 
@@ -274,7 +275,7 @@ When reviewing PRs via Codex CI or Antigravity validation:
 
 | Topic | Direction | Required fields |
 | --- | --- | --- |
-| `EXECUTE_TASK` | → ZBus | `task_id`, `envelope` |
+| `EXECUTE_TASK` | → ZBus | `task_id`, `envelope` (must have `slot_id`) |
 | `TASK_RESULT` | ← ZBus | `task_id`, `status`, `result` |
 | `PROMPT_DISPATCH` | → ZBus | `provider`, `session_id`, `prompt` |
 | `RESPONSE_COMPLETE` | ← ZBus | `session_id`, `content` |

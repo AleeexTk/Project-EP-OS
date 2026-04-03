@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(PROJECT_ROOT))
 sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel"))
 sys.path.append(str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR"))
 
