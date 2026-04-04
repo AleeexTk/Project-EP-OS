@@ -11,13 +11,14 @@ import asyncio
 import sys
 from pathlib import Path
 from datetime import datetime, timezone
-from timeline import TimelineManager
 
-# Resolve paths
+# Canonical path resolution
 THIS_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = THIS_DIR.parents[2]
+PROJECT_ROOT = THIS_DIR.parents[3]  # alpha/SPINE/16_NEXUS_ROUTER -> project root
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+from beta_pyramid_functional.B1_Kernel.timeline import TimelineManager  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

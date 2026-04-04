@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Billboard, Html, OrbitControls, QuadraticBezierLine, Text } from '@react-three/drei';
 import * as THREE from 'three';
-import { CENTER, EvoNode, SECTOR_COLORS } from '../lib/evo';
+import { CENTER, EvoNode, SECTOR_COLORS, getGradientColor } from '../lib/evo';
 
 interface EvoPyramidProps {
   nodes: EvoNode[];
@@ -37,16 +37,21 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
   const z = (node.y - CENTER) * GRID_SPACING;
   const isEmpty = node.kind === 'empty';
   const opacity = isDimmed ? 0.06 : isEmpty ? (node.type === 'link' ? 0.05 : 0.1) : node.type === 'link' ? 0.26 : 0.92;
-  
+
   // SK Engine Integration: Blend sector color with memory color if present
-  const baseColor = SECTOR_COLORS[node.sector];
+  const baseColor = getGradientColor(node);
   const memColor = node.memory_color;
   // ATC Integration: Detect if node holds an active temporal route lock
   const locationLock = atcSlots?.[node.id] || atcSlots?.[node.label];
   const ownerLock = atcSlots ? Object.values(atcSlots).find((slot: any) => slot.module_id === node.id || slot.module_id === node.label) : undefined;
   const atcLockState = locationLock || ownerLock;
 
-  const nodeColor = isEmpty ? '#8fa4bf' : isSelected ? '#3b82f6' : hovered ? '#60a5fa' : atcLockState ? '#06b6d4' : memColor || baseColor;
+  const nodeColor = isEmpty ? '#1e293b' : isSelected ? '#ffffff' : hovered ? '#f8fafc' : atcLockState ? '#06b6d4' : memColor || baseColor;
+
+  // Intensity calculation for emissive effect
+  const isEven = node.z % 2 === 0;
+  const distFromCenter = Math.sqrt(Math.pow(node.x - CENTER, 2) + Math.pow(node.y - CENTER, 2));
+  const intensityFactor = isEven ? Math.max(0.1, 0.8 - (distFromCenter * 0.1)) : 0.05;
 
   useFrame((state) => {
     if (!meshRef.current) {
@@ -115,8 +120,8 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
         transparent
         opacity={isEmpty ? 0.3 : opacity}
         wireframe={isEmpty}
-        emissive={isEmpty ? '#ffffff' : node.status === 'failed' ? '#ef4444' : node.status === 'warning' ? '#f97316' : isSelected ? '#3b82f6' : '#000000'}
-        emissiveIntensity={isEmpty ? 0.1 : isSelected ? 0.45 : node.status === 'failed' || node.status === 'warning' ? 0.5 : 0}
+        emissive={isEmpty ? '#ffffff' : node.status === 'failed' ? '#ef4444' : node.status === 'warning' ? '#f97316' : isSelected ? '#3b82f6' : baseColor}
+        emissiveIntensity={isEmpty ? 0.1 : isSelected ? 0.45 : node.status === 'failed' || node.status === 'warning' ? 0.5 : intensityFactor}
         roughness={0.68}
         metalness={0.1}
       />
@@ -157,6 +162,23 @@ function NodeMesh({ node, isSelected, isDimmed, onSelect, onDoubleClick, onLongP
       {!isDimmed && node.kind !== 'empty' && (
         <Html transform position={[0, 1.1, 0]} distanceFactor={10} zIndexRange={[100, 0]}>
           <div className="flex flex-col items-center gap-1 pointer-events-none">
+            {/* Trinity Resonance v3.0 Badges */}
+            {node.trinity_state && node.trinity_state !== 'DORMANT' && (
+              <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-white bg-blue-600 shadow-sm whitespace-nowrap border border-blue-400/50 animate-pulse">
+                TRIN: {node.trinity_state}
+              </div>
+            )}
+            {node.coherence !== undefined && (
+              <div className={`px-1.5 py-0.5 rounded text-[7px] font-bold text-white shadow-sm whitespace-nowrap border ${
+                node.coherence > 0.9 ? 'bg-emerald-600 border-emerald-400/50' : 
+                node.coherence > 0.7 ? 'bg-blue-600 border-blue-400/50' : 
+                node.coherence > 0.3 ? 'bg-amber-600 border-amber-400/50' : 
+                'bg-red-700 border-red-500/50'
+              }`}>
+                COH: {(node.coherence * 100).toFixed(0)}%
+              </div>
+            )}
+
             {/* Architectural State Badge */}
             {node.status === 'quarantined' ? (
               <div className="px-1.5 py-0.5 rounded text-[7px] font-bold text-white bg-purple-600 shadow-sm whitespace-nowrap border border-purple-400/50">QUARANTINED</div>

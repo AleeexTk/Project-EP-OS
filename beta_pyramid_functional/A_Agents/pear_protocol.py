@@ -7,9 +7,10 @@ from dataclasses import asdict, is_dataclass
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
-import sys
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-sys.path.append(str(ROOT_DIR))
+# Resolve project root — RULE 3: No absolute paths
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 try:
     from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import CortexMemory, ProjectCortex

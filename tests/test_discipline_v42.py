@@ -5,17 +5,15 @@ import unittest
 from pathlib import Path
 from datetime import datetime, timezone
 
-# Add paths to sys.path for imports
+# Add project root to sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-os.chdir(str(PROJECT_ROOT))
-sys.path.append(str(Path("beta_pyramid_functional/B1_Kernel")))
-sys.path.append(str(Path("gamma_pyramid_reflective/SPINE/2_INTEGRITY_OBSERVER")))
-sys.path.append(str(Path("gamma_pyramid_reflective/A_Pulse")))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from policy_manager import SystemPolicyManager, SystemPolicy
-from contracts import TaskEnvelope, TaskStatus
-from integrity_observer import IntegrityObserver
-from pulser import PulserEngine
+from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager, SystemPolicy
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
+from gamma_pyramid_reflective.SPINE._2_INTEGRITY_OBSERVER.integrity_observer import IntegrityObserver
+from gamma_pyramid_reflective.A_Pulse.pulser import PulserEngine
 
 class TestDiscipline(unittest.TestCase):
     def setUp(self):

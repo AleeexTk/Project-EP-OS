@@ -32,12 +32,16 @@ class TaskEnvelope(BaseModel):
     status: TaskStatus = TaskStatus.PENDING
     cascade_status: Optional[CascadeStatus] = None
     origin_z: int = 1   # Z-level of the source node
+    location_sector: str = "GENERIC"  # Sector/Zone within the Pyramid (e.g., CORE, SPINE, REFLECTIVE)
     intent: Optional[str] = None  # Original Architect's intent (canonical goal)
     metadata: Dict[str, Any] = Field(default_factory=dict)
     signature: Optional[str] = None  # Zero-Trust Cryptographic Signature
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     slot_id: Optional[str] = None  # Temporal Slot ID for ATC coordination
+    next_action_slot: Optional[str] = None # Pointer to the next intended step in the flight plan
     temporal_trace: List[Dict[str, Any]] = Field(default_factory=list) # 4D history trace
+    coherence_score: float = 1.0  # TRINITY RESONANCE v3.0 logic
+    trinity_state: str = "DORMANT"  # FSM State (LISTENING, PARSING, etc.)
 
 class SystemPolicy(BaseModel):
     """Permissions and policy layer for autonomous execution nodes."""

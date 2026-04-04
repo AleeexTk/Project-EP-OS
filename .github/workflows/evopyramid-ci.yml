@@ -37,8 +37,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Run CanonBuilder Pipeline
-        run: python -m alpha_pyramid_core.Z00_CanonBuilder.pipeline --modules . --output /tmp/canon
+      - name: Run Architectural Deduplication Check
+        run: python scripts/ci_architectural_check.py
+      - name: Sprint 9 Structure Integrity Check
+        run: |
+          python - <<'EOF'
+          import sys
+          from pathlib import Path
+          root = Path(".")
+          # Ensure stray sector dirs are absent from alpha root (Sprint 9 Z-Purge)
+          banned = [root / "alpha_pyramid_core" / d for d in ("RED", "GOLD", "PURPLE")]
+          found = [str(p) for p in banned if p.exists() and any(p.iterdir())]
+          if found:
+              print(f"::error::Stray sector directories found in alpha_pyramid_core: {found}")
+              print("::error::Run the Sprint 9 Z-Purge harmonization steps to relocate these to SPINE.")
+              sys.exit(1)
+          print("Sprint 9 Structure Integrity: PASSED")
+          EOF
 
   # ── 2. Pytest gate — blocks merge if red ──────────────────────
   pytest:

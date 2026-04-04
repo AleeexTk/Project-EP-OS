@@ -10,11 +10,10 @@ import logging
 import sys
 from pathlib import Path
 
-# Setup paths for importing B1_Kernel
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel"))
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B2_ProviderMatrix"))
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry"))
+# Canonical path resolution — RULE 3: No absolute paths
+PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import json
 import os
@@ -23,9 +22,19 @@ import urllib.error
 from datetime import datetime
 from typing import List, Dict, Any
 
-from contracts import TaskEnvelope, CascadeStatus, TaskStatus
-from provider_matrix import ProviderMatrix
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, CascadeStatus, TaskStatus
+from beta_pyramid_functional.B2_ProviderMatrix.provider_matrix import ProviderMatrix
 from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
+
+# Trinity Resonance v3.0 — Coherence awareness
+try:
+    _TRINITY_PATH = PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "17_GLOBAL_NEXUS"
+    if str(_TRINITY_PATH) not in sys.path:
+        sys.path.insert(0, str(_TRINITY_PATH))
+    from trinity_resonance.models import CoherenceLevel
+    _TRINITY_AVAILABLE = True
+except ImportError:
+    _TRINITY_AVAILABLE = False
 
 logger = logging.getLogger("AUTO_CORRECTOR")
 
@@ -222,7 +231,14 @@ class Z13PolicyCorrector:
         repaired_envelope.payload["synthesis_proposal"] = repaired_proposal
         if "simulate_semantic_loss" in repaired_envelope.payload:
             repaired_envelope.payload["simulate_semantic_loss"] = False
-            
+
+        # Trinity Resonance v3.0: Elevate coherence after successful repair
+        repaired_envelope.coherence_score = min(1.0, (repaired_envelope.coherence_score or 0.5) + 0.2)
+        repaired_envelope.trinity_state = "EMITTING"  # Repair complete
+        if _TRINITY_AVAILABLE:
+            level = CoherenceLevel.from_value(repaired_envelope.coherence_score)
+            logger.info(f"[Z13_TRINITY] Post-repair coherence: {repaired_envelope.coherence_score:.2f} [{level.icon}]")
+
         repaired_envelope.cascade_status = CascadeStatus.PENDING
         
         # Record in journal

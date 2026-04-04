@@ -1,0 +1,139 @@
+﻿.F..........F.FFFF............F.FFFF.                                    [100%]
+================================== FAILURES ===================================
+______________ TestAutoCorrector.test_auto_repair_cascade_block _______________
+tests\test_auto_corrector.py:43: in test_auto_repair_cascade_block
+    result = self.manager.validate_action(envelope)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+beta_pyramid_functional\B1_Kernel\policy_manager.py:162: in validate_action
+    if not self._validate_temporal_routing(envelope):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+beta_pyramid_functional\B1_Kernel\policy_manager.py:275: in _validate_temporal_routing
+    if not envelope.time_trace:
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pydantic\main.py:1026: in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E   AttributeError: 'TaskEnvelope' object has no attribute 'time_trace'
+---------------------------- Captured stdout call -----------------------------
+
+[TEST] Z-Cascade Auto-Corrector: Testing Resilience against Semantic Drift
+[TEST] Sending distorted task: 'Let's make an open dashboard without any authentication so it's easy.'
+___________ TestFullCycle.test_full_cycle_block_repair_store_recall ___________
+tests\test_full_cycle.py:70: in test_full_cycle_block_repair_store_recall
+    patch.object(z13_policy_corrector.AutoCorrectorNode, "_rewrite_with_provider", return_value="Repaired: enforce strict auth and security"), \
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'z13_policy_corrector' has no attribute 'AutoCorrectorNode'
+__________________________ test_gatekeeper_rejection __________________________
+async def functions are not natively supported.
+You need to install a suitable plugin for your async framework, for example:
+  - anyio
+  - pytest-asyncio
+  - pytest-tornasync
+  - pytest-trio
+  - pytest-twisted
+__________________ TestSecGuardian.test_rate_limit_triggers ___________________
+tests\test_sec_guardian.py:59: in test_rate_limit_triggers
+    self.assertTrue(ok, f"Request {i+1} should pass")
+E   AssertionError: False is not true : Request 1 should pass
+---------------------------- Captured stdout call -----------------------------
+
+[TEST] SEC_GUARDIAN: node exceeding rate limit should be blocked
+------------------------------ Captured log call ------------------------------
+WARNING  SEC_GUARDIAN:sec_guardian.py:167 [SEC_GUARDIAN] \U0001f6ab BLOCKED \u2014 SignatureMissing: Z15 node 'gen-meta' requires a Trinity Signature.
+_____________________ TestSecGuardian.test_spoof_blocked ______________________
+tests\test_sec_guardian.py:47: in test_spoof_blocked
+    self.assertIn("SpoofingAttempt", env.metadata["error"])
+E   AssertionError: 'SpoofingAttempt' not found in "SignatureMissing: Z13 node 'rogue_agent_z5' requires a Trinity Signature."
+---------------------------- Captured stdout call -----------------------------
+
+[TEST] SEC_GUARDIAN: unknown node claiming Z13 origin should be blocked (anti-spoof)
+------------------------------ Captured log call ------------------------------
+WARNING  SEC_GUARDIAN:sec_guardian.py:167 [SEC_GUARDIAN] \U0001f6ab BLOCKED \u2014 SignatureMissing: Z13 node 'rogue_agent_z5' requires a Trinity Signature.
+__________________ TestSecGuardian.test_trusted_node_passes ___________________
+tests\test_sec_guardian.py:37: in test_trusted_node_passes
+    self.assertTrue(result)
+E   AssertionError: False is not true
+---------------------------- Captured stdout call -----------------------------
+
+[TEST] SEC_GUARDIAN: trusted Alpha node should pass
+------------------------------ Captured log call ------------------------------
+WARNING  SEC_GUARDIAN:sec_guardian.py:167 [SEC_GUARDIAN] \U0001f6ab BLOCKED \u2014 SignatureMissing: Z13 node 'gen-bridge' requires a Trinity Signature.
+________________ TestTemporalRouting.test_acceptance_with_slot ________________
+tests\test_temporal_routing.py:43: in test_acceptance_with_slot
+    result = self.pm.validate_action(envelope)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+beta_pyramid_functional\B1_Kernel\policy_manager.py:162: in validate_action
+    if not self._validate_temporal_routing(envelope):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+beta_pyramid_functional\B1_Kernel\policy_manager.py:275: in _validate_temporal_routing
+    if not envelope.time_trace:
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pydantic\main.py:1026: in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E   AttributeError: 'TaskEnvelope' object has no attribute 'time_trace'
+___________ TestZ17Z1CascadePipeline.test_pipeline_passes_all_pairs ___________
+tests\test_z17_z1_cascade_pipeline.py:45: in test_pipeline_passes_all_pairs
+    report = ZCascadePipeline.run_z17_to_z1(self._envelope(semantic_loss=False))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+beta_pyramid_functional\B1_Kernel\z_cascade.py:174: in run_z17_to_z1
+    pair_ok = manager.validate_action(pair_envelope)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+beta_pyramid_functional\B1_Kernel\policy_manager.py:162: in validate_action
+    if not self._validate_temporal_routing(envelope):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+beta_pyramid_functional\B1_Kernel\policy_manager.py:275: in _validate_temporal_routing
+    if not envelope.time_trace:
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\pydantic\main.py:1026: in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E   AttributeError: 'TaskEnvelope' object has no attribute 'time_trace'
+_________ TestZ17Z1CascadePipeline.test_pipeline_uses_z14_repair_path _________
+tests\test_z17_z1_cascade_pipeline.py:64: in test_pipeline_uses_z14_repair_path
+    patch.object(z13_policy_corrector.AutoCorrectorNode, "_rewrite_with_provider", return_value="Repaired canonical proposal"), \
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: module 'z13_policy_corrector' has no attribute 'AutoCorrectorNode'
+___________ TestZCascadeProtocol.test_failed_cascade_semantic_loss ____________
+tests\test_z_cascade.py:54: in test_failed_cascade_semantic_loss
+    self.assertTrue(is_valid, "V6: Z14 should intercept Monument block and repair the task.")
+E   AssertionError: False is not true : V6: Z14 should intercept Monument block and repair the task.
+---------------------------- Captured stdout call -----------------------------
+
+[TEST] Z-Cascade: Testing Semantic Integrity Loss (Z15 -> Z5)
+[TEST] (V6: Distorted task should be intercepted and REPAIRED by Z14 Auto-Corrector)
+------------------------------ Captured log call ------------------------------
+WARNING  SEC_GUARDIAN:sec_guardian.py:167 [SEC_GUARDIAN] \U0001f6ab BLOCKED \u2014 SignatureMissing: Z15 node 'architect_z15' requires a Trinity Signature.
+________________ TestZCascadeProtocol.test_successful_cascade _________________
+tests\test_z_cascade.py:30: in test_successful_cascade
+    self.assertTrue(is_valid, "Cascade should pass without simulated failures.")
+E   AssertionError: False is not true : Cascade should pass without simulated failures.
+---------------------------- Captured stdout call -----------------------------
+
+[TEST] Z-Cascade: Testing Full Semantic Crystallization (Z15 -> Z5)
+------------------------------ Captured log call ------------------------------
+WARNING  SEC_GUARDIAN:sec_guardian.py:167 [SEC_GUARDIAN] \U0001f6ab BLOCKED \u2014 SignatureMissing: Z15 node 'architect_z15' requires a Trinity Signature.
+============================== warnings summary ===============================
+.venv\Lib\site-packages\google\genai\types.py:43
+  C:\Users\Alex Bear\Desktop\EvoPyramid OS\.venv\Lib\site-packages\google\genai\types.py:43: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
+
+beta_pyramid_functional\B5_AgentTools\workspace_api.py:25
+  C:\Users\Alex Bear\Desktop\EvoPyramid OS\beta_pyramid_functional\B5_AgentTools\workspace_api.py:25: PydanticDeprecatedSince20: The `update_forward_refs` method is deprecated; use `model_rebuild` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    FileNode.update_forward_refs()
+
+beta_pyramid_functional\B1_Kernel\events.py:35
+  C:\Users\Alex Bear\Desktop\EvoPyramid OS\beta_pyramid_functional\B1_Kernel\events.py:35: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class BaseEvoEvent(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_auto_corrector.py::TestAutoCorrector::test_auto_repair_cascade_block
+FAILED tests/test_full_cycle.py::TestFullCycle::test_full_cycle_block_repair_store_recall
+FAILED tests/test_nexus_gatekeeper.py::test_gatekeeper_rejection - Failed: as...
+FAILED tests/test_sec_guardian.py::TestSecGuardian::test_rate_limit_triggers
+FAILED tests/test_sec_guardian.py::TestSecGuardian::test_spoof_blocked - Asse...
+FAILED tests/test_sec_guardian.py::TestSecGuardian::test_trusted_node_passes
+FAILED tests/test_temporal_routing.py::TestTemporalRouting::test_acceptance_with_slot
+FAILED tests/test_z17_z1_cascade_pipeline.py::TestZ17Z1CascadePipeline::test_pipeline_passes_all_pairs
+FAILED tests/test_z17_z1_cascade_pipeline.py::TestZ17Z1CascadePipeline::test_pipeline_uses_z14_repair_path
+FAILED tests/test_z_cascade.py::TestZCascadeProtocol::test_failed_cascade_semantic_loss
+FAILED tests/test_z_cascade.py::TestZCascadeProtocol::test_successful_cascade
+11 failed, 26 passed, 3 warnings in 2.66s

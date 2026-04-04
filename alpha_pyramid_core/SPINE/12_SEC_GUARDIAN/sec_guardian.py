@@ -15,13 +15,14 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 import sys
+import hashlib
 
-# Resolve project root: sec_guardian.py -> 12_SEC_GUARDIAN -> SPINE -> alpha_pyramid_core -> PROJECT_ROOT
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel"))
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry"))
+# Resolve project root — RULE 3: No absolute paths
+PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from contracts import TaskEnvelope, TaskStatus, CascadeStatus
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus, CascadeStatus
 
 logger = logging.getLogger("SEC_GUARDIAN")
 
@@ -70,7 +71,7 @@ class RateLimiter:
 # Unlisted nodes must not claim Alpha (Z11+) origins.
 TRUSTED_ALPHA_NODES = {
     "gen-nexus", "gen-meta", "gen-bridge", "gh_ci_guardian", "gen-pear",
-    "openai_docs_hub", "auto_corrector",
+    "openai_docs_hub", "auto_corrector", "Z17_GLOBAL_NEXUS",
     # Test nodes — allowed to originate during integration testing
     "architect_z15",
 }
@@ -100,22 +101,28 @@ class SignatureVerifier:
     _TRINITY_SECRET = "TRINITY-V4-CORE"
 
     @classmethod
+    def generate_signature(cls, node_id: str, task_id: str) -> str:
+        """Generates a cryptographic SHA-256 signature for Zero-Trust validation."""
+        raw = f"{cls._TRINITY_SECRET}:{node_id}:{task_id}"
+        hash_hex = hashlib.sha256(raw.encode('utf-8')).hexdigest()
+        return f"TSIG:{node_id}:{hash_hex}"
+
+    @classmethod
     def verify(cls, envelope: TaskEnvelope) -> tuple[bool, str]:
         # Rule 1: Mandatory signature for Z7+ (Spine/Infrastructure)
         if envelope.origin_z >= 7:
             if not envelope.signature:
                 return False, f"SignatureMissing: Z{envelope.origin_z} node '{envelope.source_node}' requires a Trinity Signature."
             
-            # Rule 2: Basic logic check (Format: TSIG:<node_id>:<checksum>)
-            # In Phase 1, we accept 'TSIG:<node_id>:AUTHORIZED' or a hash-like string
+            # Rule 2: Basic format check
             sig_parts = envelope.signature.split(":")
-            if len(sig_parts) < 3 or sig_parts[0] != "TSIG" or sig_parts[1] != envelope.source_node:
+            if len(sig_parts) != 3 or sig_parts[0] != "TSIG" or sig_parts[1] != envelope.source_node:
                 return False, f"SignatureInvalid: Cryptographic handshake failed for '{envelope.source_node}'."
             
-            # Rule 3: Anti-Replay (Trace check)
-            if not envelope.task_id in envelope.signature:
-                # For Phase 2+ we'd check if the task_id is signed into the hash
-                pass
+            # Rule 3: Anti-Replay & Cryptographic Match
+            expected_sig = cls.generate_signature(envelope.source_node, envelope.task_id)
+            if envelope.signature != expected_sig:
+                return False, f"SignatureInvalid: SHA-256 mismatch for task '{envelope.task_id}'."
 
         return True, "OK"
 

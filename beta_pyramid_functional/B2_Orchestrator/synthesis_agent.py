@@ -47,6 +47,39 @@ class SynthesisAgent:
         self.report_dir = Path(report_dir)
         self.report_dir.mkdir(parents=True, exist_ok=True)
         self.threshold = 0.8  # Pattern similarity threshold
+        
+        self.register_bus_listeners()
+
+    def register_bus_listeners(self):
+        try:
+            from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
+            if zbus:
+                zbus.subscribe("SYNTHESIS_REQUEST", self._on_synthesis_request)
+                logger.info("[SYNTHESIS] Successfully wired to Z14 Policy Bus for SYNTHESIS_REQUEST.")
+        except Exception as e:
+            logger.error(f"[SYNTHESIS] Flow registration failed: {e}")
+
+    async def _on_synthesis_request(self, event_dict: Dict[str, Any]):
+        payload = event_dict.get("payload", {})
+        envelope_data = payload.get("envelope")
+        if not envelope_data: return
+                
+        try:
+            from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope
+            from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
+            envelope = TaskEnvelope(**envelope_data)
+            proposal = await self.translate_task(envelope)
+            
+            if proposal and zbus:
+                await zbus.publish({
+                    "topic": "SYNTHESIS_COMPLETE",
+                    "payload": {
+                        "task_id": envelope.task_id,
+                        "proposal": proposal.model_dump()
+                    }
+                })
+        except Exception as e:
+            logger.error(f"[SYNTHESIS] Task translation via event-bus failed: {e}")
 
     async def translate_task(self, envelope: TaskEnvelope) -> Optional[SynthesisProposal]:
         """

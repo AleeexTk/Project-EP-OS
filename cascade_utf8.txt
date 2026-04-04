@@ -1,0 +1,570 @@
+﻿uv : INFO:GLOBAL_NEXUS:[Z17_GLOBAL_NEXUS] Firing Genesi
+s Cascade. Intent: [BOOTSTRAP-0] System Initialized
+At line:1 char:1
++ uv run python alpha_pyramid_core/SPINE/17_GLOBAL_NEXU
+S/nexus_core.py  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:GLOB 
+   AL_NEX...tem Initialized:String) [], RemoteExcepti  
+  on
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+**Status**: ACTIVE
+**Insight**: The 4D Temporal Dispatcher (Airport Model)
+ is now operational. The system is ready to record its 
+own history.
+
+---
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z17 -> Z16
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z16 -> Z15
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z15 -> Z14
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z14 -> Z13
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z13 -> Z12
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z12 -> Z11
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z11 -> Z10
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z10 -> Z9
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z9 -> Z8
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z8 -> Z7
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z7 -> Z6
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Starting Z-Cascade: Z6 -> Z5
+INFO:root:[Z-CASCADE] SK_Engine internal coherence chec
+k: PASSED (Symbolic)
+INFO:root:[Z-CASCADE MONUMENT] Transition crystallized 
+for genesis_cascade_1775271435.
+INFO:root:[Z-CASCADE OBSERVER] genesis_cascade_17752714
+35 [manifest_node] -> Cascade Successful. Meaning prese
+rved.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:SEC_GUARDIAN:[SEC_GUARDIAN] \u2705 Envelope genesi
+s_cascade_1775271435 from 'Z17_GLOBAL_NEXUS' cleared se
+curity audit.
+INFO:GLOBAL_NEXUS:[Z17_GLOBAL_NEXUS] Cascade Finished. 
+Status: passed
+{
+  "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+  "task_id": "genesis_cascade_1775271435",
+  "status": "passed",
+  "stopped_at": null,
+  "pairs": [
+    {
+      "pair_id": "Z17->Z16",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "c141247d-33b6-49f6-83b8-ce24ef0b8538",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.844498+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z17_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z17->Z16",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z16->Z15",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "e60d6527-b68c-4c0c-b5c4-64fafd635d99",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.846800+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z16_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z16->Z15",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z15->Z14",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "41402abc-ff52-40a9-a647-2ee2183d3877",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.848693+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z15_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z15->Z14",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z14->Z13",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "20850b97-be05-4273-bcce-4705d9f3ada4",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.850309+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z14_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z14->Z13",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z13->Z12",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "1f357e75-fe31-4524-bf52-35fd79327107",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.851943+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z13_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z13->Z12",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z12->Z11",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "a5e276aa-27fb-4dd8-a099-e1f383358b2f",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.853585+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z12_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z12->Z11",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z11->Z10",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "d725a6dc-efd7-4cb0-9e67-0e07c49f6f90",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.855139+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z11_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z11->Z10",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z10->Z9",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "778b1941-1897-4976-82e3-8d30a501c14f",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.856732+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z10_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z10->Z9",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z9->Z8",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "21743934-6e47-43bd-bb84-1732f337c33d",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.858518+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z9_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z9->Z8",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z8->Z7",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "3f5d0f9c-fd91-40a9-951a-b4a324ea403c",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.860110+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z8_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z8->Z7",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z7->Z6",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "be34cb42-b956-4f30-b8c0-a13cb2578395",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.861707+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z7_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z7->Z6",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z6->Z5",
+      "ok": true,
+      "cascade_status": "PASSED",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "94c25668-ecc4-4725-9114-a55bab7ec0b0",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.863442+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z6_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z6->Z5",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PASSED",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z5->Z4",
+      "ok": true,
+      "cascade_status": "PENDING",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "b6516c0a-6130-43fe-af74-ba894eb487c0",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.864321+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z5_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z5->Z4",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PENDING",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z4->Z3",
+      "ok": true,
+      "cascade_status": "PENDING",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "d54b5653-9671-47d7-af22-51d6306fe1bd",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.865122+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z4_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z4->Z3",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PENDING",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z3->Z2",
+      "ok": true,
+      "cascade_status": "PENDING",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "b7ad35aa-eab0-4ce1-94a4-4e4c6fb550ca",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.865920+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z3_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z3->Z2",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PENDING",
+          "error": null
+        }
+      }
+    },
+    {
+      "pair_id": "Z2->Z1",
+      "ok": true,
+      "cascade_status": "PENDING",
+      "repaired": false,
+      "error": null,
+      "event": {
+        "event_id": "92329d7f-76c2-447a-8f83-f8d760991e8e",
+        "event_type": "node_progress",
+        "timestamp": "2026-04-04T02:57:15.866841+00:00",
+        "trace_id": "350d9ab4-25ca-4c7e-a8cf-299a3897a6de",
+        "node_id": "z2_pair_validator",
+        "task_id": "genesis_cascade_1775271435",
+        "session_id": null,
+        "severity": "info",
+        "simulation": false,
+        "payload": {
+          "pair_id": "Z2->Z1",
+          "repaired": false,
+          "cascade_status": "CascadeStatus.PENDING",
+          "error": null
+        }
+      }
+    }
+  ],
+  "repair_count": 0,
+  "audit": []
+}

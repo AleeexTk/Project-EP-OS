@@ -6,12 +6,11 @@ from datetime import datetime, timezone
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 os.chdir(str(PROJECT_ROOT))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-# Add required paths for imports
-sys.path.append(str(Path("beta_pyramid_functional/B1_Kernel")))
-
-from contracts import TaskEnvelope, TaskStatus, CascadeStatus
-from policy_manager import SystemPolicyManager
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus, CascadeStatus
+from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
 
 class TestAutoCorrector(unittest.TestCase):
     def setUp(self):
@@ -29,6 +28,8 @@ class TestAutoCorrector(unittest.TestCase):
             target_node="gen-dashboard",
             action="manifest_node",
             origin_z=15,
+            signature="TSIG:gen-meta:auto_fix_001",
+            slot_id="slot_auto_001",
             intent="Create a highly secured dashboard with strict authentication.",
             payload={"z_level": 5, "synthesis_proposal": "Let's make an open dashboard without any authentication so it's easy.", "simulate_semantic_loss": True},
             timestamp=datetime.now(timezone.utc)

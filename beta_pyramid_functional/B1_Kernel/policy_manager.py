@@ -158,6 +158,10 @@ class SystemPolicyManager:
         if not self._validate_z_access(envelope):
             return False
 
+        # 1.1 Temporal Routing Check (The 'Airport Slot' constraint)
+        if not self._validate_temporal_routing(envelope):
+            return False
+
         # 2. EP-Sandbox Isolation Logic
         is_sandbox = "sandbox" in envelope.source_node.lower() or "sandbox" in envelope.target_node.lower()
         
@@ -251,6 +255,27 @@ class SystemPolicyManager:
                 envelope.metadata["error"] = f"Z-Violation: Node at Z{envelope.origin_z} cannot manifest Z{target_z} (High-Pyramid)."
                 self._log_violation(envelope)
                 return False
+        return True
+
+    def _validate_temporal_routing(self, envelope: TaskEnvelope) -> bool:
+        """
+        Enforces the 'Airport' model: every action must have a designated Flight Slot.
+        IDENTITY = ID + TIME TRACE + LOCATION + ACTION HISTORY
+        """
+        # 1. Mandatory Slot Check
+        if not envelope.slot_id:
+            envelope.status = TaskStatus.FAILED
+            envelope.metadata["error"] = "TemporalViolation: Missing 'slot_id'. All actions must have a Flight Slot."
+            self._log_violation(envelope)
+            return False
+
+        # 2. Sequential Integrity (Simplified for MVP)
+        # In a real flight plan, we would cross-check envelope.slot_id with the Timeline Monitor.
+        # For now, we ensure it's not a 'ghost task' without a trace.
+        if not envelope.temporal_trace:
+            # Generate a basic time trace if missing, but log as 'unscheduled'
+            envelope.metadata["warning"] = "UnscheduledFlight: Action proceeding without pre-allocated temporal trace."
+            
         return True
 
     def _log_violation(self, envelope: TaskEnvelope):

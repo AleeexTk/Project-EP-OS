@@ -6,13 +6,14 @@ import time
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-# --- Kernel Path Initialization ---
-ROOT_DIR = Path(__file__).resolve().parents[2]
-if str(ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel") not in sys.path:
-    sys.path.append(str(ROOT_DIR / "beta_pyramid_functional" / "B1_Kernel"))
+# Resolve project root — RULE 3: No absolute paths
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from base_node import BaseServiceNode, node_entry
-from events import (
+# Note: Using canonical package imports
+from beta_pyramid_functional.B1_Kernel.base_node import BaseServiceNode, node_entry
+from beta_pyramid_functional.B1_Kernel.events import (
     EventType, EventSeverity, ProviderPayload, FallbackPayload, FailurePayload
 )
 

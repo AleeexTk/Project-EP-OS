@@ -1,0 +1,22 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.2, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\Alex Bear\Desktop\EvoPyramid OS
+configfile: pyproject.toml
+plugins: anyio-4.12.1, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests\test_auto_corrector.py F                                           [100%]
+
+================================== FAILURES ===================================
+______________ TestAutoCorrector.test_auto_repair_cascade_block _______________
+tests\test_auto_corrector.py:44: in test_auto_repair_cascade_block
+    self.assertTrue(result, "Task should be approved after being repaired by Z14.")
+E   AssertionError: False is not true : Task should be approved after being repaired by Z14.
+---------------------------- Captured stdout call -----------------------------
+
+[TEST] Z-Cascade Auto-Corrector: Testing Resilience against Semantic Drift
+[TEST] Sending distorted task: 'Let's make an open dashboard without any authentication so it's easy.'
+=========================== short test summary info ===========================
+FAILED tests/test_auto_corrector.py::TestAutoCorrector::test_auto_repair_cascade_block
+============================== 1 failed in 0.14s ==============================
