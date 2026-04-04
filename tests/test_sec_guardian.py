@@ -10,7 +10,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 # Handle number-prefixed dir for Z12
-_z12 = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN")
+_z12 = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_12_SEC_GUARDIAN")
 if _z12 not in sys.path:
     sys.path.insert(0, _z12)
 

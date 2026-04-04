@@ -23,13 +23,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Handle number-prefixed dir for Z13 (Auto-Corrector) using path injection
-_z13 = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR")
-if _z13 not in sys.path:
-    sys.path.insert(0, _z13)
-
+# Handle SPINE modules using proper package imports
 try:
-    import z13_policy_corrector as AC
+    import alpha_pyramid_core.SPINE._13_AUTO_CORRECTOR.z13_policy_corrector as AC
 except ImportError:
     AC = None
 
@@ -619,7 +615,7 @@ async def kernel_dispatch(envelope: TaskEnvelope):
     """
     try:
         import importlib
-        router_module = importlib.import_module("alpha_pyramid_core.SPINE.16_NEXUS_ROUTER.index")
+        router_module = importlib.import_module("alpha_pyramid_core.SPINE._16_NEXUS_ROUTER.index")
         get_router = router_module.get_router
         from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         

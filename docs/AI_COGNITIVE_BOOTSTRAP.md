@@ -39,6 +39,6 @@ If you are in an **Even Z** (Colored) layer, your color/responsibility is determ
 
 - **No Invisible Stubs**: Mark incomplete code with `raise NotImplementedError("STUB: <reason>")`.
 - **Absolute Imports**: Always use `from alpha_pyramid_core...` or `from beta_pyramid_functional...`.
-- **Structural Audit**: Run `python alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS/nexus_core.py` to verify your changes before committing.
+- **Structural Audit**: Run `python alpha_pyramid_core/SPINE/_17_GLOBAL_NEXUS/nexus_core.py` to verify your changes before committing.
 
 **THE PYRAMID REMEMBERS ITSELF. DO NOT BREAK THE GEOMETRY.**

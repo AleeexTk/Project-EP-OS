@@ -8,10 +8,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Handle number-prefixed dir for Z13
-_z13 = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR")
-if _z13 not in sys.path:
-    sys.path.insert(0, _z13)
+# Handle SPINE modules using proper package imports
+try:
+    import alpha_pyramid_core.SPINE._13_AUTO_CORRECTOR.z13_policy_corrector as z13_policy_corrector
+except ImportError:
+    z13_policy_corrector = None
 
 from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope
 from beta_pyramid_functional.B1_Kernel.z_cascade import ZCascadePipeline

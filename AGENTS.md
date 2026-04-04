@@ -48,7 +48,7 @@ These entities operate outside the Python runtime but hold repository execution 
 
 These agents are hardcoded into the OS execution layer (Python codebase).
 
-- **Z13 AutoCorrector** (`alpha_pyramid_core/SPINE/13_AUTO_CORRECTOR/z13_policy_corrector.py`)
+- **Z13 AutoCorrector** (`alpha_pyramid_core/SPINE/_13_AUTO_CORRECTOR/z13_policy_corrector.py`)
   - **Role:** The Immune System.
   - **Interaction:** Intercepts proposed changes and cross-checks them against system policy across the ZBus. Can veto external outputs.
 
@@ -79,10 +79,10 @@ EP-OS/
 ├── alpha_pyramid_core/        Z11–Z17  │ Canon Layer
 │   ├── B_Structure/                    │ Atlas, SpineRouter, models  ← USE THESE
 │   └── SPINE/
-│       ├── 14_AUTO_CORRECTOR/          │ Self-healing
-│       ├── 14_POLICY_BUS/              │ ZBus canonical source
-│       ├── 16_NEXUS_ROUTER/            │ Sync task dispatcher
-│       └── 17_GLOBAL_NEXUS/            │ Top orchestrator
+│       ├── _14_AUTO_CORRECTOR/          │ Self-healing
+│       ├── _14_POLICY_BUS/              │ ZBus canonical source
+│       ├── _16_NEXUS_ROUTER/            │ Sync task dispatcher
+│       └── _17_GLOBAL_NEXUS/            │ Top orchestrator
 │
 ├── beta_pyramid_functional/   Z5–Z10   │ Execution Layer
 │   ├── B1_Kernel/

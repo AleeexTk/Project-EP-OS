@@ -1,5 +1,5 @@
 # DEPRECATED STUB — transit_z14.py
-# Canonical location: alpha_pyramid_core/SPINE/14_POLICY_BUS/
+# Canonical location: alpha_pyramid_core/SPINE/_14_POLICY_BUS/
 # This file is kept only for backward-compatibility of legacy imports.
 # Do NOT add new logic here.
 

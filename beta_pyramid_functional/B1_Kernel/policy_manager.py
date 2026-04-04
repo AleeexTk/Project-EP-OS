@@ -195,7 +195,7 @@ class SystemPolicyManager:
                             from pathlib import Path
                             # policy_manager.py -> B1_Kernel -> beta_pyramid_functional -> PROJECT_ROOT
                             PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-                            z13_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR")
+                            z13_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_13_AUTO_CORRECTOR")
                             if z13_path not in sys.path:
                                 sys.path.insert(0, z13_path)
                             from z13_policy_corrector import Z13PolicyCorrector
@@ -228,7 +228,7 @@ class SystemPolicyManager:
                 from pathlib import Path as _Path
                 _PROJECT_ROOT = _Path(__file__).resolve().parent.parent.parent
                 import sys as _sys
-                _z12_path = str(_PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN")
+                _z12_path = str(_PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_12_SEC_GUARDIAN")
                 _b3_path = str(_PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry")
                 if _z12_path not in _sys.path:
                     _sys.path.insert(0, _z12_path)

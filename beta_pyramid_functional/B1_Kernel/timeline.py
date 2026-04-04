@@ -12,11 +12,11 @@ BRIDGE_LOCKS_PATH = PROJECT_ROOT / "state" / "bridge_locks.ndjson"
 
 # Node to path mapping for local timelines
 NODE_MAP = {
-    "Z17_GLOBAL_NEXUS": "alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS",
-    "gen-nexus": "alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS",
-    "Z16_NEXUS_ROUTER": "alpha_pyramid_core/SPINE/16_NEXUS_ROUTER",
-    "Z14_POLICY_BUS": "alpha_pyramid_core/SPINE/14_POLICY_BUS",
-    "Z13_AUTO_CORRECTOR": "alpha_pyramid_core/SPINE/13_AUTO_CORRECTOR",
+    "Z17_GLOBAL_NEXUS": "alpha_pyramid_core/SPINE/_17_GLOBAL_NEXUS",
+    "gen-nexus": "alpha_pyramid_core/SPINE/_17_GLOBAL_NEXUS",
+    "Z16_NEXUS_ROUTER": "alpha_pyramid_core/SPINE/_16_NEXUS_ROUTER",
+    "Z14_POLICY_BUS": "alpha_pyramid_core/SPINE/_14_POLICY_BUS",
+    "Z13_AUTO_CORRECTOR": "alpha_pyramid_core/SPINE/_13_AUTO_CORRECTOR",
     "B1_PROJECT_CORTEX": "beta_pyramid_functional/B1_Kernel",
     "B2_SYNTHESIS_AGENT": "beta_pyramid_functional/B2_Orchestrator",
     "B2_LLM_ORCHESTRATOR": "beta_pyramid_functional/B2_Orchestrator",

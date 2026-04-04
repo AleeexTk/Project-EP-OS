@@ -24,11 +24,11 @@ The system enforces a strictly regulated task lifecycle:
 ```text
 ├── alpha_pyramid_core/       Z11–Z17  │ Canon Layer
 │   ├── SPINE/
-│   │   ├── 17_GLOBAL_NEXUS/ nexus_core.py    ← Z17 apex + ApexCore registry + PEAR pulse
-│   │   │   └── trinity_resonance/             ← Formal Resonance Engine v3.0
-│   │   ├── 15_ARCHITECT_CORE/ evo_meta.py     ← Metadata reflection
-│   │   ├── 13_AUTO_CORRECTOR/ z13_policy_corrector.py ← Immune System
-│   │   └── 14_POLICY_BUS/                     ← ZBus canonical source
+│       ├── _17_GLOBAL_NEXUS/ nexus_core.py    ← Z17 apex + ApexCore registry + PEAR pulse
+│       │   └── trinity_resonance/             ← Formal Resonance Engine v3.0
+│       ├── _15_ARCHITECT_CORE/ evo_meta.py     ← Metadata reflection
+│       ├── _13_AUTO_CORRECTOR/ z13_policy_corrector.py ← Immune System
+│       └── _14_POLICY_BUS/                     ← ZBus canonical source
 │   └── B_Structure/                            ← AtlasGenerator, SpineRouter, Models
 │
 ├── beta_pyramid_functional/  Z5–Z10   │ Execution Layer
