@@ -5,12 +5,12 @@ from pathlib import Path
 from unittest.mock import patch
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel"))
-sys.path.append(str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR"))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from contracts import TaskEnvelope, CascadeStatus, TaskStatus
-from policy_manager import SystemPolicyManager
-import z14_policy_corrector
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, CascadeStatus, TaskStatus
+from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
+import alpha_pyramid_core.SPINE._13_AUTO_CORRECTOR.z13_policy_corrector as z13_policy_corrector
 
 
 class _FakeMemoryBridge:
@@ -48,6 +48,8 @@ class TestFullCycle(unittest.TestCase):
             target_node="gen-dashboard",
             action="manifest_node",
             origin_z=15,
+            signature="TSIG:gen-meta:full_cycle_001",
+            slot_id="slot_full_001",
             intent="Create secured dashboard with strict authentication",
             payload={
                 "z_level": 5,
@@ -64,9 +66,9 @@ class TestFullCycle(unittest.TestCase):
         async def _fake_get_instance():
             return self.fake_bridge
 
-        with patch.object(z14_policy_corrector.ProviderMatrix, "get_best_available", return_value=_P()), \
-             patch.object(z14_policy_corrector.AutoCorrectorNode, "_rewrite_with_provider", return_value="Repaired: enforce strict auth and security"), \
-             patch.object(z14_policy_corrector.RepairJournal, "record_repair", return_value=None), \
+        with patch.object(z13_policy_corrector.ProviderMatrix, "get_best_available", return_value=_P()), \
+             patch.object(z13_policy_corrector.Z13PolicyCorrector, "_rewrite_with_provider", return_value="Repaired: enforce strict auth and security"), \
+             patch.object(z13_policy_corrector.RepairJournal, "record_repair", return_value=None), \
              patch("beta_pyramid_functional.B4_Cognitive.cognitive_bridge.CognitiveBridge.get_instance", side_effect=_fake_get_instance):
 
             # First run: should block in cascade, repair via LLM path, and store in memory
@@ -81,7 +83,7 @@ class TestFullCycle(unittest.TestCase):
 
             # Second run: same signature should be recalled from memory and bypass LLM
             second = self._envelope()
-            with patch.object(z14_policy_corrector.AutoCorrectorNode, "_rewrite_with_provider", side_effect=AssertionError("LLM call should be bypassed by memory recall")):
+            with patch.object(z13_policy_corrector.Z13PolicyCorrector, "_rewrite_with_provider", side_effect=AssertionError("LLM call should be bypassed by memory recall")):
                 result2 = self.manager.validate_action(second)
             self.assertTrue(result2)
             self.assertEqual(second.status, TaskStatus.PENDING)

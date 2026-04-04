@@ -5,13 +5,18 @@ from pathlib import Path
 from unittest.mock import patch
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.append(str(PROJECT_ROOT))
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel"))
-sys.path.append(str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "14_AUTO_CORRECTOR"))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from contracts import TaskEnvelope
-from z_cascade import ZCascadePipeline
-import z14_policy_corrector
+# Handle SPINE modules using proper package imports
+try:
+    import alpha_pyramid_core.SPINE._13_AUTO_CORRECTOR.z13_policy_corrector as z13_policy_corrector
+except ImportError:
+    z13_policy_corrector = None
+
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope
+from beta_pyramid_functional.B1_Kernel.z_cascade import ZCascadePipeline
+import z13_policy_corrector
 
 
 class _FakeMemoryBridge:
@@ -30,6 +35,8 @@ class TestZ17Z1CascadePipeline(unittest.TestCase):
             target_node="execution_z1",
             action="manifest_node",
             origin_z=17,
+            signature="TSIG:gen-nexus:z17_z1_pipeline_001",
+            slot_id="slot_cascade_001",
             intent="Preserve canonical meaning through full pyramid descent",
             payload={
                 "z_level": 16,
@@ -58,9 +65,9 @@ class TestZ17Z1CascadePipeline(unittest.TestCase):
         async def _fake_get_instance():
             return fake_bridge
 
-        with patch.object(z14_policy_corrector.ProviderMatrix, "get_best_available", return_value=_P()), \
-             patch.object(z14_policy_corrector.AutoCorrectorNode, "_rewrite_with_provider", return_value="Repaired canonical proposal"), \
-             patch.object(z14_policy_corrector.RepairJournal, "record_repair", return_value=None), \
+        with patch.object(z13_policy_corrector.ProviderMatrix, "get_best_available", return_value=_P()), \
+             patch.object(z13_policy_corrector.Z13PolicyCorrector, "_rewrite_with_provider", return_value="Repaired canonical proposal"), \
+             patch.object(z13_policy_corrector.RepairJournal, "record_repair", return_value=None), \
              patch("beta_pyramid_functional.B4_Cognitive.cognitive_bridge.CognitiveBridge.get_instance", side_effect=_fake_get_instance):
 
             report = ZCascadePipeline.run_z17_to_z1(self._envelope(semantic_loss=True))

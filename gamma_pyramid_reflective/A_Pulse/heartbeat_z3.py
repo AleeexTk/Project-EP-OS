@@ -4,10 +4,10 @@ import logging
 from pathlib import Path
 import sys
 
-# Add project root to sys.path
-ROOT_DIR = Path(__file__).parent.parent.parent.absolute()
-if str(ROOT_DIR) not in sys.path:
-    sys.path.append(str(ROOT_DIR))
+# Resolve project root — RULE 3: No absolute paths
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 # Config
 LOG_DIR = Path(__file__).parent / "logs"

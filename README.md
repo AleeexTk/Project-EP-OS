@@ -8,26 +8,42 @@ EP-OS is an operating architectural system where projects execute in **Runtime N
 - **Shared Canon**: The Z-Architecture rules, contracts, and semantic logic.
 - **Web Control Plane**: Remote orchestration, 3D visualization, and audit console.
 
-## Canonical Flow (V6)
+## Canonical Flow (V7 — Trinity Resonance)
 
 The system enforces a strictly regulated task lifecycle:
 
-1. **Z12 Security Audit** (`sec_guardian.py`): Rate-limiting and anti-spoofing check.
-2. **Z5 Quarantine Check**: Blocking actions from rogue/locked nodes.
-3. **Z-Cascade Monument**: Semantic integrity validation (ensures intent isn't lost during descent).
-4. **Z14 Auto-Correction**: Autonomous repair of tasks blocked by semantic drift.
-5. **B1 Kernel Dispatch**: Execution via `SystemPolicyManager`.
+1. **Z17 Global Nexus** (`nexus_core.py`): Intent capture + PEAR pulse + Trinity **Coherence Audit** (must be ≥ 0.7).
+2. **Z16 Nexus Router** (`nexus_router.py`): Dispatches tasks across Z-Bus to target layers.
+3. **Z12 Security Audit** (`sec_guardian.py`): Rate-limiting and anti-spoofing check.
+4. **Z-Cascade Monument**: Semantic integrity validation (intent must survive descent).
+5. **Z13 Auto-Corrector** (`z13_policy_corrector.py`): LLM-powered repair + Trinity coherence elevation.
+6. **B1 Kernel Dispatch**: Execution via `SystemPolicyManager`.
 
-## Repository Layout
+## Repository Layout (Sprint 9 — Canonical)
 
-- `alpha_pyramid_core`: Governance & Spine Nodes (Z17-Z11).
-  - `SPINE/12_SEC_GUARDIAN`: Security Proxy Gateway.
-  - `SPINE/14_AUTO_CORRECTOR`: Semantic Repair Advocate.
-- `beta_pyramid_functional`: The Living Engine (Z9-Z5).
-  - `B1_Kernel`: The Crystallized Spine (Contracts, Policies, DISCOVERY).
-  - `D_Interface`: Trinity Hub (`evo_api.py`, UX Core).
-- `gamma_pyramid_reflective`: Evolution Journal & Audits (Z3-Z1).
-- `evopyramid-v2`: React UX with real-time Nucleus Monitoring.
+```text
+├── alpha_pyramid_core/       Z11–Z17  │ Canon Layer
+│   ├── SPINE/
+│       ├── _17_GLOBAL_NEXUS/ nexus_core.py    ← Z17 apex + ApexCore registry + PEAR pulse
+│       │   └── trinity_resonance/             ← Formal Resonance Engine v3.0
+│       ├── _15_ARCHITECT_CORE/ evo_meta.py     ← Metadata reflection
+│       ├── _13_AUTO_CORRECTOR/ z13_policy_corrector.py ← Immune System
+│       └── _14_POLICY_BUS/                     ← ZBus canonical source
+│   └── B_Structure/                            ← AtlasGenerator, SpineRouter, Models
+│
+├── beta_pyramid_functional/  Z5–Z10   │ Execution Layer
+│   ├── B1_Kernel/            contracts.py, policy_manager.py, z_cascade.py
+│   ├── B2_Orchestrator/      zbus.py, llm_orchestrator.py, synthesis_agent.py
+│   ├── B4_Cognitive/         cognitive_bridge.py
+│   └── D_Interface/          evo_api.py  ← FastAPI entry point
+│
+├── gamma_pyramid_reflective/ Z1–Z4    │ Reflection Layer
+│   ├── A_Pulse/              Heartbeat, SEVEN monitor
+│   └── D_Audit/              evolution_proposals.md  ← Master intent ledger
+│
+├── evopyramid-v2/                      │ React + Three.js 3D frontend
+└── architecture/                       │ architecture_map.json ← Source of Truth
+```
 
 ## Resilience & Self-Healing
 

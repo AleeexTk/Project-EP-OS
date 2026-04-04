@@ -31,6 +31,8 @@ export interface EvoNode {
   runtime_canon_flag?: 'canon' | 'runtime' | 'degraded' | 'quarantined';
   memory_color?: string;
   gravity?: number;
+  coherence?: number;    // TRINITY RESONANCE v3.0 logic (0.0 to 1.0)
+  trinity_state?: string; // FSM State (LISTENING, PARSING, etc.)
 }
 
 // --- ZBus Event Schemas ---
@@ -121,29 +123,50 @@ export const GRID_SIZE = 17;
 export const CENTER = 9; // 1-based index, so 9 is the center of 17
 
 export function getRadius(z: number): number {
-  // Z is 1-based (1 to 17)
-  if (z % 2 !== 0) {
-    // Odd (Structural)
-    return (17 - z) / 2;
-  } else {
-    // Even (Link) - inherits from Z+1
-    return (17 - (z + 1)) / 2;
-  }
+  // Size = 18 - Z. Radius is half of that.
+  return (18 - z) / 2;
 }
 
 export function isValidPosition(x: number, y: number, z: number): boolean {
-  const r = getRadius(z);
-  return Math.abs(x - CENTER) <= r && Math.abs(y - CENTER) <= r;
+  const size = 18 - z;
+  const start = CENTER - Math.floor(size / 2);
+  const end = start + size - 1;
+  return x >= start && x <= end && y >= start && y <= end;
 }
 
 export const SECTOR_COLORS: Record<Sector, string> = {
-  spine: '#1f2937', // gray-800 (Dark for light background)
-  purple: '#a855f7', // purple-500
-  red: '#ef4444',    // red-500
-  gold: '#eab308',   // yellow-500
-  green: '#22c55e',  // green-500
-  empty: '#e5e7eb',  // gray-200 (Light gray for empty slots)
+  spine: '#ffffff', // Nuclei (White)
+  purple: '#7c3aed', // Soul (Reflective)
+  red: '#7f1d1d',    // Provocateur (Stability - Deep Red)
+  gold: '#d97706',   // Synthesis (Integration)
+  green: '#15803d',  // Trailblazer (Efficiency)
+  empty: '#1e293b',  // Dark slate for background/empty
 };
+
+export function getGradientColor(node: EvoNode): string {
+  // Rule: Central Cross (Spine) is always White
+  if (node.x === CENTER || node.y === CENTER) return '#ffffff';
+  
+  // Rule: Odd levels (Nuclei) are always White
+  if (node.z % 2 !== 0) return '#ffffff';
+  
+  // Quadrant detection for Even levels
+  const isNorth = node.y < CENTER;
+  const isWest = node.x < CENTER;
+  
+  let baseColor = SECTOR_COLORS.green; // NW
+  if (isNorth && !isWest) baseColor = SECTOR_COLORS.red;    // NE
+  if (!isNorth && isWest) baseColor = SECTOR_COLORS.gold;   // SW
+  if (!isNorth && !isWest) baseColor = SECTOR_COLORS.purple; // SE
+
+  // Gradient based on distance from center
+  const dist = Math.sqrt(Math.pow(node.x - CENTER, 2) + Math.pow(node.y - CENTER, 2));
+  const maxDist = getRadius(node.z) * Math.sqrt(2);
+  const factor = maxDist > 0 ? 1 - (dist / (maxDist * 1.2)) : 1;
+  
+  // Apply intensity (simple hex darkening/lightening simulation)
+  return baseColor; // Placeholder for real hex-shift logic, will refine in EvoPyramid.tsx
+}
 
 export const STATUS_COLORS: Record<NodeStatus, string> = {
   active: '#22c55e',

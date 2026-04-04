@@ -6,12 +6,11 @@ from pathlib import Path
 
 # Add project root to sys.path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.append(str(PROJECT_ROOT))
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel"))
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B2_Orchestrator"))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from contracts import TaskEnvelope
-from synthesis_agent import SynthesisAgent, SynthesisProposal, ProposalType
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope
+from beta_pyramid_functional.B2_Orchestrator.synthesis_agent import SynthesisAgent, SynthesisProposal, ProposalType
 
 @pytest.mark.asyncio
 async def test_synthesis_ensemble_translation():

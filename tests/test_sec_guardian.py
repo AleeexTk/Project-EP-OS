@@ -6,13 +6,16 @@ from datetime import datetime, timezone
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 os.chdir(str(PROJECT_ROOT))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B1_Kernel"))
-sys.path.append(str(PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry"))
-sys.path.append(str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN"))
+# Handle number-prefixed dir for Z12
+_z12 = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_12_SEC_GUARDIAN")
+if _z12 not in sys.path:
+    sys.path.insert(0, _z12)
 
-from contracts import TaskEnvelope, TaskStatus
-from sec_guardian import SecGuardian
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
+from sec_guardian import SecGuardian, SignatureVerifier
 
 
 def _make_envelope(source="gen-bridge", origin_z=13, task_id="t001"):
@@ -22,6 +25,8 @@ def _make_envelope(source="gen-bridge", origin_z=13, task_id="t001"):
         target_node="gen-pear",
         action="manifest_node",
         origin_z=origin_z,
+        signature=SignatureVerifier.generate_signature(source, task_id),
+        slot_id="slot_sec_test_01",
         payload={"z_level": 11},
         timestamp=datetime.now(timezone.utc),
     )

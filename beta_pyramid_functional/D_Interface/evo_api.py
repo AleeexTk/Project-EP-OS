@@ -18,24 +18,22 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# --- [Z14 AUTO-CORRECTOR DYNAMIC INJECTION] ---
-ROOT_DIR = Path(__file__).resolve().parents[2]
-if str(ROOT_DIR) not in sys.path:
-    sys.path.insert(0, str(ROOT_DIR))
+# Resolve project root — RULE 3: No absolute paths
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-AUTO_CORRECTOR_PATH = ROOT_DIR / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR"
-if str(AUTO_CORRECTOR_PATH) not in sys.path:
-    sys.path.append(str(AUTO_CORRECTOR_PATH))
-
+# Handle SPINE modules using proper package imports
 try:
-    import z13_policy_corrector as AC
+    import alpha_pyramid_core.SPINE._13_AUTO_CORRECTOR.z13_policy_corrector as AC
 except ImportError:
     AC = None
 
 from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeState, NodeKind, LayerType, OrchestratorState
 from beta_pyramid_functional.B1_Kernel.ws_manager import manager
 from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
-from beta_pyramid_functional.B1_Kernel.SK_Engine import ProjectCortex, QuantumBlock, write_atomic, MemoryColor, HyperNode
+from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex, write_atomic
+from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock, MemoryColor, HyperNode
 from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
 from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
 
@@ -171,6 +169,13 @@ async def lifespan(app: FastAPI):
         from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         from beta_pyramid_functional.B1_Kernel.ws_manager import manager as global_manager
         zbus_task = asyncio.create_task(zbus.run_worker(global_manager, current_state))
+        
+        # Initialize SynthesisAgent so it listens to Z14
+        try:
+            from beta_pyramid_functional.B2_Orchestrator.synthesis_agent import SynthesisAgent
+            _synthesis_agent_instance = SynthesisAgent()
+        except ImportError as e:
+            logging.error(f"Failed to initialize SynthesisAgent: {e}")
         
         # --- Z-Bus Truth Layer Sync ---
         async def zbus_truth_sync_handler(event_dict):
@@ -610,7 +615,7 @@ async def kernel_dispatch(envelope: TaskEnvelope):
     """
     try:
         import importlib
-        router_module = importlib.import_module("alpha_pyramid_core.SPINE.16_NEXUS_ROUTER.index")
+        router_module = importlib.import_module("alpha_pyramid_core.SPINE._16_NEXUS_ROUTER.index")
         get_router = router_module.get_router
         from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         

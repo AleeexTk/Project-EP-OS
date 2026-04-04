@@ -35,9 +35,9 @@ Everything starts here. **Z17** is not code; it is the **Architect's Intent** (A
 
 - **Purpose**: Defines *what was done*, observing rules, and acting as the moral mirror.
 - **Key Modules**:
-  - `SPINE/4_OBSERVER_RELAY`: Functional system-state monitoring (Z4).
+  - `SPINE/_4_OBSERVER_RELAY`: Functional system-state monitoring (Z4).
   - `A_Pulse/pulser.py`: Node health, reality anchoring, and Compliance Score metrics (Z3).
-  - `SPINE/2_INTEGRITY_OBSERVER/integrity_observer.py`: Archival of system architectural violations (Z2).
+  - `SPINE/_2_INTEGRITY_OBSERVER/integrity_observer.py`: Archival of system architectural violations (Z2).
 
 ---
 

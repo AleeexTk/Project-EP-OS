@@ -1,9 +1,21 @@
-# EP-OS — GLOBAL AGENTS REGISTRY (AGENTS.md)
+## 0. CORE ARCHITECTURAL PILLARS (READ FIRST)
 
-**Authority:** ARCHITECT (Z17)  
-**Repository:** <https://github.com/AleeexTk/Project-EP-OS.git>
+To operate correctly in EvoPyramid OS, all agents MUST read the **[AI Cognitive Bootstrap Protocol](docs/AI_COGNITIVE_BOOTSTRAP.md)** and adhere to these four fundamental laws:
 
-> All external and internal AI entities must read this file automatically upon entering the workspace.
+1. **Law of Z-Parity**:
+   - **Odd Z-levels** (Z17, Z15...): **Structural Nuclei (White)**. Pure logic/data cores.
+   - **Even Z-levels** (Z16, Z14...): **Responsibility Bridges (Colored)**. Agent-governed transit zones.
+2. **Geometric Expansion (18-Z)**:
+   - Every level Z has an available block of size `(18 - Z) x (18 - Z)` centered at `(9,9)`.
+   - Z17: 1x1 | Z16: 2x2 | Z14: 4x4 | Z12: 6x6 ... Z1: 17x17.
+3. **Triad Responsibility (Colored Sectors)**:
+   - **NW (Green)**: Trailblazer (Efficiency/Route).
+   - **NE (Dark Red)**: Provocateur (Stability/Viability).
+   - **SW (Gold)**: Synthesis (Integration).
+   - **SE (Purple)**: Soul (Reflection/Memory).
+   - **Axial (x=9 or y=9)**: Spine (White/Neutral).
+4. **PEAR-CHAOS-OBSERVER Cycle**:
+   - All state transitions must flow from `PEAR` (Z17/Initiation) through `CHAOS` (Z14/Validation) to `OBSERVER` (Z2/Reflection).
 
 ---
 
@@ -36,7 +48,7 @@ These entities operate outside the Python runtime but hold repository execution 
 
 These agents are hardcoded into the OS execution layer (Python codebase).
 
-- **Z13 AutoCorrector** (`alpha_pyramid_core/SPINE/13_AUTO_CORRECTOR/z13_policy_corrector.py`)
+- **Z13 AutoCorrector** (`alpha_pyramid_core/SPINE/_13_AUTO_CORRECTOR/z13_policy_corrector.py`)
   - **Role:** The Immune System.
   - **Interaction:** Intercepts proposed changes and cross-checks them against system policy across the ZBus. Can veto external outputs.
 
@@ -67,10 +79,10 @@ EP-OS/
 ├── alpha_pyramid_core/        Z11–Z17  │ Canon Layer
 │   ├── B_Structure/                    │ Atlas, SpineRouter, models  ← USE THESE
 │   └── SPINE/
-│       ├── 14_AUTO_CORRECTOR/          │ Self-healing        ← BUG-1 OPEN
-│       ├── 14_POLICY_BUS/              │ ZBus canonical source
-│       ├── 16_NEXUS_ROUTER/            │ Sync task dispatcher
-│       └── 17_GLOBAL_NEXUS/            │ Top orchestrator
+│       ├── _14_AUTO_CORRECTOR/          │ Self-healing
+│       ├── _14_POLICY_BUS/              │ ZBus canonical source
+│       ├── _16_NEXUS_ROUTER/            │ Sync task dispatcher
+│       └── _17_GLOBAL_NEXUS/            │ Top orchestrator
 │
 ├── beta_pyramid_functional/   Z5–Z10   │ Execution Layer
 │   ├── B1_Kernel/
@@ -81,9 +93,9 @@ EP-OS/
 │   ├── B2_Orchestrator/
 │   │   ├── zbus.py                     │ Bridge → 14_POLICY_BUS
 │   │   ├── llm_orchestrator.py         │ Multi-provider LLM dispatch
-│   │   └── synthesis_agent.py          │ ← BUG-4 OPEN
+│   │   └── synthesis_agent.py          │
 │   ├── B3_SessionRegistry/             │ Sessions, messages, crystals
-│   ├── B4_Cognitive/cognitive_bridge.py│ ← BUG-2, BUG-3 OPEN
+│   ├── B4_Cognitive/cognitive_bridge.py│
 │   └── D_Interface/evo_api.py          │ FastAPI entry point
 │
 ├── gamma_pyramid_reflective/  Z1–Z4    │ Reflection Layer

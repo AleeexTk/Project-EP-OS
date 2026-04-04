@@ -30,6 +30,6 @@
 Reflective deploy and continuity nodes manifested in Gamma:
 
 - `Z3` `netlify_deploy_beacon` -> `γ_Pyramid_Reflective/GOLD/3_NETLIFY_DEPLOY_BEACON`
-- `Z1` `deploy_audit_ledger` -> `γ_Pyramid_Reflective/SPINE/1_DEPLOY_AUDIT_LEDGER`
+- `Z1` `deploy_audit_ledger` -> `γ_Pyramid_Reflective/SPINE/_1_DEPLOY_AUDIT_LEDGER`
 
 Gamma remains the final validation and archival layer for release coherence.

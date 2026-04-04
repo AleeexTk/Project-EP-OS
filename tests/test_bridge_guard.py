@@ -43,7 +43,7 @@ def test_timeline_and_guard():
         assert last_event["id"] == "Z17_GLOBAL_NEXUS"
     
     # 5. Check Local Timeline
-    local_path = PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "17_GLOBAL_NEXUS" / "timeline.ndjson"
+    local_path = PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_17_GLOBAL_NEXUS" / "timeline.ndjson"
     assert local_path.exists()
     with open(local_path, "r") as f:
         lines = f.readlines()

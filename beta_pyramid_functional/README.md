@@ -29,6 +29,6 @@
 Operational integration nodes manifested in Beta:
 
 - `Z9` `gh_pr_resolver` -> `β_Pyramid_Functional/GREEN/9_GH_PR_RESOLVER`
-- `Z7` `trinity_agent_bridge` -> `β_Pyramid_Functional/SPINE/7_trinity_agent_bridge`
+- `Z7` `trinity_agent_bridge` -> `β_Pyramid_Functional/SPINE/_7_TRINITY_AGENT_BRIDGE`
 
 These nodes connect CI and PR loops to the app-bridge/deploy path.

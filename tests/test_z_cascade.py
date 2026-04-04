@@ -5,10 +5,12 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 os.chdir(str(PROJECT_ROOT))
-sys.path.append(str(Path("beta_pyramid_functional/B1_Kernel")))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from policy_manager import SystemPolicyManager
-from contracts import TaskEnvelope, CascadeStatus, TaskStatus
+from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
+from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, CascadeStatus, TaskStatus
+from alpha_pyramid_core.SPINE._12_SEC_GUARDIAN.sec_guardian import SignatureVerifier
 
 class TestZCascadeProtocol(unittest.TestCase):
     def setUp(self):
@@ -18,10 +20,13 @@ class TestZCascadeProtocol(unittest.TestCase):
         print("\n[TEST] Z-Cascade: Testing Full Semantic Crystallization (Z15 -> Z5)")
         
         envelope = TaskEnvelope(
+            task_id="t_success",
             source_node="architect_z15",
             target_node="system",
             action="manifest_node",
             origin_z=15,
+            signature=SignatureVerifier.generate_signature("architect_z15", "t_success"),
+            slot_id="slot_z15_success",
             payload={"z_level": 5}
         )
         
@@ -40,6 +45,9 @@ class TestZCascadeProtocol(unittest.TestCase):
             target_node="system",
             action="manifest_node",
             origin_z=15,
+            signature=SignatureVerifier.generate_signature("architect_z15", "t_fail"),
+            slot_id="slot_z15_fail",
+            task_id="t_fail",
             intent="Original architect intent.",
             payload={
                 "z_level": 5,

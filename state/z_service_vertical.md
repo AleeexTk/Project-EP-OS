@@ -6,7 +6,7 @@
 
 | Service | Node ID | Z | Layer | Sector | Directory |
 | --- | --- | --- | --- | --- | --- |
-| Global Nexus | gen-nexus | Z17 | Alpha | SPINE | α_Pyramid_Core/SPINE/17_GLOBAL_NEXUS |
+| Global Nexus | gen-nexus | Z17 | Alpha | SPINE | alpha_pyramid_core/SPINE/_17_GLOBAL_NEXUS |
 | Evo Meta | gen-meta | Z15 | Alpha | PURPLE | α_Pyramid_Core/PURPLE/15_EVO_META |
 | OpenAI Docs Hub | openai_docs_hub | Z15 | Alpha | PURPLE | α_Pyramid_Core/PURPLE/15_OPENAI_DOCS_HUB |
 | Evo Bridge | gen-bridge | Z13 | Alpha | RED | α_Pyramid_Core/RED/13_EVO_BRIDGE |
@@ -15,24 +15,24 @@
 | Async Job Runner | gen-async-jobs | Z9 | Beta | GREEN | β_Pyramid_Functional/GREEN/9_ASYNC_JOB_RUNNER |
 | GH PR Resolver | gh_pr_resolver | Z9 | Beta | GREEN | β_Pyramid_Functional/GREEN/9_GH_PR_RESOLVER |
 | Web MCP Core | gen-webmcp | Z7 | Beta | GREEN | β_Pyramid_Functional/GREEN/7_WEB_MCP_CORE |
-| Chaos Engine | chaos_engine | Z7 | Beta | SPINE | β_Pyramid_Functional/SPINE/7_CHAOS_ENGINE |
-| Trinity Agent Bridge | trinity_agent_bridge | Z7 | Beta | SPINE | β_Pyramid_Functional/SPINE/7_TRINITY_AGENT_BRIDGE |
-| Evo Dashboard | gen-dashboard | Z5 | Beta | SPINE | β_Pyramid_Functional/SPINE/5_EVO_DASHBOARD |
+| Chaos Engine | chaos_engine | Z7 | Beta | SPINE | beta_pyramid_functional/SPINE/_7_CHAOS_ENGINE |
+| Trinity Agent Bridge | trinity_agent_bridge | Z7 | Beta | SPINE | beta_pyramid_functional/SPINE/_7_TRINITY_AGENT_BRIDGE |
+| Evo Dashboard | gen-dashboard | Z5 | Beta | SPINE | beta_pyramid_functional/SPINE/_5_EVO_DASHBOARD |
 | Netlify Deploy Beacon | netlify_deploy_beacon | Z3 | Gamma | GOLD | γ_Pyramid_Reflective/GOLD/3_NETLIFY_DEPLOY_BEACON |
-| Deploy Audit Ledger | deploy_audit_ledger | Z1 | Gamma | SPINE | γ_Pyramid_Reflective/SPINE/1_DEPLOY_AUDIT_LEDGER |
+| Deploy Audit Ledger | deploy_audit_ledger | Z1 | Gamma | SPINE | gamma_pyramid_reflective/SPINE/_1_DEPLOY_AUDIT_LEDGER |
 
 ## Infrastructure Nodes (even Z — blood/transit)
 
 | Node ID | Z | Layer | Sector | Directory | Connects |
 | --- | --- | --- | --- | --- | --- |
-| nexus_router_z16 | Z16 | Alpha | SPINE | α_Pyramid_Core/SPINE/16_NEXUS_ROUTER | Z17 → Z15 |
-| policy_bus_z14 | Z14 | Alpha | SPINE | α_Pyramid_Core/SPINE/14_POLICY_BUS | Z15 → Z13 |
+| nexus_router_z16 | Z16 | Alpha | SPINE | alpha_pyramid_core/SPINE/_16_NEXUS_ROUTER | Z17 → Z15 |
+| policy_bus_z14 | Z14 | Alpha | SPINE | alpha_pyramid_core/SPINE/_14_POLICY_BUS | Z15 → Z13 |
 | provider_router_z12 | Z12 | Alpha | RED | α_Pyramid_Core/RED/12_PROVIDER_ROUTER | Z13 → Z11 |
-| cr_gateway_z10 | Z10 | Alpha | SPINE | α_Pyramid_Core/SPINE/10_CR_GATEWAY | Z11 → Z9 (α/β boundary) |
-| agent_bus_z8 | Z8 | Beta | SPINE | β_Pyramid_Functional/SPINE/8_AGENT_BUS | Z9 → Z7 |
-| resolution_stream_z6 | Z6 | Beta | SPINE | β_Pyramid_Functional/SPINE/6_RESOLUTION_STREAM | Z7 → Z5 |
-| observer_relay_z4 | Z4 | Beta | SPINE | β_Pyramid_Functional/SPINE/4_OBSERVER_RELAY | Z5 → Z3 (β/γ boundary) |
-| audit_bridge_z2 | Z2 | Gamma | SPINE | γ_Pyramid_Reflective/SPINE/2_AUDIT_BRIDGE | Z3 → Z1 |
+| cr_gateway_z10 | Z10 | Alpha | SPINE | alpha_pyramid_core/SPINE/_10_CR_GATEWAY | Z11 → Z9 (α/β boundary) |
+| agent_bus_z8 | Z8 | Beta | SPINE | beta_pyramid_functional/SPINE/_8_AGENT_BUS | Z9 → Z7 |
+| resolution_stream_z6 | Z6 | Beta | SPINE | beta_pyramid_functional/SPINE/_6_RESOLUTION_STREAM | Z7 → Z5 |
+| observer_relay_z4 | Z4 | Beta | SPINE | beta_pyramid_functional/SPINE/_4_OBSERVER_RELAY | Z5 → Z3 (β/γ boundary) |
+| audit_bridge_z2 | Z2 | Gamma | SPINE | gamma_pyramid_reflective/SPINE/_2_AUDIT_BRIDGE | Z3 → Z1 |
 
 ## Full Vertical Flow (Z17 → Z1)
 

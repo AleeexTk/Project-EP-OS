@@ -1,0 +1,16 @@
+{
+  "id": "observer_relay",
+  "title": "Observer Relay",
+  "z_level": 4,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 9, "z": 4 },
+  "layer_type": "gamma",
+  "kind": "router",
+  "summary": "Gamma reflective router. Forwards dashboard events and anomaly signals to project cortex.",
+  "state": "active",
+  "links": ["gen-dashboard", "netlify_deploy_beacon"],
+  "runtime_canon_flag": "canon",
+  "metadata": {
+    "main_script": "index.py"
+  }
+}

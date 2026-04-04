@@ -1,0 +1,16 @@
+{
+  "id": "netlify_deploy_beacon",
+  "title": "Netlify Deploy Beacon",
+  "z_level": 3,
+  "sector": "SPINE",
+  "coords": { "x": 9, "y": 9, "z": 3 },
+  "layer_type": "gamma",
+  "kind": "beacon",
+  "summary": "Z3 Reflective Beacon. Captures Netlify deployment pulses and triggers Z2 synthesis.",
+  "state": "active",
+  "links": ["observer_relay", "synthesis_node_z2"],
+  "runtime_canon_flag": "canon",
+  "metadata": {
+    "main_script": "index.py"
+  }
+}

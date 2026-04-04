@@ -11,7 +11,19 @@
 | 🦴 **Structural** (Кости) | Z17, Z15, Z13, Z11, Z9, Z7, Z5, Z3, Z1 | Модули, агенты, сервисы — видимые узлы силы |
 | 🩸 **Infra / Transit** (Кровь) | Z16, Z14, Z12, Z10, Z8, Z6, Z4, Z2 | Роутеры, шины, зависимости, стэк, связи |
 
-**Радиус слоя:** `R = 17 - Z + 1`. При центре (9,9): узел на Z17 имеет R=1, на Z1 — R=17.
+
+**Геометрия слоев (Блоки):**  
+
+Размер блока на уровне Z определяется формулой `Size = 18 - Z`.  
+- Z17: 1x1 (Центральное семя)  
+- Z16: 2x2 (Маршрутизация)  
+- Z14: 4x4 (Стабильность)  
+- ... и так далее до Z1 (17x17)
+
+**Цветовой Канон:**  
+
+- **Белый (Spine)**: Все нечетные слои (Ядра) + все узлы на осевых линиях (`x=9` или `y=9`), образующие "Световой Крест".
+- **Цветной (Ответственность)**: Все остальные узлы в четных слоях, раскрашенные по квадрантам Триады (NW-NE-SW-SE).
 
 ---
 
@@ -21,10 +33,10 @@
 
 | Node ID | Title | Sector | Файл/Папка | Статус |
 | --- | --- | --- | --- | --- |
-| `gen-nexus` | GLOBAL NEXUS | SPINE | `alpha_pyramid_core/SPINE/17_GLOBAL_NEXUS` | ✅ Есть |
+| `gen-nexus` | GLOBAL NEXUS | SPINE | `alpha_pyramid_core/SPINE/_17_GLOBAL_NEXUS` | ✅ Есть |
 
 **Z16 — INFRA** (между Z17 и Z15): ✅ **ЕСТЬ**
-> Файл: `alpha_pyramid_core/SPINE/16_NEXUS_ROUTER/index.py`
+> Файл: `alpha_pyramid_core/SPINE/_16_NEXUS_ROUTER/index.py`
 
 ---
 
@@ -36,7 +48,7 @@
 | `openai_docs_hub` | OpenAI Docs Hub | PURPLE | `alpha_pyramid_core/PURPLE/15_OPENAI_DOCS_HUB` | ✅ Есть |
 
 **Z14 — INFRA** (между Z15 и Z13): ✅ **ЕСТЬ**
-> Узел 1: `alpha_pyramid_core/SPINE/14_POLICY_BUS/index.py`
+> Узел 1: `alpha_pyramid_core/SPINE/_14_POLICY_BUS/index.py`
 
 ---
 
@@ -48,7 +60,7 @@
 
 **Z12 — INFRA** (между Z13 и Z11): ✅ **ЕСТЬ**
 > Узел 1: `alpha_pyramid_core/RED/12_PROVIDER_ROUTER/index.py`
-> Узел 2 (Промотирован): `alpha_pyramid_core/SPINE/12_SEC_GUARDIAN/index.py` (Агент-прокси для безопасности)
+> Узел 2 (Промотирован): `alpha_pyramid_core/SPINE/_12_SEC_GUARDIAN/index.py` (Агент-прокси для безопасности)
 
 ---
 
@@ -60,7 +72,7 @@
 | `gh_ci_guardian` | GH CI Guardian | RED | `alpha_pyramid_core/RED/11_GH_CI_GUARDIAN` | ✅ Есть |
 
 **Z10 — INFRA** (граница Alpha/Beta): ✅ **ЕСТЬ**
-> Файл: `alpha_pyramid_core/SPINE/10_CR_GATEWAY/index.py`
+> Файл: `alpha_pyramid_core/SPINE/_10_CR_GATEWAY/index.py`
 
 ---
 
@@ -137,7 +149,7 @@
 
 | Файл | Текущее место | Нужная папка-узел | Z | Sector |
 | --- | --- | --- | --- | --- |
-| `cr_gateway_z10.py` | `beta_pyramid_functional/` | `alpha_pyramid_core/SPINE/10_CR_GATEWAY/` | Z10 | SPINE |
+| `cr_gateway_z10.py` | `beta_pyramid_functional/` | `alpha_pyramid_core/SPINE/_10_CR_GATEWAY/` | Z10 | SPINE |
 | `agent_bus_z8.py` | `beta_pyramid_functional/` | `beta_pyramid_functional/SPINE/8_AGENT_BUS/` | Z8 | SPINE |
 | `chaos_bus_z7.py` | `beta_pyramid_functional/` | `beta_pyramid_functional/SPINE/7_CHAOS_ENGINE/` | Z7 | SPINE |
 | `resolution_stream_z6.py` | `beta_pyramid_functional/` | `beta_pyramid_functional/SPINE/6_RESOLUTION_STREAM/` | Z6 | SPINE |
@@ -150,8 +162,8 @@
 
 | Папка | Z | Назначение |
 | --- | --- | --- |
-| `alpha_pyramid_core/SPINE/16_NEXUS_ROUTER/` | Z16 | Boot routing, Nexus_Boot.py wrapper |
-| `alpha_pyramid_core/SPINE/14_POLICY_BUS/` | Z14 | Policy dispatching Alpha→Beta |
+| `alpha_pyramid_core/SPINE/_16_NEXUS_ROUTER/` | Z16 | Boot routing, Nexus_Boot.py wrapper |
+| `alpha_pyramid_core/SPINE/_14_POLICY_BUS/` | Z14 | Policy dispatching Alpha→Beta |
 | `alpha_pyramid_core/RED/12_PROVIDER_ROUTER/` | Z12 | AI provider adapters (Gemini/OpenAI/Replicate) |
 | `beta_pyramid_functional/SPINE/6_RESOLUTION_STREAM/` | Z6 | Resolution stream Beta→observability |
 | `beta_pyramid_functional/SPINE/4_OBSERVER_RELAY/` | Z4 | Event relay Beta→Gamma |

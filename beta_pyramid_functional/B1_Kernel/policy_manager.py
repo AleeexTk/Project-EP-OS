@@ -158,6 +158,10 @@ class SystemPolicyManager:
         if not self._validate_z_access(envelope):
             return False
 
+        # 1.1 Temporal Routing Check (The 'Airport Slot' constraint)
+        if not self._validate_temporal_routing(envelope):
+            return False
+
         # 2. EP-Sandbox Isolation Logic
         is_sandbox = "sandbox" in envelope.source_node.lower() or "sandbox" in envelope.target_node.lower()
         
@@ -191,7 +195,7 @@ class SystemPolicyManager:
                             from pathlib import Path
                             # policy_manager.py -> B1_Kernel -> beta_pyramid_functional -> PROJECT_ROOT
                             PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-                            z13_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "13_AUTO_CORRECTOR")
+                            z13_path = str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_13_AUTO_CORRECTOR")
                             if z13_path not in sys.path:
                                 sys.path.insert(0, z13_path)
                             from z13_policy_corrector import Z13PolicyCorrector
@@ -224,7 +228,7 @@ class SystemPolicyManager:
                 from pathlib import Path as _Path
                 _PROJECT_ROOT = _Path(__file__).resolve().parent.parent.parent
                 import sys as _sys
-                _z12_path = str(_PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN")
+                _z12_path = str(_PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_12_SEC_GUARDIAN")
                 _b3_path = str(_PROJECT_ROOT / "beta_pyramid_functional" / "B3_SessionRegistry")
                 if _z12_path not in _sys.path:
                     _sys.path.insert(0, _z12_path)
@@ -251,6 +255,27 @@ class SystemPolicyManager:
                 envelope.metadata["error"] = f"Z-Violation: Node at Z{envelope.origin_z} cannot manifest Z{target_z} (High-Pyramid)."
                 self._log_violation(envelope)
                 return False
+        return True
+
+    def _validate_temporal_routing(self, envelope: TaskEnvelope) -> bool:
+        """
+        Enforces the 'Airport' model: every action must have a designated Flight Slot.
+        IDENTITY = ID + TIME TRACE + LOCATION + ACTION HISTORY
+        """
+        # 1. Mandatory Slot Check
+        if not envelope.slot_id:
+            envelope.status = TaskStatus.FAILED
+            envelope.metadata["error"] = "TemporalViolation: Missing 'slot_id'. All actions must have a Flight Slot."
+            self._log_violation(envelope)
+            return False
+
+        # 2. Sequential Integrity (Simplified for MVP)
+        # In a real flight plan, we would cross-check envelope.slot_id with the Timeline Monitor.
+        # For now, we ensure it's not a 'ghost task' without a trace.
+        if not envelope.temporal_trace:
+            # Generate a basic time trace if missing, but log as 'unscheduled'
+            envelope.metadata["warning"] = "UnscheduledFlight: Action proceeding without pre-allocated temporal trace."
+            
         return True
 
     def _log_violation(self, envelope: TaskEnvelope):

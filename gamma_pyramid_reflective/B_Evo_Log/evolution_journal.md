@@ -65,3 +65,81 @@ This journal tracks all autonomous decisions, conceptual adoptions, and architec
 - **Action**: 60s Execution Ban
 - **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
 - **Timestamp**: `2026-04-03T20:05:19.474533+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `EvoPyramid_UX_Core`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T01:14:55.597583+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `EvoPyramid_UX_Core`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T01:22:35.606078+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `EvoPyramid_UX_Core`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T01:33:45.041291+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T02:26:22.322833+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T02:26:36.753915+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T02:28:22.182307+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T02:29:38.223090+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T02:29:59.926015+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T02:32:42.673643+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T02:38:49.566809+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T03:08:09.419299+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T03:15:40.702862+00:00`
+
+### [EVENT] Temporal Blacklist Active
+- **Node**: `rogue-agent`
+- **Action**: 60s Execution Ban
+- **Reason**: Bridge ZBUS_BRIDGE is currently saturated or locked by another process (RAM-Verified).
+- **Timestamp**: `2026-04-04T03:16:10.060502+00:00`
