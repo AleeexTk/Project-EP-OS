@@ -15,7 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 try:
     from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import CortexMemory, ProjectCortex
-    from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock, MemoryColor, MethodMode
+    from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import QuantumBlock, MemoryColor, MethodMode
     from beta_pyramid_functional.B1_Kernel.events import EventType, create_event
     from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator, Provider, AgentSession
     from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
