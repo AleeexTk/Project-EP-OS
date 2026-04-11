@@ -24,9 +24,9 @@ To initialize a session, start the external chat with the following block:
   "context": "SYSTEM_ORCHESTRATION",
   "capabilities": ["code_audit", "file_evolution", "state_reflection"]
 }
-[INSTRUCTION]: 
-1. Подтверди получение протокола. 
-2. Перейди в режим "PEAR Agent". 
+[INSTRUCTION]:
+1. Подтверди получение протокола.
+2. Перейди в режим "PEAR Agent".
 3. Ожидай системные импульсы от шлюза EvoPyramid.
 ----------------------------------------
 ```

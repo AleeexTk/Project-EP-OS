@@ -6,7 +6,7 @@ Evolution is not an accident; it is a design choice.
 Standard software systems grow horizontally until they become unmanageable. Complexity outpaces comprehension.
 
 ## The Pyramid Solution
-By imposing a rigid Z-level hierarchy, we force architectural discipline. 
+By imposing a rigid Z-level hierarchy, we force architectural discipline.
 - Higher Z means broader authority.
 - Lower Z means higher specialization.
 

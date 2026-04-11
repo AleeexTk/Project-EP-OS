@@ -14,7 +14,7 @@ To correctly pick up the architecture of EvoPyramid OS, you must adopt this ment
 ## 2. Geometric Core (18 - Z)
 
 - The workspace is a 17x17 grid centered at `(9,9)`.
-- The allowed "Block Size" for a layer is `(18 - Z) x (18 - Z)`. 
+- The allowed "Block Size" for a layer is `(18 - Z) x (18 - Z)`.
 - **Z17** = 1x1 | **Z16** = 2x2 | **Z14** = 4x4 | **Z1** = 17x17.
 - **NEVER** place a module outside its Z-defined geometric block.
 

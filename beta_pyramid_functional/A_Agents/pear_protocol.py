@@ -1,3 +1,4 @@
+import sys
 import asyncio
 import json
 import uuid
@@ -62,7 +63,7 @@ class PEARAgent:
         self.z_level = z_level
         self.color = color
         self.provider = provider
-        self.memory = CortexMemory(data_dir=ROOT_DIR / "state" / "agent_memory" / role.lower())
+        self.memory = CortexMemory(data_dir=PROJECT_ROOT / "state" / "agent_memory" / role.lower())
 
     async def perceive(self, pulse_data: Dict[str, Any]) -> Dict[str, Any]:
         """

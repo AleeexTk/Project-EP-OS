@@ -22,5 +22,7 @@
         "{**/.c4z/.extsrcs/*.PROTSYM.cbl,**/.c4z/.extsrcs/*.PROTSYM.listing}": true
     },
     "editor.stickyScroll.enabled": false,
-    "window.autoDetectColorScheme": true
+    "window.autoDetectColorScheme": true,
+    "makefile.makeDirectory": "C:\\Users\\Alex Bear\\Desktop\\EvoPyramid OS",
+    "makefile.ignoreDirectoryCommands": false
 }
