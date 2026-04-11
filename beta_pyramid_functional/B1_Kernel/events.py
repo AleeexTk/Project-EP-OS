@@ -32,6 +32,13 @@ class EventType(str, Enum):
     SYSTEM_ANOMALY = "system_anomaly"
     CHAOS_IMPULSE = "chaos_impulse"
 
+    # --- Z-SPINE Observability (Z6 → Z2 → Z10) ---
+    AUDIT_STREAM = "AUDIT_STREAM"            # Z6 → Z2: telemetry packets
+    AUDIT_VIOLATION = "AUDIT_VIOLATION"      # Z2 → broadcast: policy breach detected
+    CANON_GATE_REQUEST = "CANON_GATE_REQUEST"   # Alpha → Z10: formal cross-layer intent
+    CANON_GATE_APPROVED = "CANON_GATE_APPROVED" # Z10 → Beta: approved for execution
+    CANON_GATE_REJECTED = "CANON_GATE_REJECTED" # Z10 → Alpha: rejected at boundary
+
 class BaseEvoEvent(BaseModel):
     """Канонический контракт события EvoPyramid OS."""
     event_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -51,8 +58,7 @@ class BaseEvoEvent(BaseModel):
     # Полезная нагрузка
     payload: Dict[str, Any] = Field(default_factory=dict)
     
-    class Config:
-        use_enum_values = True
+    model_config = {"use_enum_values": True}
 
 # --- Специализированные схемы полезной нагрузки (Payloads) ---
 

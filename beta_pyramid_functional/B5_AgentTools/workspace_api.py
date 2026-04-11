@@ -22,7 +22,7 @@ class FileNode(BaseModel):
     size: int = 0
     children: Optional[List["FileNode"]] = None
 
-FileNode.update_forward_refs()
+FileNode.model_rebuild()
 
 @router.get("/tree")
 async def get_tree(root: Optional[str] = None):
