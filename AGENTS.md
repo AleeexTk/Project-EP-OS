@@ -1,4 +1,4 @@
-## 0. CORE ARCHITECTURAL PILLARS (READ FIRST)
+# 0. CORE ARCHITECTURAL PILLARS (READ FIRST)
 
 To operate correctly in EvoPyramid OS, all agents MUST read the **[AI Cognitive Bootstrap Protocol](docs/AI_COGNITIVE_BOOTSTRAP.md)** and adhere to these four fundamental laws:
 

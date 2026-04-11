@@ -34,7 +34,7 @@ from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, Node
 from beta_pyramid_functional.B1_Kernel.ws_manager import manager
 from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
 from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex, write_atomic, HyperNode
-from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock, MemoryColor
+from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import QuantumBlock, MemoryColor
 from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
 from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
 

@@ -745,7 +745,7 @@ class AgentOrchestrator:
             if _is_quota_error(error_text):
                 _GEMINI_QUOTA_BLOCK_UNTIL = time.time() + 60 # Cooldown
                 _GEMINI_QUOTA_BLOCK_REASON = "unexpected_quota_hit"
-                return f"[SYSTEM FALLBACK] Gemini quota exhausted. Please try again (Ollama will take over)."
+                return f"[SYSTEM QUOTA] Gemini quota exhausted (unexpected). Ollama fallback will handle next request."
 
             if policy.get("reason") == "external_url_attached":
                  return (

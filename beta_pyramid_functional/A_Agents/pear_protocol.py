@@ -1,3 +1,4 @@
+import sys
 import asyncio
 import json
 import uuid
@@ -14,7 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 try:
     from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import CortexMemory, ProjectCortex
-    from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock, MemoryColor, MethodMode
+    from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import QuantumBlock, MemoryColor, MethodMode
     from beta_pyramid_functional.B1_Kernel.events import EventType, create_event
     from beta_pyramid_functional.B2_Orchestrator.llm_orchestrator import AgentOrchestrator, Provider, AgentSession
     from beta_pyramid_functional.B4_Cognitive.cognitive_bridge import CognitiveBridge
@@ -62,7 +63,7 @@ class PEARAgent:
         self.z_level = z_level
         self.color = color
         self.provider = provider
-        self.memory = CortexMemory(data_dir=ROOT_DIR / "state" / "agent_memory" / role.lower())
+        self.memory = CortexMemory(data_dir=PROJECT_ROOT / "state" / "agent_memory" / role.lower())
 
     async def perceive(self, pulse_data: Dict[str, Any]) -> Dict[str, Any]:
         """
