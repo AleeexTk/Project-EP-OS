@@ -6,10 +6,11 @@ from typing import Dict, List, Optional, Tuple, Any, Set
 class TriangleColor(Enum):
     """Формальные цвета треугольника с каноническими ролями в EvoPyramid"""
     # Маппинг цветов TRIN v3.0 на координаты EP-OS
-    BLACK = ("BLACK", "🖤", "Core", "Z17 - Абсолютный контроль")
-    GOLD = ("GOLD", "🟨", "Synthesis", "Z12/Z7 - Интеграция и синтез")
-    RED = ("RED", "🟥", "Provocateur", "Z14 - Критика и стабильность")
-    GREEN = ("GREEN", "🟩", "Trailblazer", "Z16/Z9 - Логика и маршруты")
+    BLACK = ("BLACK", "🖤", "Meta", "Z17 - Apex Orchestration")
+    GOLD = ("GOLD", "🟨", "Integrator", "Z12 - Synthesis & Integration")
+    RED = ("RED", "🟥", "Guardian", "Z14 - Security & Stability")
+    GREEN = ("GREEN", "🟩", "Trailblazer", "Z16 - Efficiency & Routes")
+    PURPLE = ("PURPLE", "🟪", "Soul", "Z5 - Creativity & Vision")
     
     def __init__(self, code: str, symbol: str, role: str, description: str):
         self.code = code
@@ -62,6 +63,28 @@ class TrinityDirective:
     ttl_seconds: int = 3600
 
 @dataclass
+class RoleEvaluation:
+    """Результат оценки отдельной ролью"""
+    role: TriangleColor
+    score: float  # 0.0 to 1.0 (0.0=Reject, 1.0=Full Support)
+    confidence: float
+    rationale: str
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+@dataclass
+class TrinityDecision:
+    """Финальное решение Trinity Resonance Engine"""
+    task_id: str
+    timestamp: datetime
+    consensus_met: bool
+    resonance_score: float  # Weighted average
+    evaluations: Dict[str, RoleEvaluation]  # Role code -> Evaluation
+    final_status: str  # ACCEPTED, REJECTED, CONFLICTED
+    is_vetoed: bool = False
+    veto_reason: Optional[str] = None
+    audit_trace: str = ""  # Hash for ledger
+
+@dataclass
 class ValidationResult:
     """Формальный результат валидации"""
     is_valid: bool
@@ -74,3 +97,4 @@ class ValidationResult:
     transformations: List[Dict] = field(default_factory=list)
     final_coherence: float = 1.0
     explainability_trace: List[str] = field(default_factory=list)
+    decision: Optional[TrinityDecision] = None

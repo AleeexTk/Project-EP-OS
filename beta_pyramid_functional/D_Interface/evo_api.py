@@ -41,8 +41,12 @@ from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
 try:
     from beta_pyramid_functional.B2_Orchestrator.manifestor import PhysicalManifestor
     from gamma_pyramid_reflective.A_Pulse.pulser import PulserEngine
+    from alpha_pyramid_core.SPINE._17_GLOBAL_NEXUS.trinity_resonance.engine import TrinityResonanceEngine
 except ImportError as e:
     raise RuntimeError(f"Critical dependency import failed: {e}")
+
+# Global Engines
+trinity_engine = TrinityResonanceEngine()
 
 # ─────────────────────────────────────────
 #  Logging & State
@@ -177,7 +181,31 @@ async def lifespan(app: FastAPI):
             _synthesis_agent_instance = SynthesisAgent()
         except ImportError as e:
             logging.error(f"Failed to initialize SynthesisAgent: {e}")
-        
+
+        # ── Activate Z6 Resolution Stream (Beta SPINE) ──────────────────────
+        try:
+            from beta_pyramid_functional.SPINE._6_RESOLUTION_STREAM.index import resolution_stream
+            resolution_stream.register()
+            logging.info("[Lifespan] Z6 ResolutionStream ONLINE.")
+        except Exception as e:
+            logging.error(f"[Lifespan] Z6 ResolutionStream init failed: {e}")
+
+        # ── Activate Z2 Audit Bridge (Gamma SPINE) ───────────────────────────
+        try:
+            from gamma_pyramid_reflective.SPINE._2_AUDIT_BRIDGE.index import audit_bridge
+            audit_bridge.register()
+            logging.info("[Lifespan] Z2 AuditBridge ONLINE.")
+        except Exception as e:
+            logging.error(f"[Lifespan] Z2 AuditBridge init failed: {e}")
+
+        # ── Activate Z10 CR Gateway (Alpha/Beta Boundary) ────────────────────
+        try:
+            from alpha_pyramid_core.SPINE._10_CR_GATEWAY.index import cr_gateway
+            cr_gateway.register()
+            logging.info("[Lifespan] Z10 CRGateway ONLINE.")
+        except Exception as e:
+            logging.error(f"[Lifespan] Z10 CRGateway init failed: {e}")
+
         # --- Z-Bus Truth Layer Sync ---
         async def zbus_truth_sync_handler(event_dict):
             try:
@@ -608,6 +636,58 @@ async def health_kernel():
     except Exception as e:
         return {"status": "ERROR", "message": f"Kernel link failed: {e}"}
 
+@app.get("/health/spine")
+async def health_spine():
+    """
+    Reports live status of the three Z-SPINE observability nodes:
+      Z6  — ResolutionStream  (Beta SPINE: execution telemetry conduit)
+      Z2  — AuditBridge       (Gamma SPINE: OBSERVER cycle terminus)
+      Z10 — CRGateway         (Alpha/Beta boundary cross-talk)
+    """
+    result = {"timestamp": datetime.now(timezone.utc).isoformat(), "nodes": {}}
+    try:
+        from beta_pyramid_functional.SPINE._6_RESOLUTION_STREAM.index import resolution_stream
+        result["nodes"]["Z6_RESOLUTION_STREAM"] = {
+            "active": resolution_stream.is_active,
+            "subscribed_topics": resolution_stream.SUBSCRIBED_TOPICS,
+        }
+    except Exception as e:
+        result["nodes"]["Z6_RESOLUTION_STREAM"] = {"active": False, "error": str(e)}
+
+    try:
+        from gamma_pyramid_reflective.SPINE._2_AUDIT_BRIDGE.index import audit_bridge
+        result["nodes"]["Z2_AUDIT_BRIDGE"] = {
+            "active": audit_bridge.is_active,
+            "violation_count": audit_bridge.violation_count,
+            "last_entries": audit_bridge.tail_ledger(n=3),
+        }
+    except Exception as e:
+        result["nodes"]["Z2_AUDIT_BRIDGE"] = {"active": False, "error": str(e)}
+
+    try:
+        from alpha_pyramid_core.SPINE._10_CR_GATEWAY.index import cr_gateway
+        result["nodes"]["Z10_CR_GATEWAY"] = {
+            "active": cr_gateway.is_active,
+            "gate_stats": cr_gateway.gate_stats,
+        }
+    except Exception as e:
+        result["nodes"]["Z10_CR_GATEWAY"] = {"active": False, "error": str(e)}
+
+    all_active = all(v.get("active", False) for v in result["nodes"].values())
+    result["status"] = "ONLINE" if all_active else "DEGRADED"
+    return result
+
+@app.get("/health/trinity")
+async def health_trinity():
+    """Returns the status and version of the Trinity Resonance Engine."""
+    return {
+        "status": "ACTIVE",
+        "version": trinity_engine.version,
+        "admin": trinity_engine.admin,
+        "session_id": trinity_engine.session_id,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
 @app.post("/kernel/dispatch")
 async def kernel_dispatch(envelope: TaskEnvelope):
     """
@@ -615,18 +695,38 @@ async def kernel_dispatch(envelope: TaskEnvelope):
     Dispatches tasks via the Z-Bus Nexus Router (Hybrid Model Canon).
     """
     try:
+        # 1. Evaluate task via Trinity Resonance
+        payload_str = json.dumps(envelope.payload)
+        decision = await trinity_engine.evaluate_task(envelope.task_id, payload_str)
+        
+        if decision.final_status == "REJECTED":
+            return {
+                "status": "REJECTED", 
+                "message": decision.veto_reason or "Trinity Consensus: REJECTED",
+                "resonance": decision.resonance_score,
+                "evaluations": {k: v.score for k, v in decision.evaluations.items()}
+            }
+
+        # 2. Router Dispatch (if accepted or conflicted with high resonance)
         import importlib
         router_module = importlib.import_module("alpha_pyramid_core.SPINE._16_NEXUS_ROUTER.index")
         get_router = router_module.get_router
         from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
         
         router = get_router(zbus)
-        
-        # We wait for the Z-Bus to execute and return the result via Future
         result_payload = await router.dispatch_sync(envelope)
+        
+        # Inject decision result into result payload
+        if isinstance(result_payload, dict):
+            result_payload["trinity_decision"] = {
+                "status": decision.final_status,
+                "score": decision.resonance_score
+            }
+            
         return result_payload
         
     except Exception as e:
+        logging.error(f"Kernel dispatch failure: {e}")
         return {"status": "ERROR", "message": f"Router exception: {e}"}
 
 @app.post("/sync/discover-modules")

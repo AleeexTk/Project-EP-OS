@@ -3,7 +3,7 @@ import hashlib
 import json
 from datetime import datetime
 from typing import Dict, Any, List
-from .models import TriangleColor, ValidationResult
+from .models import TriangleColor, ValidationResult, RoleEvaluation
 
 class FormalValidator:
     """Формальный валидатор с многоуровневой проверкой (EvoPyramid v17)"""
@@ -19,7 +19,9 @@ class FormalValidator:
             "gold_action": re.compile(r'\b(?:синтезировать|оптимизировать|рассчитать|сравнить|проанализировать|спроектировать)\b', re.IGNORECASE),
             "red_question": re.compile(r'^(❓|\?|почему|как|что|зачем|когда|где)\s*', re.IGNORECASE),
             "green_json": re.compile(r'^#\[[^\]]+\]\s*\{.*\}', re.DOTALL),
-            "injection": re.compile(r'[;\{\}\[\]\(\)\"\']|--|\b(?:DROP|DELETE|INSERT|UPDATE|SELECT)\b', re.IGNORECASE)
+            "injection": re.compile(r'[;\{\}\[\]\(\)\"\']|--|\b(?:DROP|DELETE|INSERT|UPDATE|SELECT|UNION|EXEC|EVAL)\b', re.IGNORECASE),
+            "path_traversal": re.compile(r'(?:\.\.[\\/])|(?:\\[a-z]:)|(?:/[a-z]+/)', re.IGNORECASE),
+            "obfuscated_path": re.compile(r'[a-z]\s*:\s*[\\/]+', re.IGNORECASE)
         }
     
     async def parse_input(self, text: str, triangle: TriangleColor) -> Dict[str, Any]:
@@ -71,4 +73,79 @@ class FormalValidator:
             violations=violations,
             corrections=corrections,
             final_coherence=final_coherence
+        )
+
+    async def evaluate_role(self, role: TriangleColor, parsed: Dict) -> RoleEvaluation:
+        """Оценка задачи конкретной ролью Trinity"""
+        if role == TriangleColor.GOLD:
+            return self._evaluate_integrator(parsed)
+        elif role == TriangleColor.RED:
+            return self._evaluate_guardian(parsed)
+        elif role == TriangleColor.PURPLE:
+            return self._evaluate_soul(parsed)
+        return RoleEvaluation(role, 0.5, 0.1, "Unknown role", {})
+
+    def _evaluate_integrator(self, parsed: Dict) -> RoleEvaluation:
+        """Trailblazer: Фокус на эффективности и интеграции"""
+        score = 0.8  # Base optimistic score
+        rationale = "Task appears technically feasible."
+        
+        # Check for logic complexity
+        if parsed.get("logic_score", 0) > 0.7:
+            score += 0.1
+            rationale += " High algorithmic clarity detected."
+        
+        return RoleEvaluation(
+            role=TriangleColor.GOLD,
+            score=min(1.0, score),
+            confidence=0.9,
+            rationale=rationale
+        )
+
+    def _evaluate_guardian(self, parsed: Dict) -> RoleEvaluation:
+        """Provocateur: Фокус на безопасности и паранойе"""
+        score = 1.0
+        violations = []
+        raw_text = parsed.get("raw", "")
+        
+        # Paranoid checks
+        if self.patterns["path_traversal"].search(raw_text) or self.patterns["obfuscated_path"].search(raw_text):
+            score -= 0.6
+            violations.append("Absolute or traversal paths detected.")
+        
+        if "C:\\" in raw_text or "/home/" in raw_text or "/etc/" in raw_text:
+            if not any(v == "Absolute or traversal paths detected." for v in violations):
+                score -= 0.6
+                violations.append("Literal absolute paths detected.")
+        
+        if self.patterns["injection"].search(raw_text):
+            score -= 0.8
+            violations.append("Potential injection pattern detected.")
+        
+        rationale = "Security scan complete." if not violations else f"Security risks: {', '.join(violations)}"
+        
+        return RoleEvaluation(
+            role=TriangleColor.RED,
+            score=max(0.0, score),
+            confidence=0.95,
+            rationale=rationale
+        )
+
+    def _evaluate_soul(self, parsed: Dict) -> RoleEvaluation:
+        """Soul: Фокус на концептуальном соответствии и фидбеке"""
+        score = 0.7
+        raw_text = parsed.get("raw", "").lower()
+        
+        # Check for alignment with "Alex" / User vision tokens
+        if any(token in raw_text for token in ["arch", "vision", "harmony", "evolution"]):
+            score += 0.2
+            rationale = "High conceptual alignment with system evolution."
+        else:
+            rationale = "Standard conceptual alignment."
+            
+        return RoleEvaluation(
+            role=TriangleColor.PURPLE,
+            score=min(1.0, score),
+            confidence=0.8,
+            rationale=rationale
         )

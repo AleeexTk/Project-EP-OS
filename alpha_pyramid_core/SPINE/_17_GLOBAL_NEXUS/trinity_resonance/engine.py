@@ -3,7 +3,7 @@ import time
 import asyncio
 from datetime import datetime
 from typing import Dict, Any, List, Optional
-from .models import TriangleColor, TrinityState, CoherenceLevel, TrinityDirective, ValidationResult
+from .models import TriangleColor, TrinityState, CoherenceLevel, TrinityDirective, ValidationResult, TrinityDecision
 from .validator import FormalValidator
 from .normalizer import FormalNormalizer
 
@@ -36,59 +36,74 @@ class TriangleState:
             return True
         return False
 
-class FormalResonanceEngine:
-    """Формальный движок резонанса (Z17 Core Integration)"""
+class TrinityResonanceEngine:
+    """Движок резонанса Trinity (Z17)"""
     
     def __init__(self, admin_name: str = "Админ Алекс"):
-        self.version = "3.0.0"
+        self.version = "3.1.0"
         self.admin = admin_name
         self.creation_time = datetime.now()
         self.session_id = hashlib.sha256(f"{self.admin}_{self.creation_time}".encode()).hexdigest()[:16]
-        self.coherence_history = []
         
         self.validator = FormalValidator(self)
         self.normalizer = FormalNormalizer(self)
-        self.triangles = {c: TriangleState(c) for c in TriangleColor}
+        self.triangles = {c: TriangleState(c) for c in TriangleColor if c != TriangleColor.BLACK}
+
+    async def evaluate_task(self, task_id: str, payload: str) -> TrinityDecision:
+        """Оркестрация резонанса между тремя ролями"""
+        # 1. Парсинг и нормализация
+        parsed = await self.validator.parse_input(payload, TriangleColor.BLACK)
+        
+        # 2. Сбор оценок от ролей
+        evals = {}
+        for role in [TriangleColor.GOLD, TriangleColor.RED, TriangleColor.PURPLE]:
+            evals[role.name] = await self.validator.evaluate_role(role, parsed)
+        
+        # 3. Расчет резонанса (Взвешенная оценка)
+        # GOLD (Integrator) = 0.35, RED (Guardian) = 0.4, PURPLE (Soul) = 0.25
+        resonance_score = (
+            evals["GOLD"].score * 0.35 +
+            evals["RED"].score * 0.4 +
+            evals["PURPLE"].score * 0.25
+        )
+        
+        # 4. Проверка ВЕТО (Iron Guardian)
+        is_vetoed = False
+        veto_reason = None
+        if evals["RED"].score < 0.3:
+            is_vetoed = True
+            veto_reason = f"Guardian Veto: {evals['RED'].rationale}"
+        
+        # 5. Финальный статус
+        if is_vetoed:
+            final_status = "REJECTED"
+        elif resonance_score >= 0.7:
+            final_status = "ACCEPTED"
+        elif resonance_score >= 0.4:
+            final_status = "CONFLICTED"
+        else:
+            final_status = "REJECTED"
+            
+        decision = TrinityDecision(
+            task_id=task_id,
+            timestamp=datetime.now(),
+            consensus_met=(final_status == "ACCEPTED"),
+            resonance_score=resonance_score,
+            evaluations=evals,
+            final_status=final_status,
+            is_vetoed=is_vetoed,
+            veto_reason=veto_reason,
+            audit_trace=hashlib.sha256(f"{task_id}_{final_status}".encode()).hexdigest()
+        )
+        
+        return decision
 
     async def process(self, message: str, triangle_code: str) -> Dict[str, Any]:
-        """Обработка через Z17-FSM"""
-        try:
-            triangle = TriangleColor[triangle_code.upper()]
-        except KeyError:
-            return {"status": "error", "reason": f"Unknown triangle: {triangle_code}"}
-            
-        t_state = self.triangles[triangle]
-        t_state.transition(TrinityState.LISTENING)
+        """Обратная совместимость с оригинальным API TRIN"""
+        decision = await self.evaluate_task(f"legacy_{int(time.time())}", message)
         
-        # 1. Parsing
-        t_state.transition(TrinityState.PARSING)
-        parsed = await self.validator.parse_input(message, triangle)
-        
-        # 2. Normalization
-        t_state.transition(TrinityState.NORMALIZING)
-        normalized = await self.normalizer.normalize(parsed, triangle)
-        
-        # 3. Validation
-        t_state.transition(TrinityState.VALIDATING)
-        validation = await self.validator.validate(parsed, triangle)
-        
-        # 4. Correcting if needed
-        final_message = normalized
-        if not validation.is_valid:
-            t_state.transition(TrinityState.CORRECTING)
-            final_message = await self.normalizer.correct(normalized, triangle, validation)
-            validation = await self.validator.validate({"raw": final_message, "hash": parsed["hash"]}, triangle)
-            
-        if validation.is_valid:
-            t_state.transition(TrinityState.EMITTING)
-            self.coherence_history.append(validation.final_coherence)
-            return {
-                "status": "success",
-                "triangle": triangle.code,
-                "coherence": validation.final_coherence,
-                "result": final_message,
-                "state": t_state.current_state.name
-            }
-        else:
-            t_state.transition(TrinityState.BLOCKED)
-            return {"status": "blocked", "violations": validation.violations}
+        return {
+            "status": "success" if decision.final_status == "ACCEPTED" else "blocked",
+            "decision": decision,
+            "resonance_score": decision.resonance_score
+        }
