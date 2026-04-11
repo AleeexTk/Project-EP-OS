@@ -13,17 +13,17 @@ from beta_pyramid_functional.B1_Kernel.z_cascade import ZCascadePipeline
 
 # Trinity Resonance Imports
 try:
-    if str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "17_GLOBAL_NEXUS") not in sys.path:
-        sys.path.insert(0, str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "17_GLOBAL_NEXUS"))
+    if str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_17_GLOBAL_NEXUS") not in sys.path:
+        sys.path.insert(0, str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_17_GLOBAL_NEXUS"))
     from trinity_resonance.engine import FormalResonanceEngine
     from trinity_resonance.models import TriangleColor
-except ImportError:
+except Exception:
     FormalResonanceEngine = None
     TriangleColor = None
 
 try:
     from alpha_pyramid_core.SPINE._12_SEC_GUARDIAN.sec_guardian import SignatureVerifier
-except ImportError:
+except Exception:
     SignatureVerifier = None
 
 logger = logging.getLogger("GLOBAL_NEXUS")

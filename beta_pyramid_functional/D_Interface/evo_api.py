@@ -22,6 +22,7 @@ from pydantic import BaseModel
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+ROOT_DIR = PROJECT_ROOT
 
 # Handle SPINE modules using proper package imports
 try:
@@ -32,8 +33,8 @@ except ImportError:
 from alpha_pyramid_core.B_Structure.models import PyramidState, Node, Link, NodeState, NodeKind, LayerType, OrchestratorState
 from beta_pyramid_functional.B1_Kernel.ws_manager import manager
 from beta_pyramid_functional.B2_Orchestrator.zbus import zbus
-from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex, write_atomic
-from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock, MemoryColor, HyperNode
+from beta_pyramid_functional.B1_Kernel.SK_Engine.engine import ProjectCortex, write_atomic, HyperNode
+from beta_pyramid_functional.B1_Kernel.SK_Engine.models import QuantumBlock, MemoryColor
 from beta_pyramid_functional.B1_Kernel.contracts import TaskEnvelope, TaskStatus
 from beta_pyramid_functional.B1_Kernel.policy_manager import SystemPolicyManager
 
