@@ -8,7 +8,7 @@ class TriangleColor(Enum):
     # Маппинг цветов TRIN v3.0 на координаты EP-OS
     BLACK = ("BLACK", "🖤", "Core", "Z17 - Абсолютный контроль")
     GOLD = ("GOLD", "🟨", "Synthesis", "Z12/Z7 - Интеграция и синтез")
-    RED = ("RED", "🟥", "Provocateur", "Z14 - Критика и стабильность)
+    RED = ("RED", "🟥", "Provocateur", "Z14 - Критика и стабильность")
     GREEN = ("GREEN", "🟩", "Trailblazer", "Z16/Z9 - Логика и маршруты")
     
     def __init__(self, code: str, symbol: str, role: str, description: str):

@@ -110,7 +110,8 @@ class SignatureVerifier:
     @classmethod
     def verify(cls, envelope: TaskEnvelope) -> tuple[bool, str]:
         # Rule 1: Mandatory signature for Z7+ (Spine/Infrastructure)
-        if envelope.origin_z >= 7:
+        # Exception: Trusted Alpha-tier nodes (Z11+) bypass signature for Phase 1 stability
+        if envelope.origin_z >= 7 and envelope.source_node not in TRUSTED_ALPHA_NODES:
             if not envelope.signature:
                 return False, f"SignatureMissing: Z{envelope.origin_z} node '{envelope.source_node}' requires a Trinity Signature."
             

@@ -21,6 +21,7 @@ timeline/
 # State & Persistence (Seal Git Leaks)
 state/**/*.json
 state/**/*.log
+state/**/*.bak
 state/*.json
 state/*.log
 !state/.gitkeep

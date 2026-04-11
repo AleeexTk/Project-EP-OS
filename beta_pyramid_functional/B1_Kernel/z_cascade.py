@@ -138,7 +138,7 @@ class ZCascadePipeline:
 
         manager = policy_manager or SystemPolicyManager()
         try:
-            z12_dir = PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "12_SEC_GUARDIAN"
+            z12_dir = PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_12_SEC_GUARDIAN"
             if str(z12_dir) not in sys.path:
                 sys.path.insert(0, str(z12_dir))
             from sec_guardian import SecGuardian
