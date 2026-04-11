@@ -45,13 +45,14 @@ async def test_zbus_zero_trust_enforcement():
     print("Test 2: Invalid signature Z17 blocked successfully.")
 
     # 3. High-Z Node (Z7) with VALID signature -> Should be ACCEPTED
+    from sec_guardian import SignatureVerifier
     envelope_valid = TaskEnvelope(
         task_id="ZT-TEST-003",
         source_node="bridge_z7",
         target_node="nexus",
         action="sync_structure",
         origin_z=7,
-        signature="TSIG:bridge_z7:AUTHORIZED-ZT-TEST-003"
+        signature=SignatureVerifier.generate_signature("bridge_z7", "ZT-TEST-003")
     )
     
     assert guardian.audit(envelope_valid) is True
