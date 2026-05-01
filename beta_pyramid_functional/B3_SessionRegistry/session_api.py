@@ -20,7 +20,7 @@ from urllib import request as urlrequest
 
 
 from dotenv import load_dotenv
-from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 
 # Allow sibling and workspace imports
@@ -322,6 +322,10 @@ def delete_crystal(crystal_id: str):
     if not ok:
         raise HTTPException(404, detail=f"Crystal {crystal_id} not found")
     return {"deleted": crystal_id}
+
+
+app = FastAPI(title="EvoPyramid Session Registry API", version="1.0.0")
+app.include_router(router)
 
 
 

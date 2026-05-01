@@ -1,18 +1,29 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
+
         {
             "name": "Debug: Core Engine (evo_api)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/β_Pyramid_Functional/D_Interface/evo_api.py",
+            "module": "uvicorn",
+            "args": [
+                "beta_pyramid_functional.D_Interface.evo_api:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8000",
+                "--reload"
+            ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
-                "PYTHONIOENCODING": "utf-8"
+                "PYTHONIOENCODING": "utf-8",
+                "ENVIRONMENT": "development"
             },
-            "justMyCode": true
+            "justMyCode": false
         },
         {
             "name": "Debug: Session Registry (session_api)",
@@ -20,19 +31,21 @@
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "β_Pyramid_Functional.B3_SessionRegistry.session_api:app",
+                "beta_pyramid_functional.B3_SessionRegistry.session_api:app",
                 "--host",
                 "0.0.0.0",
                 "--port",
-                "8001"
+                "8001",
+                "--reload"
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
-                "PYTHONIOENCODING": "utf-8"
+                "PYTHONIOENCODING": "utf-8",
+                "ENVIRONMENT": "development"
             },
-            "justMyCode": true
+            "justMyCode": false
         },
         {
             "type": "chrome",
@@ -40,6 +53,17 @@
             "request": "launch",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}/evopyramid-v2/src"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "🚀 EP-OS: Full Stack",
+            "configurations": [
+                "Debug: Core Engine (evo_api)",
+                "Debug: Session Registry (session_api)",
+                "Debug: Frontend (localhost:3000)"
+            ],
+            "stopAll": true
         }
     ]
 }

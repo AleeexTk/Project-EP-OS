@@ -1,0 +1,19 @@
+version: "1.0"
+nodes:
+  - id: z17_pear
+    z_level: 17
+    role: structural
+    module: nodes.z17_pear
+    next: z14_chaos
+  
+  - id: z14_chaos
+    z_level: 14
+    role: bridge
+    module: nodes.z14_chaos
+    next: z12_observer
+  
+  - id: z12_observer
+    z_level: 12
+    role: bridge
+    module: nodes.z12_observer
+    next: null

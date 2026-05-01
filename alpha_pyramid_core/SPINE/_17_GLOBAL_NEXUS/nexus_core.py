@@ -15,10 +15,10 @@ from beta_pyramid_functional.B1_Kernel.z_cascade import ZCascadePipeline
 try:
     if str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_17_GLOBAL_NEXUS") not in sys.path:
         sys.path.insert(0, str(PROJECT_ROOT / "alpha_pyramid_core" / "SPINE" / "_17_GLOBAL_NEXUS"))
-    from trinity_resonance.engine import FormalResonanceEngine
+    from trinity_resonance.engine import TrinityResonanceEngine
     from trinity_resonance.models import TriangleColor
 except Exception:
-    FormalResonanceEngine = None
+    TrinityResonanceEngine = None
     TriangleColor = None
 
 try:
@@ -35,7 +35,7 @@ class Z17GlobalNexus:
     Now utilizes TRINITY RESONANCE v3.0 to validate intent coherence.
     """
     
-    RESONANCE = FormalResonanceEngine(admin_name="Админ Алекс") if FormalResonanceEngine else None
+    RESONANCE = TrinityResonanceEngine(admin_name="Админ Алекс") if TrinityResonanceEngine else None
     PROPOSALS_PATH = PROJECT_ROOT / "gamma_pyramid_reflective" / "D_Audit" / "evolution_proposals.md"
     STATE_FILE = PROJECT_ROOT / "state" / "pyramid_state.json"
 

@@ -19,7 +19,7 @@
             "type": "shell",
             "command": "${config:python.defaultInterpreterPath}",
             "args": [
-                "β_Pyramid_Functional/D_Interface/evo_api.py"
+                "beta_pyramid_functional/D_Interface/evo_api.py"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -39,7 +39,7 @@
             "args": [
                 "-m",
                 "uvicorn",
-                "β_Pyramid_Functional.B3_SessionRegistry.session_api:app",
+                "beta_pyramid_functional.B3_SessionRegistry.session_api:app",
                 "--host",
                 "0.0.0.0",
                 "--port",
