@@ -24,13 +24,16 @@ This document explains EvoPyramid through a restaurant operating model so agents
 ## 3) Core Concepts: Time & Space
 
 ### 3.1) The ATC Analogy (Air Traffic Control)
+
 To ensure safety and prevent "air crashes" (system conflicts), EvoPyramid operates like an airport:
+
 - **Modules = Planes**: Autonomous entities with a mission.
 - **Routes = Flight Paths**: Defined transitions between architecture nodes (Z-layers).
 - **Core = Dispatcher**: Coordinates intentions and grants time slots.
 - **Timeline = Flight Log + Radar**: Historical record and real-time status.
 
 ### 3.2) Temporal Identity (4D)
+
 A module's identity is not just a name; it is its existence in time and space:
 `IDENTITY = ID (Who) + TIME TRACE (When) + LOCATION (Where) + ACTION HISTORY (What)`
 
@@ -41,6 +44,7 @@ A module's identity is not just a name; it is its existence in time and space:
 This model is also a historical note: a role-first EvoPyramid framing was already present in 2024 and aligns with patterns that later became mainstream in agent engineering (role-based execution, orchestration, validation, memory, routing, governance).
 
 Practical distinction:
+
 - common path: `LLM → tools → agents → orchestrator → workflows`;
 - EvoPyramid path: `mental architecture → roles → structure → map → flows → agent behavior`.
 
@@ -53,7 +57,7 @@ This document remains a **reference model** for onboarding and alignment, not a 
 `INPUT → CHAOS → CORE → OBSERVER → EXECUTION → LOGS → PLANNING → STORAGE → INPUT`
 
 | Restaurant Flow | EvoPyramid Flow |
-|---|---|
+| --- | --- |
 | Customer Order | Input / PEAR |
 | Kitchen Processing | CHAOS |
 | Head Chef Decision | CORE |
@@ -69,7 +73,7 @@ This document remains a **reference model** for onboarding and alignment, not a 
 ## 5) Agent Roles
 
 | EvoPyramid Agent | Restaurant Role | Function |
-|---|---|---|
+| --- | --- | --- |
 | Architect | Restaurant Manager | Defines structure, rules, layout |
 | Core | Head Chef | Final decisions |
 | Trailblazer | Prep Kitchen | Planning and preparation |
@@ -87,7 +91,7 @@ This document remains a **reference model** for onboarding and alignment, not a 
 ## 6) Structural Mapping
 
 | EvoPyramid Component | Restaurant Equivalent | Description |
-|---|---|---|
+| --- | --- | --- |
 | Pyramid | Restaurant Building | Structural hierarchy |
 | Atlas | Kitchen Map | System map |
 | Routing | Waiter Routes | Task/data routing |
@@ -105,6 +109,7 @@ This document remains a **reference model** for onboarding and alignment, not a 
 ## 7) System Validity Checklist
 
 The system is healthy when:
+
 1. Everything has a place.
 2. Everything has a role.
 3. Everything has a route.
@@ -121,6 +126,7 @@ If one item is missing, entropy grows and operational chaos appears.
 ## 8) Operational Definition
 
 EvoPyramid is a **Project Operating System** that organizes:
+
 - roles,
 - processes,
 - memory,
@@ -135,7 +141,7 @@ EvoPyramid is a **Project Operating System** that organizes:
 ## 9) Human–AI Responsibility Split
 
 | Responsibility | Human | AI |
-|---|---|---|
+| --- | --- | --- |
 | Define architecture | Yes | Assist |
 | Define rules | Yes | Assist |
 | Place nodes | Yes | Assist |
@@ -154,6 +160,7 @@ EvoPyramid is a **Project Operating System** that organizes:
 ## 10) Agent Instruction (Short Form)
 
 If you are an AI agent in EvoPyramid:
+
 - do not write random code;
 - operate within structured roles and routes;
 - respect storage boundaries;

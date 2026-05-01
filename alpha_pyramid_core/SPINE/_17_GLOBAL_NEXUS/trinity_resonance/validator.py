@@ -87,17 +87,21 @@ class FormalValidator:
 
     def _evaluate_integrator(self, parsed: Dict) -> RoleEvaluation:
         """Trailblazer: Фокус на эффективности и интеграции"""
-        score = 0.8  # Base optimistic score
+        score = 0.6  # Lower base
         rationale = "Task appears technically feasible."
         
         # Check for logic complexity
-        if parsed.get("logic_score", 0) > 0.7:
-            score += 0.1
+        logic_score = parsed.get("logic_score", 0)
+        if logic_score > 0.7:
+            score += 0.2
             rationale += " High algorithmic clarity detected."
+        elif logic_score < 0.5:
+            score -= 0.3
+            rationale += " Low technical coherence detected."
         
         return RoleEvaluation(
             role=TriangleColor.GOLD,
-            score=min(1.0, score),
+            score=min(1.0, max(0.0, score)),
             confidence=0.9,
             rationale=rationale
         )
@@ -110,13 +114,18 @@ class FormalValidator:
         
         # Paranoid checks
         if self.patterns["path_traversal"].search(raw_text) or self.patterns["obfuscated_path"].search(raw_text):
-            score -= 0.6
+            score -= 0.8
             violations.append("Absolute or traversal paths detected.")
         
         if "C:\\" in raw_text or "/home/" in raw_text or "/etc/" in raw_text:
             if not any(v == "Absolute or traversal paths detected." for v in violations):
-                score -= 0.6
+                score -= 0.8
                 violations.append("Literal absolute paths detected.")
+        
+        # Check for obfuscated unix paths
+        if re.search(r'/ ?h ?o ?m ?e ?/', raw_text, re.IGNORECASE) or re.search(r'/ ?e ?t ?c ?/', raw_text, re.IGNORECASE):
+            score -= 0.8
+            violations.append("Obfuscated unix paths detected.")
         
         if self.patterns["injection"].search(raw_text):
             score -= 0.8
@@ -133,19 +142,20 @@ class FormalValidator:
 
     def _evaluate_soul(self, parsed: Dict) -> RoleEvaluation:
         """Soul: Фокус на концептуальном соответствии и фидбеке"""
-        score = 0.7
+        score = 0.5  # Lower base score
         raw_text = parsed.get("raw", "").lower()
         
         # Check for alignment with "Alex" / User vision tokens
-        if any(token in raw_text for token in ["arch", "vision", "harmony", "evolution"]):
-            score += 0.2
+        if any(token in raw_text for token in ["arch", "vision", "harmony", "evolution", "alex", "epos", "pyramid"]):
+            score += 0.3
             rationale = "High conceptual alignment with system evolution."
         else:
-            rationale = "Standard conceptual alignment."
+            rationale = "Low conceptual alignment - potential noise or irrelevant input."
+            score = 0.2  # Set low score for no alignment
             
         return RoleEvaluation(
             role=TriangleColor.PURPLE,
-            score=min(1.0, score),
+            score=max(0.0, min(1.0, score)),
             confidence=0.8,
             rationale=rationale
         )
